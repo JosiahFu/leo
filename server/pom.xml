@@ -10,17 +10,19 @@
         <groupId>org.davincischools.leo</groupId>
         <artifactId>root</artifactId>
         <version>${revision}</version>
-        <relativePath>..</relativePath>
+        <relativePath>./../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <java.version>17</java.version>
-        <spring.version>3.0.2</spring.version>
-        <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
         <clients.directory>${basedir}/src/main/clients</clients.directory>
+        <java.version>17</java.version>
+        <log4j.version>2.19.0</log4j.version>
+        <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
+        <spring.version>3.0.2</spring.version>
     </properties>
 
     <dependencies>
+        <!-- Spring framework. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -31,6 +33,27 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!--  Java logging with Apache Log4j 2.  -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!--
+            Other Spring packages use this as the logger. Log4j only allows
+            one logger implementation to be registered. So, we are stuck with
+            this instead of apache's implementation.
+        -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.5</version>
         </dependency>
     </dependencies>
 
