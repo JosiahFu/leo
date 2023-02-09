@@ -5,14 +5,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
+
+import static org.davincischools.leo.server.SpringContants.LOCAL_SERVER_PORT_PROPERTY;
 
 @SpringBootApplication
 public class ServerApplication {
     private static final Logger log = LogManager.getLogger();
-    private static final String LOCAL_SERVER_PORT_PROPERTY = "local.server.port";
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(ServerApplication.class, args);
@@ -24,5 +24,8 @@ public class ServerApplication {
             Object bean = context.getBean(beanName);
             log.atInfo().log("  - {} ({})", beanName, bean.getClass().getName());
         }
+
+        int serverPort = context.getEnvironment().getProperty(LOCAL_SERVER_PORT_PROPERTY, Integer.class, 0);
+        log.atInfo().log("Leo server started on port http://localhost:{}.", serverPort);
     }
 }
