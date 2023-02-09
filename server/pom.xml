@@ -2,19 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<artifactId>server</artifactId>
+	<name>Leo Server</name>
+	<description>Leo Server</description>
 	<parent>
-		<groupId>org.davincischools</groupId>
+		<groupId>org.davincischools.leo</groupId>
 		<artifactId>root</artifactId>
 		<version>${revision}</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>org.davincischools.leo</groupId>
-	<artifactId>server</artifactId>
-	<name>server</name>
-	<description>Leo Server</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring.version>3.0.2</spring.version>
+		<npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
+		<clients.directory>${basedir}/src/main/clients</clients.directory>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -31,10 +32,61 @@
 	</dependencies>
 	<build>
 		<plugins>
+			<!-- Build the spring web server. -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.version}</version>
+			</plugin>
+			<!-- Build the browser client. -->
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.12.1</version>
+				<executions>
+					<!-- Install and initialize node. -->
+					<execution>
+						<id>install node and npm client</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<phase>initialize</phase>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>install</phase>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<nodeVersion>v18.14.0</nodeVersion>
+					<installDirectory>${npm.binary.directory}</installDirectory>
+					<workingDirectory>src/main/clients/browser</workingDirectory>
+					<environmentVariables>
+						<revision>${revision}</revision>
+					</environmentVariables>
+				</configuration>
+			</plugin>
+			<!-- Delete additional files for mvn clean. -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${clients.directory}</directory>
+							<includes>
+								<include>*/node_modules/</include>
+								<include>*/package-lock.json</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
