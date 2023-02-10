@@ -84,7 +84,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.12.1</version>
                 <executions>
-                    <!-- Install and initialize node. -->
+                    <!-- Install node. -->
                     <execution>
                         <id>install node and npm client</id>
                         <goals>
@@ -92,21 +92,33 @@
                         </goals>
                         <phase>initialize</phase>
                     </execution>
+                    <!-- Initialize wiith npm. -->
                     <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>install</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <!-- Build with npm. -->
+                    <execution>
+                        <id>npm build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <nodeVersion>v18.14.0</nodeVersion>
                     <installDirectory>${npm.binary.directory}</installDirectory>
-                    <workingDirectory>src/main/clients/browser</workingDirectory>
+                    <workingDirectory>src/main/clients/web-browser</workingDirectory>
                     <environmentVariables>
                         <revision>${revision}</revision>
                     </environmentVariables>
@@ -121,8 +133,9 @@
                         <fileset>
                             <directory>${clients.directory}</directory>
                             <includes>
+                                <include>*/build/</include>
+                                <include>*/coverage/</include>
                                 <include>*/node_modules/</include>
-                                <include>*/package-lock.json</include>
                             </includes>
                         </fileset>
                     </filesets>
