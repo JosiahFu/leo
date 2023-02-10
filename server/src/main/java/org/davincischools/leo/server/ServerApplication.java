@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 
-import static org.davincischools.leo.server.SpringContants.LOCAL_SERVER_PORT_PROPERTY;
+import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
 @SpringBootApplication
 public class ServerApplication {
