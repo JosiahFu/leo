@@ -68,6 +68,13 @@
             <artifactId>logback-classic</artifactId>
             <version>1.4.5</version>
         </dependency>
+        <!-- A collection of useful functions. -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -84,7 +91,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.12.1</version>
                 <executions>
-                    <!-- Install node. -->
+                    <!-- Install node executable. -->
                     <execution>
                         <id>install node and npm client</id>
                         <goals>
@@ -92,7 +99,7 @@
                         </goals>
                         <phase>initialize</phase>
                     </execution>
-                    <!-- Initialize wiith npm. -->
+                    <!-- Install npm. -->
                     <execution>
                         <id>npm install</id>
                         <goals>
@@ -103,7 +110,7 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
-                    <!-- Build with npm. -->
+                    <!-- Build the React web app. -->
                     <execution>
                         <id>npm build</id>
                         <goals>
@@ -118,11 +125,32 @@
                 <configuration>
                     <nodeVersion>v18.14.0</nodeVersion>
                     <installDirectory>${npm.binary.directory}</installDirectory>
-                    <workingDirectory>src/main/clients/web-browser</workingDirectory>
+                    <workingDirectory>${clients.directory}/web-browser</workingDirectory>
                     <environmentVariables>
                         <revision>${revision}</revision>
                     </environmentVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <!-- Copy compiled React web app to the classpath for serving. -->
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.build.outputDirectory}/org/davincischools/leo/server/www">
+                                    <fileset dir="${clients.directory}/web-browser/build/"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Delete additional files for mvn clean. -->
             <plugin>

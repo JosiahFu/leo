@@ -15,7 +15,7 @@ import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PR
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ServerApplicationTest {
     @Autowired
-    private LeoController controller;
+    private FileResourceController controller;
 
     @Value(value = "${" + LOCAL_SERVER_PORT_PROPERTY + "}")
     private int port;
