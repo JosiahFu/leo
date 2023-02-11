@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <log4j.version>2.19.0</log4j.version>
         <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
+        <surefire.version>3.0.0-M8</surefire.version>
         <spring.version>3.0.2</spring.version>
     </properties>
 
@@ -151,6 +152,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Run the vintage JUnit 4 tests. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>${surefire.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- Delete additional files for mvn clean. -->
             <plugin>
