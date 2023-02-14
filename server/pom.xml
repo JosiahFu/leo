@@ -35,6 +35,7 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+
         <!-- JUnit/Junit-Jupiter testing. -->
         <dependency>
             <groupId>junit</groupId>
@@ -48,6 +49,7 @@
             <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
+
         <!--  Java logging with Apache Log4j 2.  -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -69,6 +71,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.4.5</version>
         </dependency>
+
         <!-- A collection of useful functions. -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -76,6 +79,13 @@
             <version>31.1-jre</version>
         </dependency>
 
+        <!-- Google's java formatter. -->
+        <dependency>
+            <groupId>com.google.googlejavaformat</groupId>
+            <artifactId>google-java-format</artifactId>
+            <version>1.15.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -86,6 +96,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.version}</version>
             </plugin>
+
             <!-- Build the browser client. -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -100,6 +111,7 @@
                         </goals>
                         <phase>initialize</phase>
                     </execution>
+
                     <!-- Install npm. -->
                     <execution>
                         <id>npm install</id>
@@ -111,6 +123,7 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
+
                     <!-- Build the React web app. -->
                     <execution>
                         <id>npm build</id>
@@ -137,8 +150,36 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
+                    <!-- Format java code using the Google java formatter. -->
+                    <execution>
+                        <id>format java files</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <apply executable="java" failonerror="true" parallel="true">
+                                    <arg value="-classpath"/>
+                                    <arg pathref="maven.compile.classpath"/>
+                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED"/>
+                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED"/>
+                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED"/>
+                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED"/>
+                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"/>
+                                    <arg value="com.google.googlejavaformat.java.Main"/>
+                                    <arg value="--replace"/>
+                                    <fileset dir="${project.build.sourceDirectory}" includes="**/*.java"/>
+                                    <fileset dir="${project.build.testSourceDirectory}" includes="**/*.java"/>
+                                    <fileset dir="${project.build.directory}" includes="**/*.java"/>
+                                </apply>
+                            </target>
+                        </configuration>
+                    </execution>
+
                     <!-- Copy compiled React web app to the classpath for serving. -->
                     <execution>
+                        <id>copy react site</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -153,6 +194,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <!-- Run the vintage JUnit 4 tests. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -166,6 +208,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <!-- Delete additional files for mvn clean. -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
