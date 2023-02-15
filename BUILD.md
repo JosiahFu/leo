@@ -40,12 +40,15 @@ sudo apt install maven git openjdk-17-doc openjdk-17-jdk openjdk-17-source
 
 ## Checking out Project Leo in a Terminal
 
-Project Leo is stored in GitHub. To check out the Project Leo source code, run the following command
-in a Terminal:
+Project Leo is stored in GitHub and has references to other git repositories (called submodules). To
+do a full checkout of Project Leo, you need to checkout its source code *as well as* its submodules.
+To do this, run the following commands in a Terminal:
 
 ```shell
-# Check out the Project Leo source code.
+# Check out the Project Leo source code and submodules.
 git clone https://github.com/DaVinciSchools/leo.git project_leo
+cd project_leo
+git submodule update --init --recursive
 ```
 
 This will create a subfolder called ```project_leo``` with the source code in it. We will run later
