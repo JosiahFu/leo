@@ -2,13 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>server</artifactId>
-    <name>Leo Server</name>
-    <description>Leo Server</description>
+    <artifactId>project-leo-server</artifactId>
+    <version>${revision}</version>
+
+    <name>Project Leo Server</name>
+    <description>Project Leo Server</description>
 
     <parent>
         <groupId>org.davincischools.leo</groupId>
-        <artifactId>root</artifactId>
+        <artifactId>project-leo</artifactId>
         <version>${revision}</version>
         <relativePath>./../pom.xml</relativePath>
     </parent>
@@ -224,6 +226,46 @@
                             </includes>
                         </fileset>
                     </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- Create an executable JAR. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>copy maven dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/org/davincischools/libs
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.davincischools.leo.server.ServerApplication</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>org/davincischools/libs/</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>https://github.com/DaVinciSchools/leo</url>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

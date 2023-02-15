@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.davincischools.leo</groupId>
-    <artifactId>root</artifactId>
+    <artifactId>project-leo</artifactId>
     <version>${revision}</version>
+    <url>https://github.com/DaVinciSchools/leo</url>
     <packaging>pom</packaging>
+
+    <name>Project Leo</name>
+    <description>Project Leo</description>
 
     <modules>
         <module>server</module>
