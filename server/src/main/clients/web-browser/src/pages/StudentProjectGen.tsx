@@ -26,7 +26,7 @@ function App() {
                 ['EKS 1 - Linear Functions', 'EKS 2 - Exponential Functions', 'EKS 3 - Logarithmic Functions', 'EKS 4 - Rational Functions'],
                 ['Computer Engineer', 'Data Scientist', 'Computer Programmer'],
                 ['Data specialists pro sports', 'Programming', 'Storytelling with data']
-            ]} />
+            ]} pageURI="/student/project-implement" />
         </main>
     );
 }

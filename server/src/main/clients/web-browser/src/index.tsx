@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './index.css';
+import './index.scss';
 import reportWebVitals from './reportWebVitals';
 
-import ProjectGen from './pages/ProjectGen';
+import StudentProjectGen from './pages/StudentProjectGen';
 import Root from './pages/Root';
+import StudentProjectImplementation from './pages/StudentProjectImplement';
 
 const router = createBrowserRouter([
     {
@@ -13,8 +14,12 @@ const router = createBrowserRouter([
         element: <Root />
     },
     {
-        path: '/project-gen',
-        element: <ProjectGen />
+        path: '/student/project-gen',
+        element: <StudentProjectGen />
+    },
+    {
+        path: '/student/project-implement',
+        element: <StudentProjectImplementation />
     }
 ])
 

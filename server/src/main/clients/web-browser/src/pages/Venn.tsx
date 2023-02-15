@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createSearchParams, Link } from 'react-router-dom';
 import './Venn.scss';
 
 type stringSet = readonly [string, string, string, string];
@@ -35,25 +36,29 @@ function Dropdown({ options, value, setValue, focused, setFocused }: {
     )
 }
 
-function Circle({ input, setInput, output, options }: {
+function Circle({ input, setInput, output, options, pageURI }: {
     input: string,
     setInput: (input: string) => void,
     output: string,
-    options: string[]
+    options: string[],
+    pageURI: string
 }) {
     const [focused, setFocused] = useState(false);
 
     return (
         <div className={focused ? 'circle focused' : 'circle'}>
             <Dropdown options={options} value={input} setValue={setInput} focused={focused} setFocused={setFocused} />
-            <div className="output">{output}</div>
+            <div className="output">
+                <Link to={{ pathname: pageURI, search: createSearchParams({ description: output }).toString() }}>{output}</Link>
+            </div>
         </div>
     );
 }
 
-function Venn({ options, processInput }: {
+function Venn({ options, processInput, pageURI }: {
     options: [string[], string[], string[], string[]],
-    processInput: (input: stringSet) => stringSet
+    processInput: (input: stringSet) => stringSet,
+    pageURI: string
 }) {
     const [activated, setActivated] = useState(false);
     const [input1, setInput1] = useState('');
@@ -73,10 +78,10 @@ function Venn({ options, processInput }: {
     return (
         <div className={activated ? 'venn activated' : 'venn'}>
             <div className="circles">
-                <Circle input={input1} setInput={setInput1} output={output[0]} options={options[0]} />
-                <Circle input={input2} setInput={setInput2} output={output[1]} options={options[1]} />
-                <Circle input={input3} setInput={setInput3} output={output[2]} options={options[2]} />
-                <Circle input={input4} setInput={setInput4} output={output[3]} options={options[3]} />
+                <Circle input={input1} setInput={setInput1} output={output[0]} options={options[0]} pageURI={pageURI} />
+                <Circle input={input2} setInput={setInput2} output={output[1]} options={options[1]} pageURI={pageURI} />
+                <Circle input={input3} setInput={setInput3} output={output[2]} options={options[2]} pageURI={pageURI} />
+                <Circle input={input4} setInput={setInput4} output={output[3]} options={options[3]} pageURI={pageURI} />
             </div>
             <div className="button" onClick={handleClick}>Generate</div>
         </div>
