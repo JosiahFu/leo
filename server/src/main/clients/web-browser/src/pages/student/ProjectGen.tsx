@@ -1,13 +1,12 @@
 import React from 'react';
-import Venn, { stringSet } from './Venn';
+import Venn, { stringSet } from '../../utils/Venn';
 
 function App() {
     const style: React.CSSProperties = {
         display: 'flex',
         flexFlow: 'column nowrap',
         justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh'
+        alignItems: 'center'
     }
 
     const processInput = (input: stringSet): stringSet => {

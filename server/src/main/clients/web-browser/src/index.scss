@@ -12,19 +12,17 @@ code {
         monospace;
 }
 
-main {
-    margin: 1em;
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
-.header-sidebar-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    /*! grid-template-rows: 1fr 1fr 1fr; */
-    /*! grid-auto-flow: column; */
-
+h1 {
+    text-align: center;
+    margin: 0;
 }
 
-.layout-header {
-    grid-column: 1 / -1;
-    grid-row: 1 / 2;
+.site-header {
+    background-image: linear-gradient(white, transparent);
+    padding: 1em;
 }
