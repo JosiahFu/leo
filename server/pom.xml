@@ -207,7 +207,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <copy todir="${project.build.directory}/resources/org/davincischools/leo/server/www">
+                                <copy todir="${project.build.outputDirectory}/org/davincischools/leo/server/www">
                                     <fileset dir="${clients.directory}/web-browser/build/"/>
                                 </copy>
                             </target>
