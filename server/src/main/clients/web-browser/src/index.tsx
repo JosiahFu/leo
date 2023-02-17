@@ -8,6 +8,7 @@ import Root from './pages/Root';
 import StudentNav from './pages/student/Nav';
 import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
+import StudentUpload from './pages/student/Upload';
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
             {
                 path: 'project-implement',
                 element: <StudentProjectImplementation />
+            },
+            {
+                path: 'upload',
+                element: <StudentUpload />
             }
         ]
     }
