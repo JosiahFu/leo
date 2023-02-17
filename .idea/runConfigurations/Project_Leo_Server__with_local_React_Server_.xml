@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Project Leo Server (with local React Server)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="project-leo-server" />
+    <option name="PROGRAM_PARAMETERS" value="--react_port 3000" />
+    <selectedOptions>
+      <option name="spring.boot.profiles" visible="false" />
+    </selectedOptions>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.davincischools.leo.server.ServerApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

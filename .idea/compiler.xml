@@ -7,8 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="server" />
+        <module name="project-leo-server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="root" target="17" />
+      <module name="server" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

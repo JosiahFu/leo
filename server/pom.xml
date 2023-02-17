@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>project-leo-server</artifactId>
     <version>${revision}</version>
@@ -36,6 +37,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- Needed to proxy services to React web server. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <version>6.0.4</version>
         </dependency>
 
         <!-- JUnit/Junit-Jupiter testing. -->
@@ -87,6 +94,18 @@
             <artifactId>google-java-format</artifactId>
             <version>1.15.0</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- Parse command line options. -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.82</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
         </dependency>
     </dependencies>
 
@@ -188,7 +207,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <copy todir="${project.build.outputDirectory}/org/davincischools/leo/server/www">
+                                <copy todir="${project.build.directory}/resources/org/davincischools/leo/server/www">
                                     <fileset dir="${clients.directory}/web-browser/build/"/>
                                 </copy>
                             </target>
@@ -213,6 +232,7 @@
 
             <!-- Delete additional files for mvn clean. -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
