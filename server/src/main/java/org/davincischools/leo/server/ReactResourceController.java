@@ -66,7 +66,7 @@ public class ReactResourceController {
         }
         ByteStreams.copy(in, response.getOutputStream());
         response.getOutputStream().flush();
-        // response.getOutputStream().close();
+        response.getOutputStream().close();
       }
     }
   }

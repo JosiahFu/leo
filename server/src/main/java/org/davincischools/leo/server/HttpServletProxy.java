@@ -5,19 +5,21 @@ import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_AR
 import com.fasterxml.jackson.datatype.jdk8.WrappedIOException;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
+import com.google.common.primitives.Bytes;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.SequenceInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -25,7 +27,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -70,7 +71,7 @@ public class HttpServletProxy {
   private static final ImmutableSet<String> COOKIE_HEADERS =
       ImmutableSet.of("Set-Cookie", "Set-Cookie2");
   private static final ImmutableSet<String> HEADERS_THAT_WILL_BE_AUTO_POPULATED =
-      ImmutableSet.of("etag");
+      ImmutableSet.of("etag", "Content-Length");
   private static final String CONTENT_ENCODING_HEADER = "content-encoding";
 
   // MediaType constants.
@@ -121,7 +122,7 @@ public class HttpServletProxy {
       }
     }
 
-    // Reformat the headers for the WebClient.
+    // Reformat headers for the WebClient.
     if (request.getHeaderNames() != null) {
       ListMultimap<String, String> requestCookies = ArrayListMultimap.create();
       for (String name : Lists.newArrayList(request.getHeaderNames().asIterator())) {
@@ -146,31 +147,71 @@ public class HttpServletProxy {
       HttpServletResponse response,
       WebClient reactClient)
       throws IOException {
-    ResponseEntity<?> reactResponse;
-    AtomicReference<byte[]> reactBody = new AtomicReference();
     try {
+      // Send the request to React and get the response's headers.
       ResponseSpec responseSpec =
           reactClient
               .method(HttpMethod.valueOf(request.getMethod().toUpperCase(Locale.US)))
               .retrieve();
+      ResponseEntity<?> reactResponse =
+          Objects.requireNonNull(responseSpec.toBodilessEntity().block());
+
+      // Return if React sent an error.
+      if (reactResponse.getStatusCode().isError()) {
+        response.sendError(reactResponse.getStatusCode().value(), uri.getPath());
+        return;
+      }
+
+      // Convert the headers and then send them back.
+      for (Entry<String, List<String>> header : reactResponse.getHeaders().entrySet()) {
+        String name = header.getKey();
+        if (HEADERS_THAT_WILL_BE_AUTO_POPULATED.contains(name)) {
+          continue;
+        } else if (COOKIE_HEADERS.contains(name)) {
+          for (String cookieString : header.getValue()) {
+            response.addCookie(parseCookieString(uriRewriter.rewriteForSpring(cookieString)));
+          }
+        } else {
+          header
+              .getValue()
+              .forEach(value -> response.addHeader(name, uriRewriter.rewriteForSpring(value)));
+        }
+      }
+      response.setStatus(reactResponse.getStatusCode().value());
+      response.flushBuffer();
 
       // Stream the response body because the buffer in ResponseEntity is limited.
-      responseSpec
-          .bodyToFlux(DataBuffer.class)
-          .map(buffer -> buffer.asInputStream(true))
-          .reduce(SequenceInputStream::new)
-          .subscribe(
-              stream -> {
-                try {
-                  reactBody.set(stream.readAllBytes());
-                } catch (IOException e) {
-                  throw new WrappedIOException(e);
-                }
-              });
+      ImmutableList<byte[]> streamedBytes =
+          responseSpec
+              .bodyToFlux(DataBuffer.class)
+              .map(
+                  buffer -> {
+                    try (InputStream in = buffer.asInputStream(true)) {
+                      return in.readAllBytes();
+                    } catch (IOException e) {
+                      throw new WrappedIOException(e);
+                    }
+                  })
+              .collect(ImmutableList.toImmutableList())
+              .block();
+      byte[] reactBody = Bytes.concat(streamedBytes.toArray(size -> new byte[size][]));
 
-      // Get and process headers.
-      reactResponse = Objects.requireNonNull(responseSpec.toBodilessEntity().block());
+      // If the response is in text format, we need to replace reactHostPort with
+      // originalHostPort.
+      if (mediaType.isPresent() && mediaType.get().type().equals(TEXT_MEDIA_TYPE)) {
+        byte[] decodedBytes = decodeBody(reactResponse, reactBody);
+        String body = new String(decodedBytes, mediaType.get().charset().or(Charsets.UTF_8));
+        reactBody =
+            uriRewriter
+                .rewriteForSpring(body)
+                .getBytes(mediaType.get().charset().or(Charsets.UTF_8));
+        response.getOutputStream().write(encodeBody(reactResponse, decodedBytes));
+      } else {
+        response.getOutputStream().write(reactBody);
+      }
 
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
     } catch (WrappedIOException e) {
       throw e.getCause();
     } catch (IllegalArgumentException e) {
@@ -182,53 +223,6 @@ public class HttpServletProxy {
       }
       throw e;
     }
-    if (reactResponse.getStatusCode().isError()) {
-      response.sendError(reactResponse.getStatusCode().value(), uri.getPath());
-      return;
-    }
-
-    // Send the reactResponse status.
-    response.setStatus(reactResponse.getStatusCode().value());
-
-    // Send the reactResponse headers (including cookies).
-    for (Entry<String, List<String>> header : reactResponse.getHeaders().entrySet()) {
-      String name = header.getKey();
-      if (HEADERS_THAT_WILL_BE_AUTO_POPULATED.contains(name)) {
-        // These headers should be automatically calculated by HttpServletResponse.
-        continue;
-      } else if (COOKIE_HEADERS.contains(name)) {
-        // HttpServletResponse separates cookies from other headers.
-        for (String cookieString : header.getValue()) {
-          response.addCookie(parseCookieString(uriRewriter.rewriteForSpring(cookieString)));
-        }
-      } else {
-        header
-            .getValue()
-            .forEach(value -> response.addHeader(name, uriRewriter.rewriteForSpring(value)));
-      }
-    }
-
-    // Send the body of the response.
-    if (reactBody.get() != null) {
-      byte[] decodedBytes = decodeBody(reactResponse, reactBody.get());
-      if (decodedBytes != null) {
-        // If the response is in text format, we need to replace reactHostPort with
-        // originalHostPort.
-        if (mediaType.isPresent() && mediaType.get().type().equals(TEXT_MEDIA_TYPE)) {
-          if (reactResponse.hasBody()) {
-            String body = new String(decodedBytes, mediaType.get().charset().or(Charsets.UTF_8));
-            decodedBytes =
-                uriRewriter
-                    .rewriteForSpring(body)
-                    .getBytes(mediaType.get().charset().or(Charsets.UTF_8));
-          }
-        }
-        response.getOutputStream().write(encodeBody(reactResponse, decodedBytes));
-      }
-    }
-
-    response.getOutputStream().flush();
-    // response.getOutputStream().close();
   }
 
   // Http responses can be encoded (e.g., compressed). So an html page may come back as a series
