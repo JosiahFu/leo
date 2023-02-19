@@ -1,21 +1,36 @@
-# Project Leo
+![logo](https://www.davincischools.org/wp-content/uploads/2022/01/dvlogo-21B.jpg) Project Leo
+===========
 
-Project Leo presents a way to identify, connect, and harness the Ikigai[^1] of students so that they
-can build career relevant portfolios in every classroom. A student's Ikigai is the intersection of:
+**Project Leo** is a classroom system developed by
+[Da Vinci Schools](https://www.davincischools.org/) that amplifies Career-Relevant Learning.
 
-* What a student loves to do
-* What a student is good at
-* What the world needs
-* What you can get paid for
+Its goal is to identify, connect, and harness a student's
+*[Ikigai](https://en.wikipedia.org/wiki/Ikigai)*[^1] to prepare a student for a career that they
+love.
 
-Go to www.projectleo.com to learn more about it and how you can get involved.
+Project Leo not only helps a student identified their *Ikigai*, but aids a student by connecting
+students to:
 
-## Contributing to Project Leo
+* **Professionals** to pass along knowledge through tiered volunteer opportunities.
+* **Teachers** to build meaningful learning experiences around high demand competencies.
+* **School Leaders** to monitor and improve student career preparedness.
 
-To contribute to Project Leo, take a look at:
+In turn, students **develop a portfolio** of *Ikigai*-based career-relevant projects that build
+their skills and demonstrate their mastery of their subject.
 
-* How to [build Project Leo](BUILD.md)
-* How to [contribute code to Project Leo](CONTRIBUTING.md)
+Go to the [Project Leo]() website to get involved.
 
-[^1]: Ikigai is a Japanese concept referring to something that gives a person a sense of purpose and
-a reason for living. See https://en.wikipedia.org/wiki/Ikigai.
+## People to Know
+
+* [Steven Eno](https://github.com/stevenEno) - Project Manager
+* [Lauren Cramer](https://www.linkedin.com/in/lrcramer/) - UI / UX Design
+* [Scott Hendrickson](https://github.com/sahendrickson) - Full Stack Development
+
+## Contributing
+
+File issues in the [Project Leo Issue Tracker](https://github.com/DaVinciSchools/leo/issues).
+
+To contribute to this project, see [CONTRIBUTE](CONTRIBUTE.md) and [BUILD](BUILD.md).
+
+[^1]: Ikigai is "a motivating force; something or someone that gives a person a sense of purpose or
+a reason for living" (Oxford English Dictionary)
