@@ -54,7 +54,7 @@ This will do a number of things:
 * Install Node.js and NPM for the React web client.
 * Build the React web client.
 * Embed the React web client in the Spring server.
-* Format code for a code review (see [CONTRIBUTING](CONTRIBUTE.md)).
+* Format code for a code review (see [CONTRIBUTING](CONTRIBUTING.md)).
 
 ## Running Project Leo
 

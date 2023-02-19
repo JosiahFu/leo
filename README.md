@@ -30,7 +30,7 @@ Go to the [Project Leo]() website to get involved.
 
 File issues in the [Project Leo Issue Tracker](https://github.com/DaVinciSchools/leo/issues).
 
-To contribute to this project, see [CONTRIBUTE](CONTRIBUTE.md) and [BUILD](BUILD.md).
+To contribute to this project, see [CONTRIBUTING](CONTRIBUTING.md) and [BUILDING](BUILDING.md).
 
 [^1]: Ikigai is "a motivating force; something or someone that gives a person a sense of purpose or
 a reason for living" (Oxford English Dictionary)
