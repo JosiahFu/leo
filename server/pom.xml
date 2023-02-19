@@ -126,7 +126,7 @@
                 <executions>
                     <!-- Install node executable. -->
                     <execution>
-                        <id>install node and npm client</id>
+                        <id>install-node-and-npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -135,7 +135,7 @@
 
                     <!-- Install npm. -->
                     <execution>
-                        <id>npm install</id>
+                        <id>npm-install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -145,9 +145,21 @@
                         </configuration>
                     </execution>
 
+                    <!-- Format TypeScript using the Google TypeScript formatter. -->
+                    <execution>
+                        <id>format-typescript</id>
+                        <goals>
+                            <goal>npx</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>gts fix</arguments>
+                        </configuration>
+                    </execution>
+
                     <!-- Build the React web app. -->
                     <execution>
-                        <id>npm build</id>
+                        <id>npm-build</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -171,9 +183,9 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
-                    <!-- Format java code using the Google java formatter. -->
+                    <!-- Format Java code using the Google Java formatter. -->
                     <execution>
-                        <id>format java files</id>
+                        <id>format-java-files</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -200,7 +212,7 @@
 
                     <!-- Copy compiled React web app to the classpath for serving. -->
                     <execution>
-                        <id>copy react site</id>
+                        <id>copy-react-site</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -240,6 +252,7 @@
                         <fileset>
                             <directory>${clients.directory}</directory>
                             <includes>
+                                <include>*/package-lock.json</include>
                                 <include>*/build/</include>
                                 <include>*/coverage/</include>
                                 <include>*/node_modules/</include>

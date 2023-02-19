@@ -24,6 +24,7 @@ Tips for good pull requests:
   doubt, try to stay true to the existing code of the project. Run `mvn verify` to automatically
   format files before creating a PR. Styles that we use are:
     * [Google's Java style guide](https://google.github.io/styleguide/javaguide.html)
+    * [Google's TypeScript style guide](https://google.github.io/styleguide/jsguide.html)
 * **Commit Message**: Write a descriptive commit message. What problems are being solved and what
   are the consequences of the approach? Where and how did you test? Some good tips:
     * [5 Useful Tips For A Better Commit Message](http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message)
