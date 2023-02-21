@@ -7,9 +7,13 @@
       "dom",
     ],
     "esModuleInterop": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "module": "commonjs",
+    "moduleResolution": "Node"
   },
   "include": [
+    "src/**/*.js",
     "src/**/*.ts",
     "src/**/*.tsx",
     "test/**/*.ts",
