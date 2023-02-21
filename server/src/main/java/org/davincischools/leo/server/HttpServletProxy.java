@@ -4,10 +4,8 @@ import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_AR
 
 import com.fasterxml.jackson.datatype.jdk8.WrappedIOException;
 import com.google.common.base.Charsets;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
@@ -124,7 +122,6 @@ public class HttpServletProxy {
 
     // Reformat headers for the WebClient.
     if (request.getHeaderNames() != null) {
-      ListMultimap<String, String> requestCookies = ArrayListMultimap.create();
       for (String name : Lists.newArrayList(request.getHeaderNames().asIterator())) {
         if (request.getHeaders(name) != null) {
           for (String value : Lists.newArrayList(request.getHeaders(name).asIterator())) {
