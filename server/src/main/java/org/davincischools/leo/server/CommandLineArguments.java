@@ -14,7 +14,7 @@ public final class CommandLineArguments {
   @Parameter(
       names = {"--react_port"},
       description = "Port to running React web server (that was started with 'npm start').")
-  protected Integer reactPort = null;
+  public Integer reactPort = null;
 
   private CommandLineArguments() {}
 }
