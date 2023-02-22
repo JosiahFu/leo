@@ -21,6 +21,7 @@
         <java.version>17</java.version>
         <log4j.version>2.19.0</log4j.version>
         <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
+        <proto.version>3.22.0</proto.version>
         <surefire.version>3.0.0-M8</surefire.version>
         <spring.version>3.0.2</spring.version>
     </properties>
@@ -107,9 +108,24 @@
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>
         </dependency>
+
+        <!-- Protocol Buffers in Java. -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${proto.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <extensions>
+            <!-- Provides OS specific information. Needed for protoc binary. -->
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
         <plugins>
             <!-- Build the spring web server. -->
             <plugin>
@@ -154,20 +170,44 @@
                     </environmentVariables>
                 </configuration>
             </plugin>
+
+            <!-- Compile Protocol Buffers for Java. -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-protobuf-java</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
+                            <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
+                            <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
-                    <!-- Compile Protocol Buffers. -->
+                    <!-- Compile Protocol Buffers for JavaScript. -->
                     <execution>
-                        <id>generate-protobuf-js</id>
+                        <id>generate-protobuf-javascript</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
+                                <!-- Compile Protocol Buffers to JavaScript. -->
                                 <apply executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true" parallel="true">
                                     <arg value="pbjs"/>
                                     <arg line="--target static-module"/>
@@ -178,17 +218,7 @@
                                     <arg file="${clients.directory}/web-browser/src/protos.js"/>
                                     <fileset dir="${project.build.sourceDirectory}/../protos" includes="**/*.proto"/>
                                 </apply>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-protobuf-ts</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
+                                <!-- Create TypeScript from JavaScript. -->
                                 <exec executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true">
                                     <arg value="pbts"/>
                                     <arg value="--out"/>
