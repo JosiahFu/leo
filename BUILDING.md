@@ -1,5 +1,4 @@
-Building Project Leo
-====================
+# Building Project Leo
 
 Project Leo is built on Linux using [Apache Maven](https://maven.apache.org/). The instructions on
 this page are for the [Ubuntu](https://ubuntu.com/) distribution. But, other distributions may work
@@ -21,6 +20,7 @@ These can be installed in Ubuntu using the following command:
 
 ```shell
 # Install Apache Maven, Git, and Java.
+sudo apt update
 sudo apt install maven git openjdk-17-doc openjdk-17-jdk openjdk-17-source
 ```
 
