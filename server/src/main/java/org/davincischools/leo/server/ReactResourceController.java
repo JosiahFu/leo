@@ -14,6 +14,8 @@ import java.net.URI;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.davincischools.leo.server.utils.HttpServletProxy;
+import org.davincischools.leo.server.utils.URIBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

@@ -1,4 +1,4 @@
-package org.davincischools.leo.server;
+package org.davincischools.leo.server.utils;
 
 import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_ARGUMENTS;
 

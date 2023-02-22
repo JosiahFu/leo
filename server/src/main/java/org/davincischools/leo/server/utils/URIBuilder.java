@@ -1,4 +1,4 @@
-package org.davincischools.leo.server;
+package org.davincischools.leo.server.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
