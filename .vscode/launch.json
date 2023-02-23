@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Project Leo Server",
+            "request": "launch",
+            "mainClass": "org.davincischools.leo.server.ServerApplication",
+            "projectName": "project-leo-server",
+            "classPaths": ["$Auto", "${workspaceFolder}/server/target/classes"]
+        },
+        {
+            "type": "java",
+            "name": "Launch Project Leo Server (with local React Server)",
+            "request": "launch",
+            "mainClass": "org.davincischools.leo.server.ServerApplication",
+            "projectName": "project-leo-server",
+            "args": "--react_port 3000"
+        }
+    ]
+}

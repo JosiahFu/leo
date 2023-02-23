@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>project-leo-server</artifactId>
     <version>${revision}</version>
@@ -20,6 +21,7 @@
         <java.version>17</java.version>
         <log4j.version>2.19.0</log4j.version>
         <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
+        <proto.version>3.22.0</proto.version>
         <surefire.version>3.0.0-M8</surefire.version>
         <spring.version>3.0.2</spring.version>
     </properties>
@@ -36,6 +38,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- Needed to proxy services to React web server. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <version>6.0.4</version>
         </dependency>
 
         <!-- JUnit/Junit-Jupiter testing. -->
@@ -88,9 +96,36 @@
             <version>1.15.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Parse command line options. -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.82</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
+        </dependency>
+
+        <!-- Protocol Buffers in Java. -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${proto.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <extensions>
+            <!-- Provides OS specific information. Needed for protoc binary. -->
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
         <plugins>
             <!-- Build the spring web server. -->
             <plugin>
@@ -107,7 +142,7 @@
                 <executions>
                     <!-- Install node executable. -->
                     <execution>
-                        <id>install node and npm client</id>
+                        <id>install-node-and-npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -116,25 +151,13 @@
 
                     <!-- Install npm. -->
                     <execution>
-                        <id>npm install</id>
+                        <id>npm-install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <phase>initialize</phase>
                         <configuration>
                             <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-
-                    <!-- Build the React web app. -->
-                    <execution>
-                        <id>npm build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -147,14 +170,68 @@
                     </environmentVariables>
                 </configuration>
             </plugin>
+
+            <!-- Compile Protocol Buffers for Java. -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-protobuf-java</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
+                            <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
+                            <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
-                    <!-- Format java code using the Google java formatter. -->
+                    <!-- Compile Protocol Buffers for JavaScript. -->
                     <execution>
-                        <id>format java files</id>
+                        <id>generate-protobuf-javascript</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <!-- Compile Protocol Buffers to JavaScript. -->
+                                <apply executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true" parallel="true">
+                                    <arg value="pbjs"/>
+                                    <arg line="--target static-module"/>
+                                    <arg line="--wrap commonjs"/>
+                                    <arg value="--force-long"/>
+                                    <arg value="--null-defaults"/>
+                                    <arg value="--out"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos.js"/>
+                                    <fileset dir="${project.build.sourceDirectory}/../protos" includes="**/*.proto"/>
+                                </apply>
+                                <!-- Create TypeScript from JavaScript. -->
+                                <exec executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <arg value="pbts"/>
+                                    <arg value="--out"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos.d.ts"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos.js"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- Format Java code using the Google Java formatter. -->
+                    <execution>
+                        <id>format-java-files</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -179,13 +256,47 @@
                         </configuration>
                     </execution>
 
-                    <!-- Copy compiled React web app to the classpath for serving. -->
+                    <!-- Format JavaScript/TypeScript using the Google TypeScript formatter. -->
                     <execution>
-                        <id>copy react site</id>
+                        <id>format-javascript-files</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <arg value="gts"/>
+                                    <arg value="fix"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- Build the React web app. -->
+                    <execution>
+                        <id>compile-web-browser-client</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="${npm.binary.directory}/node/npm" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <arg value="run"/>
+                                    <arg value="build"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy compiled React web app to the classpath for serving. -->
+                    <execution>
+                        <id>copy-web-browser-client</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>compile</phase>
                         <configuration>
                             <target>
                                 <copy todir="${project.build.outputDirectory}/org/davincischools/leo/server/www">
@@ -213,6 +324,7 @@
 
             <!-- Delete additional files for mvn clean. -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
@@ -223,6 +335,9 @@
                                 <include>*/build/</include>
                                 <include>*/coverage/</include>
                                 <include>*/node_modules/</include>
+                                <include>*/package-lock.json</include>
+                                <include>*/src/protos.d.ts</include>
+                                <include>*/src/protos.js</include>
                             </includes>
                         </fileset>
                     </filesets>
