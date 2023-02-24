@@ -208,7 +208,9 @@
                         <configuration>
                             <target>
                                 <!-- Compile Protocol Buffers to JavaScript. -->
+                                <property environment="env"/>
                                 <apply executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true" parallel="true">
+                                    <env key="PATH" path="${npm.binary.directory}/node:${env.PATH}"/>
                                     <arg value="pbjs"/>
                                     <arg line="--target static-module"/>
                                     <arg line="--wrap commonjs"/>
@@ -220,6 +222,7 @@
                                 </apply>
                                 <!-- Create TypeScript from JavaScript. -->
                                 <exec executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <env key="PATH" path="${npm.binary.directory}/node:${env.PATH}"/>
                                     <arg value="pbts"/>
                                     <arg value="--out"/>
                                     <arg file="${clients.directory}/web-browser/src/protos.d.ts"/>
@@ -265,7 +268,9 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
+                                <property environment="env"/>
                                 <exec executable="${npm.binary.directory}/node/npx" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <env key="PATH" path="${npm.binary.directory}/node:${env.PATH}"/>
                                     <arg value="gts"/>
                                     <arg value="fix"/>
                                 </exec>
@@ -282,7 +287,9 @@
                         <phase>compile</phase>
                         <configuration>
                             <target>
+                                <property environment="env"/>
                                 <exec executable="${npm.binary.directory}/node/npm" dir="${clients.directory}/web-browser" failonerror="true">
+                                    <env key="PATH" path="${npm.binary.directory}/node:${env.PATH}"/>
                                     <arg value="run"/>
                                     <arg value="build"/>
                                 </exec>
