@@ -8,7 +8,11 @@ public final class CommandLineArguments {
   public static final CommandLineArguments COMMAND_LINE_ARGUMENTS = new CommandLineArguments();
 
   public static void initialize(String[] args) {
-    JCommander.newBuilder().addObject(COMMAND_LINE_ARGUMENTS).build().parse(args);
+    JCommander.newBuilder()
+        .addObject(COMMAND_LINE_ARGUMENTS)
+        .acceptUnknownOptions(true)
+        .build()
+        .parse(args);
   }
 
   @Parameter(
