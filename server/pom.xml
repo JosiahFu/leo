@@ -157,7 +157,7 @@
                         </goals>
                         <phase>initialize</phase>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>install --ignore-scripts</arguments>
                         </configuration>
                     </execution>
                 </executions>
