@@ -1,4 +1,4 @@
-package org.davincischools.leo.server;
+package org.davincischools.leo.server.controllers;
 
 import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_ARGUMENTS;
 
@@ -24,9 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * web server if the <code>--react_port</code> flag is present.
  *
  * <p>In addition to building the React server as part of the Maven configuration, the built files
- * are copied into <code>/target/resources/.../FileResourceController/www</code>. This places the
- * built content in the <code>*.jar</code> and makes it available via <code>
- * Class.getResourceAsStream</code>.
+ * are copied into <code>/target/classes/.../www</code>. This places the built content in the <code>
+ * *.jar</code> and makes it available via <code>ClassLoader.getSystemResourceAsStream</code>.
  */
 @Controller
 public class ReactResourceController {
@@ -46,7 +45,16 @@ public class ReactResourceController {
           .put("txt", MediaType.PLAIN_TEXT_UTF_8)
           .build();
 
-  @RequestMapping("/**")
+  @RequestMapping({
+    "/",
+    "/favicon.ico",
+    "/index.html",
+    "/installHooks.js",
+    "/logo*.png",
+    "/manifest.json",
+    "/robots.txt",
+    "/static/**"
+  })
   public void getResource(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     log.atInfo().log("Request for: {}", request.getRequestURI());
@@ -60,7 +68,8 @@ public class ReactResourceController {
       // Get and copy a resource from the classpath.
       getResponseMimeType(uri).map(Object::toString).ifPresent(response::setContentType);
       try (InputStream in =
-          ReactResourceController.class.getResourceAsStream("www" + uri.getPath())) {
+          ClassLoader.getSystemResourceAsStream(
+              "org/davincischools/leo/server/www" + uri.getPath())) {
         if (in == null) {
           log.atError().log("Resource not found: {}", uri.getPath());
           response.sendError(HttpServletResponse.SC_NOT_FOUND, uri.getPath());
