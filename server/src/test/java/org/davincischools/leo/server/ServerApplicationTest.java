@@ -3,6 +3,7 @@ package org.davincischools.leo.server;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
+import org.davincischools.leo.server.controllers.ReactResourceController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
