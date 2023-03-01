@@ -8,13 +8,11 @@ function Dropdown({
   options,
   value,
   setValue,
-  focused,
   setFocused,
 }: {
   options: string[];
   value: string;
   setValue: (value: string) => void;
-  focused: boolean;
   setFocused: (focused: boolean) => void;
 }) {
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +65,6 @@ function Circle({
         options={options}
         value={input}
         setValue={setInput}
-        focused={focused}
         setFocused={setFocused}
       />
       <div className="output">
@@ -90,7 +87,9 @@ function Venn({
   pageURI,
 }: {
   options: [string[], string[], string[], string[]];
-  processInput: (input: stringSet) => stringSet;
+  processInput:
+    | ((input: stringSet) => stringSet)
+    | ((input: stringSet) => Promise<stringSet>);
   pageURI: string;
 }) {
   const [activated, setActivated] = useState(false);
@@ -104,7 +103,14 @@ function Venn({
     if (activated) return;
 
     setActivated(true);
-    setOutput(processInput([input1, input2, input3, input4]));
+    const result = processInput([input1, input2, input3, input4]);
+    if (result instanceof Promise) {
+      result.then((output: stringSet) => {
+        setOutput(output);
+      });
+    } else {
+      setOutput(result);
+    }
   };
 
   return (

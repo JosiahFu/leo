@@ -9,7 +9,7 @@ function App() {
     alignItems: 'center',
   };
 
-  const processInput = (input: stringSet): stringSet => {
+  const processInput = async (input: stringSet): Promise<stringSet> => {
     return [
       'Exponential Function in Video Games: Have students analyze the way exponential functions are used in video games, such as in scoring systems or character growth. They can then create their own video game using exponential functions, incorporating programming skills to bring the game to life.',
       'Engineering Design Challenge: Have students design and build a system using exponential functions, such as a solar panel array or a machine that performs a task exponentially faster over time. Students can use programming to control and monitor the performance of their system.',
