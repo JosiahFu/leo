@@ -1,3 +1,2 @@
 # This folder contains generated proto java files.
-*
-!.gitignore
+/java-protos/

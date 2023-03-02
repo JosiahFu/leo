@@ -57,7 +57,7 @@
     "create-react-component": "^0.0.4",
     "gts": "^3.1.1",
     "npm-check-updates": "^16.7.5",
-    "protobufjs-cli": "~1.1.1",
+    "protobufjs-cli": "~1.1.1"
   },
   "engines": {
     "node": "v18.14.2"

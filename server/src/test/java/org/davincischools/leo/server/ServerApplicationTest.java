@@ -3,8 +3,8 @@ package org.davincischools.leo.server;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
-import org.davincischools.leo.proto.greeter.HelloReply;
-import org.davincischools.leo.proto.greeter.HelloRequest;
+import org.davincischools.leo.protos.message_of_the_day.MessageRequest;
+import org.davincischools.leo.protos.message_of_the_day.MessageResponse;
 import org.davincischools.leo.server.controllers.ReactResourceController;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,12 +51,12 @@ public class ServerApplicationTest {
 
   @Test
   public void greeterServiceTest() throws Exception {
-    ResponseEntity<HelloReply> reply =
+    ResponseEntity<MessageResponse> response =
         restTemplate.postForEntity(
-            "http://localhost:" + port + "/api/Greeter",
-            HelloRequest.newBuilder().setGreeterName("Test").build(),
-            HelloReply.class);
-    assertThat(reply.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(reply.getBody().getReplyMessage()).isEqualTo("Hello Test");
+            "http://localhost:" + port + "/api/protos/MessageOfTheDay/GetMessage",
+            MessageRequest.newBuilder().setId(0).build(),
+            MessageResponse.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody().getMessage()).contains("Ikigai");
   }
 }

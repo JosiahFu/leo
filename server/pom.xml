@@ -382,9 +382,9 @@
                             </includes>
                         </fileset>
                         <fileset>
-                            <directory>${project.build.sourceDirectory}/../java-protos</directory>
+                            <directory>${project.build.sourceDirectory}/..</directory>
                             <includes>
-                                <include>**/*.java</include>
+                                <include>/java-protos/</include>
                             </includes>
                         </fileset>
                     </filesets>
