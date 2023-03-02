@@ -187,7 +187,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <nodeVersion>v18.14.0</nodeVersion>
+                    <!-- NOTE: nodeVersion need to remain in sync with
+                         the versions in web-browser/package.json, commented
+                         there. -->
+                    <nodeVersion>v18.14.2</nodeVersion>
                     <installDirectory>${npm.binary.directory}</installDirectory>
                     <workingDirectory>${clients.directory}/web-browser</workingDirectory>
                     <environmentVariables>
