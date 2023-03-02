@@ -9,6 +9,8 @@ function App() {
     alignItems: 'center',
   };
 
+  // Unused variable input will be used in API call in future
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   const processInput = async (input: stringSet): Promise<stringSet> => {
     return [
       'Exponential Function in Video Games: Have students analyze the way exponential functions are used in video games, such as in scoring systems or character growth. They can then create their own video game using exponential functions, incorporating programming skills to bring the game to life.',
