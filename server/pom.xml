@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>project-leo-server</artifactId>
     <version>${revision}</version>
@@ -132,6 +131,27 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-java-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <!-- See note in 'generate-protobuf-java' for
+                                     why we add this folder. -->
+                                <source>${project.build.sourceDirectory}/../java-protos</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Build the spring web server. -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -176,7 +196,13 @@
                 </configuration>
             </plugin>
 
-            <!-- Compile Protocol Buffers for Java. -->
+            <!-- Compile Protocol Buffers for Java.
+
+                 Unfortunately, VS Code seems to delete
+                 target/generated-sources/java when we don't want it to, which
+                 breaks the build. So, we store the generated java code in
+                 src/main/java-protos and mark that directory as ignored by
+                 git. -->
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
@@ -192,7 +218,7 @@
                         <configuration>
                             <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
                             <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
-                            <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
+                            <outputDirectory>${project.build.sourceDirectory}/../java-protos</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -350,6 +376,12 @@
                                 <include>*/package-lock.json</include>
                                 <include>*/src/protos.d.ts</include>
                                 <include>*/src/protos.js</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.build.sourceDirectory}/../java-protos</directory>
+                            <includes>
+                                <include>**/*.java</include>
                             </includes>
                         </fileset>
                     </filesets>
