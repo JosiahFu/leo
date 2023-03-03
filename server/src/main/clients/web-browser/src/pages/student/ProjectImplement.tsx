@@ -1,5 +1,5 @@
-import {useSearchParams} from 'react-router-dom';
-import {Card, HeaderSidebar} from '../../utils/Layout';
+import { useSearchParams } from 'react-router-dom';
+import { Card, HeaderSidebar } from '../../utils/Layout';
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -29,19 +29,19 @@ function App() {
           <div className="tiles">
             <Card
               title="John Doe"
-              imageSrc="/profile.jpg"
+              imageSrc="/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />
             <Card
               title="John Doe"
-              imageSrc="/profile.jpg"
+              imageSrc="/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />
             <Card
               title="John Doe"
-              imageSrc="/profile.jpg"
+              imageSrc="/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />
