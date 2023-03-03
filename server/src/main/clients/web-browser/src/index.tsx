@@ -1,15 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import './index.scss';
 import reportWebVitals from './reportWebVitals';
+
+import Root from './pages/Root';
+import StudentNav from './pages/student/Nav';
+import StudentProjectGen from './pages/student/ProjectGen';
+import StudentProjectImplementation from './pages/student/ProjectImplement';
+import StudentUpload from './pages/student/Upload';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+  },
+  {
+    path: '/student',
+    element: <StudentNav />,
+    children: [
+      {
+        path: 'project-gen',
+        element: <StudentProjectGen />,
+      },
+      {
+        path: 'project-implement',
+        element: <StudentProjectImplementation />,
+      },
+      {
+        path: 'upload',
+        element: <StudentUpload />,
+      },
+    ],
+  },
+]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
