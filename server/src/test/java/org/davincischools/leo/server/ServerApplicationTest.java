@@ -50,13 +50,37 @@ public class ServerApplicationTest {
   }
 
   @Test
-  public void greeterServiceTest() throws Exception {
+  public void messageOfTheDayTest() throws Exception {
     ResponseEntity<MessageResponse> response =
         restTemplate.postForEntity(
-            "http://localhost:" + port + "/api/protos/MessageOfTheDay/GetMessage",
+            "http://localhost:" + port + "/api/protos/MessageOfTheDayService/GetMessage",
             MessageRequest.newBuilder().setId(0).build(),
             MessageResponse.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody().getMessage()).contains("Ikigai");
+  }
+
+  @Test
+  public void messageOfTheDayEmptyRequestBodyTest() throws Exception {
+    ResponseEntity<MessageResponse> response =
+        restTemplate.postForEntity(
+            "http://localhost:" + port + "/api/protos/MessageOfTheDayService/GetMessage",
+            // Serializing a default instance will result in no bytes.
+            MessageRequest.getDefaultInstance(),
+            MessageResponse.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody().getMessage()).isNotEmpty();
+  }
+
+  @Test
+  public void messageOfTheDayEmptyResponseBodyTest() throws Exception {
+    ResponseEntity<MessageResponse> response =
+        restTemplate.postForEntity(
+            "http://localhost:" + port + "/api/protos/MessageOfTheDayService/GetMessage",
+            MessageRequest.newBuilder().setId(-1).build(),
+            MessageResponse.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    // Serializing the default instance returned from MOTDService will result in no bytes.
+    assertThat(response.getBody()).isNull();
   }
 }
