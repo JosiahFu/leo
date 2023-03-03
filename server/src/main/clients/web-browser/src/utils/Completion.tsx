@@ -12,7 +12,7 @@ async function getCompletion(input: stringSet): Promise<stringSet> {
         model: "gpt-3.5-turbo",
         messages: [
             {role: "system", content: "You are a creative and helpful assistant that specializes in creating high school project ideas"},
-            {role: "user", content: "Give me 4 project ideas for high school that develop and assess the skill (describe the social and economic impacts of the Industrial Revolution, including its relationship with the Age of Imperialism) that uses the book 1984 and connects to Music and Commercial and Industrial Design. Make sure to separate the ideas with a new line and steer clear of any fluff."},
+            {role: "user", content: `Give me 4 project ideas for high school that develop and assess the skill (${input[1]}) that uses ${input[2]} and connects to ${input[3]} and a career of ${input[0]}. Make sure to separate the ideas with a new line and steer clear of any fluff.`},
         ],
     });
 
