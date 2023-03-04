@@ -5,7 +5,7 @@ option java_package = "org.davincischools.leo.protos.message_of_the_day";
 
 package message_of_the_day;
 
-service MessageOfTheDay {
+service MessageOfTheDayService {
   rpc GetMessage (MessageRequest) returns (MessageResponse) {}
 }
 

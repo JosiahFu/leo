@@ -17,7 +17,7 @@ public class MessageOfTheDayController {
   // Eventually, this would be stored in a database.
   ImmutableList<String> messages =
       ImmutableList.of(
-          "Let's hear it for <i>Ikigai</i>!",
+          "Let's hear it for Ikigai!",
           "What are you good at? Let's figure out!",
           "What do you love? Let's figure out!",
           "What does the world need? Let's figure out!",
