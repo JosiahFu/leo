@@ -5,7 +5,7 @@ RUN apt update && apt install -y maven git openjdk-17-doc openjdk-17-jdk openjdk
 
 # Check out the Project Leo source code and submodules.
 WORKDIR /home
-ADD leo/ project_leo/
+ADD project_leo/ project_leo/
 WORKDIR /home/project_leo
 
 # Build Project Leo using the Apache Maven tool.

@@ -181,11 +181,20 @@ Then, open a browser to http://localhost:8080.
 
 ## Running Project Leo in a Docker Container
 
+Checkout the Project Leo source code using the same commands as above:
+
+```shell
+# Check out the Project Leo source code and submodules.
+git clone https://github.com/DaVinciSchools/leo.git project_leo
+cd project_leo
+git submodule update --init --recursive
+```
+
 Go to the parent directory of the the repository and run the following in the terminal:
 
 ```shell
 # Run this in the folder above the root project folder.
-docker build -t project_leo -f leo\Dockerfile .
+docker build -t project_leo -f project_leo\Dockerfile .
 ```
 
 This will build a Docker image with all the dependencies and configuration packed together. It will expose the port `8080` automatically. From here, run the following command to start the server on http://localhost:8080:
@@ -194,3 +203,4 @@ This will build a Docker image with all the dependencies and configuration packe
 # the -p option to is expose the ports from 8080 to 8080
 # the project_leo argument is to use the image built earlier
 docker run -p 8080:8080 project_leo
+```
