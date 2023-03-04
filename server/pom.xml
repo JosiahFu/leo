@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>project-leo-server</artifactId>
     <version>${revision}</version>
@@ -199,39 +199,25 @@
                 </configuration>
             </plugin>
 
-            <!-- Compile Protocol Buffers for Java.
-
-                 Unfortunately, VS Code seems to delete
-                 target/generated-sources/java when we don't want it to, which
-                 breaks the build. So, we store the generated java code in
-                 src/main/java-protos and mark that directory as ignored by
-                 git. -->
-            <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.6.1</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>generate-protobuf-java</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
-                            <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
-                            <outputDirectory>${project.build.sourceDirectory}/../java-protos</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
+                    <!-- Make Protocol Buffer destination dirs. -->
+                    <execution>
+                        <id>make-protobuf-dirs</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${clients.directory}/web-browser/src/protos"/>
+                                <mkdir dir="${project.build.sourceDirectory}/../java-protos"/>
+                            </target>
+                        </configuration>
+                    </execution>
                     <!-- Compile Protocol Buffers for JavaScript. -->
                     <execution>
                         <id>generate-protobuf-javascript</id>
@@ -251,7 +237,7 @@
                                     <arg value="--force-long"/>
                                     <arg value="--null-defaults"/>
                                     <arg value="--out"/>
-                                    <arg file="${clients.directory}/web-browser/src/protos.js"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos/protobuf-js.js"/>
                                     <fileset dir="${project.build.sourceDirectory}/../protos" includes="**/*.proto"/>
                                 </apply>
                                 <!-- Create TypeScript from JavaScript. -->
@@ -259,8 +245,8 @@
                                     <env key="PATH" path="${npm.binary.directory}/node:${env.PATH}"/>
                                     <arg value="pbts"/>
                                     <arg value="--out"/>
-                                    <arg file="${clients.directory}/web-browser/src/protos.d.ts"/>
-                                    <arg file="${clients.directory}/web-browser/src/protos.js"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos/protobuf-js.d.ts"/>
+                                    <arg file="${clients.directory}/web-browser/src/protos/protobuf-js.js"/>
                                 </exec>
                             </target>
                         </configuration>
@@ -349,6 +335,34 @@
                 </executions>
             </plugin>
 
+            <!-- Compile Protocol Buffers for Java.
+
+                 Unfortunately, VS Code seems to delete
+                 target/generated-sources/java when we don't want it to, which
+                 breaks the build. So, we store the generated java code in
+                 src/main/java-protos and mark that directory as ignored by
+                 git. -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-protobuf-java</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
+                            <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
+                            <outputDirectory>${project.build.sourceDirectory}/../java-protos</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Run the vintage JUnit 4 tests. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -377,14 +391,13 @@
                                 <include>*/coverage/</include>
                                 <include>*/node_modules/</include>
                                 <include>*/package-lock.json</include>
-                                <include>*/src/protos.d.ts</include>
-                                <include>*/src/protos.js</include>
+                                <include>*/src/protos/</include>
                             </includes>
                         </fileset>
                         <fileset>
                             <directory>${project.build.sourceDirectory}/..</directory>
                             <includes>
-                                <include>/java-protos/</include>
+                                <include>java-protos/</include>
                             </includes>
                         </fileset>
                     </filesets>
