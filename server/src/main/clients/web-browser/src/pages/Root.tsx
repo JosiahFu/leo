@@ -7,7 +7,8 @@ function App() {
   const [motd, setMotd] = useState('Loading...');
 
   const motdService = protos.createService(
-    protos.message_of_the_day.MessageOfTheDayService
+    protos.message_of_the_day.MessageOfTheDayService,
+    'MessageOfTheDayService'
   );
   motdService
     .getMessage(protos.message_of_the_day.MessageRequest.create({}))

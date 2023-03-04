@@ -8,34 +8,25 @@ export * from './protos/protobuf-js';
  * encoded byte versions of protos. This will involve a different protos-dev.ts
  * file. The selection
  */
-export function createService<Service>(serviceClass: {
-  name: string;
-  create: (
-    rpcImpl: RPCImpl,
-    requestDelimited?: boolean,
-    responseDelimited?: boolean
-  ) => Service;
-}): Service {
-  if (!serviceClass.name) {
-    throw new Error(
-      'The "name" property was removed from the service class. Is minification set to keep that value?'
-    );
-  }
-  const pathPrefix = `/api/protos/${serviceClass.name}/`;
+export function createService<Service>(
+  serviceClass: {
+    create: (
+      rpcImpl: RPCImpl,
+      requestDelimited?: boolean,
+      responseDelimited?: boolean
+    ) => Service;
+  },
+  serviceName: string
+): Service {
+  const pathPrefix = `/api/protos/${serviceName}/`;
 
   const rpcImpl: RPCImpl = function (
     method: Method | rpc.ServiceMethod<Message<{}>, Message<{}>>,
     requestData: Uint8Array,
     callback: RPCImplCallback
   ) {
-    if (!('name' in method)) {
-      throw new Error(
-        'The "name" property was removed from the method object. Is minification set to keep that value?'
-      );
-    }
-
     const currentUrl = new URL(window.location.href);
-    fetch(currentUrl.origin + pathPrefix + method['name'], {
+    fetch(currentUrl.origin + pathPrefix + method.name, {
       body: requestData,
       cache: 'no-cache',
       credentials: 'include',
