@@ -200,7 +200,8 @@ docker build -t project_leo -f project_leo\Dockerfile .
 This will build a Docker image with all the dependencies and configuration packed together. It will expose the port `8080` automatically. From here, run the following command to start the server on http://localhost:8080:
 
 ```shell
+# the -e option is to define the environment variable for the API call
 # the -p option to is expose the ports from 8080 to 8080
 # the project_leo argument is to use the image built earlier
-docker run -p 8080:8080 project_leo
+docker run -e OPENAI_API_KEY=<OPENAI_API_KEY> -p 8080:8080 project_leo
 ```

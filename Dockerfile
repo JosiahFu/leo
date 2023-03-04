@@ -1,4 +1,5 @@
-FROM ubuntu:latest
+# Get the base image from Docker Hub.
+FROM ubuntu:22.04
 
 # Install Apache Maven, Git, Java, Nodejs, and Sass.
 RUN apt update && apt install -y maven git openjdk-17-doc openjdk-17-jdk openjdk-17-source nodejs sass
