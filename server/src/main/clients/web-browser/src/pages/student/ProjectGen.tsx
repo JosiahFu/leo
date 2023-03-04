@@ -1,6 +1,6 @@
 import React from 'react';
 import Venn, {stringSet} from '../../utils/Venn';
-import getCompletion from '../../utils/Completion';
+import generateCompletion from '../../utils/Completion';
 
 function App() {
   const style: React.CSSProperties = {
@@ -12,7 +12,7 @@ function App() {
 
   //eslint-disable-next-line @typescript-eslint/no-unused-vars
   const processInput = async (input: stringSet): Promise<stringSet> => {
-    const completion = await getCompletion(input);
+    const completion = await generateCompletion(input);
     return completion;
   };
 
