@@ -32,7 +32,6 @@ async function generateCompletion(input: stringSet): Promise<stringSet> {
     if (completion.length < 4) {
       completion = data.choices[0].message.content.split("\n", 4);
     }
-    console.log(data);
 
     return [
         completion[0],
