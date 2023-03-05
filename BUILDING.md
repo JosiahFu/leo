@@ -127,7 +127,7 @@ This will do a number of things:
 
 ## Running Project Leo
 
-There are two ways to run Project Leo:
+Project Leo can be run in the following ways:
 
 ### As a Standalone Spring Server
 
@@ -177,27 +177,18 @@ npm start
 
 Then, open a browser to http://localhost:8080.
 
-[^1]: Oxford English Dictionary
+### As a Docker Container
 
-## Running Project Leo in a Docker Container
-
-Checkout the Project Leo source code using the same commands as above:
-
-```shell
-# Check out the Project Leo source code and submodules.
-git clone https://github.com/DaVinciSchools/leo.git project_leo
-cd project_leo
-git submodule update --init --recursive
-```
-
-Go to the parent directory of the the repository and run the following in the terminal:
+Running the server in a Docker container is most helpful for development for 
+those without access to a Linux distribution. Go to the parent directory of the 
+repository and run the following command in the terminal:
 
 ```shell
 # Run this in the folder above the root project folder.
 docker build -t project_leo -f project_leo\Dockerfile .
 ```
 
-This will build a Docker image with all the dependencies and configuration packed together. It will expose the port `8080` automatically. From here, run the following command to start the server on http://localhost:8080:
+This will build a Docker image with all the dependencies and configuration packed together. It will also expose the port `8080` automatically. From here, run the following command to run the Docker container, making sure to replace `<OPENAI_API_KEY>` with a valid key:
 
 ```shell
 # the -e option is to define the environment variable for the API call
@@ -205,3 +196,7 @@ This will build a Docker image with all the dependencies and configuration packe
 # the project_leo argument is to use the image built earlier
 docker run -e OPENAI_API_KEY=<OPENAI_API_KEY> -p 8080:8080 project_leo
 ```
+
+Then, open a browser to http://localhost:8080.
+
+[^1]: Oxford English Dictionary
