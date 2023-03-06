@@ -31,7 +31,7 @@ export function IkigaiCategory(props: {
     if (props.hideFormElement) {
       formElement.style.visibility = 'hidden';
     } else {
-      formElement.style.removeProperty('visibility');
+      formElement.style.visibility = 'visible';
     }
   }
 
@@ -47,6 +47,8 @@ export function IkigaiCategory(props: {
     divElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
     divElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
     divElement.style.fontSize = (props.size / 12).toString() + 'px';
+    // Initially, these are set to hidden so that they don't appear before they are positioned.
+    divElement.style.visibility = 'visible';
   }
 
   return (

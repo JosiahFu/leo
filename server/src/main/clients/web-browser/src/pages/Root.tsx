@@ -5,6 +5,9 @@ import './Root.scss';
 import {SpinIcon, SpinIconFunctions} from '../SpinIcon/SpinIcon';
 import {Link} from 'react-router-dom';
 
+// The Ikigai diagram is based on absolute coordinates relative to other HTML element's locations
+// and sizes. So, we need to configure it in stages and allow its values to be propagated to
+// its subcomponents. This allows us to do that.
 enum InitializationState {
   PREPARATION,
   UNINITIALIZED,
@@ -26,6 +29,7 @@ export function Root() {
 
   const spinIcon = useRef<SpinIconFunctions>(null);
 
+  // Loads and sets the message of the day.
   useEffect(() => {
     const motdService = protos.createService(
       protos.message_of_the_day.MessageOfTheDayService,
@@ -42,16 +46,21 @@ export function Root() {
       });
   }, []);
 
+  // Initializes and shows the Ikigai diagram.
   useEffect(() => {
     switch (initializationState) {
       case InitializationState.PREPARATION:
         {
+          // I don't know why this is necessary. But, we need one round of layout before we can
+          // configure the Ikigai diagram.
           initializationState = InitializationState.UNINITIALIZED;
         }
         break;
 
       case InitializationState.UNINITIALIZED:
         {
+          // Now that things are laid out, we can examine the result and fit the Ikigai diagram
+          // into it.
           const main = document
             .getElementsByClassName('main')
             .item(0) as HTMLElement;
@@ -69,6 +78,8 @@ export function Root() {
 
       case InitializationState.INITIALIZED:
         {
+          // Now that the Ikigai diagram is configured and the values propagated to its
+          // subcomponents, we can start the actual animations.
           ikigai.current!.show(durationMs);
           spinIcon.current!.show(durationMs);
           initializationState = InitializationState.DONE;
@@ -103,10 +114,12 @@ export function Root() {
           goodFormElementId="ikigaiGoodFormElementId"
           ref={ikigai}
         />
-        <form style={{left: 10000}}>
+        <form>
+          {/* Initially, set to hidden so that they don't appear before they are positioned.*/}
           <div
             id="ikigaiLoveDivElementId"
             className="outer-form-element-div center"
+            style={{visibility: 'hidden'}}
           >
             <div className="inner-form-element-div">
               What you <b>LOVE</b>
@@ -129,6 +142,7 @@ export function Root() {
           <div
             id="ikigaiNeedsDivElementId"
             className="outer-form-element-div right middle"
+            style={{visibility: 'hidden'}}
           >
             <div className="inner-form-element-div">
               What the world <b>NEEDS</b>
@@ -148,6 +162,7 @@ export function Root() {
           <div
             id="ikigaiPaidDivElementId"
             className="outer-form-element-div center bottom"
+            style={{visibility: 'hidden'}}
           >
             <div className="inner-form-element-div">
               What you can be <b>PAID&nbsp;FOR</b>
@@ -167,6 +182,7 @@ export function Root() {
           <div
             id="ikigaiGoodDivElementId"
             className="outer-form-element-div middle"
+            style={{visibility: 'hidden'}}
           >
             <div className="inner-form-element-div">
               What you are <b>GOOD&nbsp;AT</b>
