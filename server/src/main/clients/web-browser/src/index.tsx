@@ -4,7 +4,7 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
 
-import Root from './pages/Root';
+import {Root} from './pages/Root';
 import StudentNav from './pages/student/Nav';
 import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';

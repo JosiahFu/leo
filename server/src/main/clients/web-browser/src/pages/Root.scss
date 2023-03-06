@@ -1,0 +1,59 @@
+#root, html, body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#root, body {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: rgb(243, 149, 79);
+  color: white;
+  font-weight: bolder;
+  font-size: xxx-large;
+  text-align: center;
+}
+
+.main {
+  flex: auto;
+}
+
+.footer {
+  background-color: rgb(243, 149, 79);
+  color: white;
+  text-align: center;
+}
+
+.outer-form-element-div {
+  display: inline-flex;
+  width: 0;
+}
+
+.inner-form-element-div {
+  width: 100%;
+}
+
+.form-element {
+  width: 80%;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+  float: right;
+}
+
+.middle {
+  align-items: center;
+}
+
+.bottom {
+  align-items: end;
+}
