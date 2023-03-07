@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -67,13 +68,9 @@ public class HttpServletProxy {
 
   // Http header name constants.
   private static final ImmutableSet<String> COOKIE_HEADERS =
-      ImmutableSet.of("Set-Cookie", "Set-Cookie2");
+      ImmutableSet.of(HttpHeaders.SET_COOKIE, HttpHeaders.SET_COOKIE2);
   private static final ImmutableSet<String> HEADERS_THAT_WILL_BE_AUTO_POPULATED =
-      ImmutableSet.of("etag", "Content-Length");
-  private static final String CONTENT_ENCODING_HEADER = "content-encoding";
-
-  // MediaType constants.
-  private static final String TEXT_MEDIA_TYPE = "text";
+      ImmutableSet.of(HttpHeaders.ETAG, HttpHeaders.CONTENT_LENGTH);
 
   // Cookie attribute names that don't have values.
   private static final String SECURE_ATTR = "Secure";
@@ -195,7 +192,7 @@ public class HttpServletProxy {
 
       // If the response is in text format, we need to replace reactHostPort with
       // originalHostPort.
-      if (mediaType.isPresent() && mediaType.get().type().equals(TEXT_MEDIA_TYPE)) {
+      if (mediaType.isPresent() && mediaType.get().type().equals(MediaType.ANY_TEXT_TYPE.type())) {
         byte[] decodedBytes = decodeBody(reactResponse, reactBody);
         String body = new String(decodedBytes, mediaType.get().charset().or(Charsets.UTF_8));
         reactBody =
@@ -227,7 +224,7 @@ public class HttpServletProxy {
   private static byte[] decodeBody(ResponseEntity<?> responseEntity, byte[] body)
       throws IOException {
     // Get the encoding or return the unmodified byte array.
-    List<String> encoding = responseEntity.getHeaders().get(CONTENT_ENCODING_HEADER);
+    List<String> encoding = responseEntity.getHeaders().get(HttpHeaders.CONTENT_ENCODING);
     if (encoding == null || encoding.isEmpty()) {
       return body;
     }
@@ -251,7 +248,7 @@ public class HttpServletProxy {
   private static byte[] encodeBody(ResponseEntity<?> responseEntity, byte[] decodedBody)
       throws IOException {
     // Get the encoding or return the unmodified byte array.
-    List<String> encoding = responseEntity.getHeaders().get(CONTENT_ENCODING_HEADER);
+    List<String> encoding = responseEntity.getHeaders().get(HttpHeaders.CONTENT_ENCODING);
     if (encoding == null || encoding.isEmpty()) {
       return decodedBody;
     }
