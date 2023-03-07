@@ -95,11 +95,21 @@
             <version>1.4.5</version>
         </dependency>
 
-        <!-- A collection of useful functions. -->
+        <!-- Libraries of useful functions. -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
         </dependency>
 
         <!-- Google's java formatter. -->
@@ -115,11 +125,6 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
             <version>1.82</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
         </dependency>
 
         <!-- Protocol Buffers in Java. -->

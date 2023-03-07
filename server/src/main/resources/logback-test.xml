@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration
+  xmlns="http://ch.qos.logback/xml/ns/logback"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
+
+    <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+
+    <appender name="STDOUT" class="ConsoleAppender">
+        <encoder class="PatternLayoutEncoder">
+            <!-- The filename lookup is slow, so only use it for testing. -->
+            <pattern>%magenta(%date{HH:mm:ss.SSS}|) [%highlight(%level)] %msg at %class.%method\(%file:%line\) %kvp %xException{full} %n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

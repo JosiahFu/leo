@@ -212,7 +212,7 @@ public class HttpServletProxy {
       if (e.getMessage().contains("restricted header name")) {
         throw new IOException(
             "Restricted header names need to be added to jdk.httpclient.allowRestrictedHeaders in"
-                + " resources/java.properties.",
+                + " resources/application.properties.",
             e);
       }
       throw e;

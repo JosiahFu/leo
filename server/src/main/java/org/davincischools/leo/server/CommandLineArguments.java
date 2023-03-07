@@ -2,7 +2,6 @@ package org.davincischools.leo.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import java.io.File;
 
 public final class CommandLineArguments {
 
@@ -21,10 +20,17 @@ public final class CommandLineArguments {
       description = "Port to running React web server (that was started with 'npm start').")
   public Integer reactPort = null;
 
+  public static final String ADDITIONAL_PROPERTIES_FILE_ENV_VAR = "ADDITIONAL_PROPERTIES_FILE";
+  public static final String ADDITIONAL_PROPERTIES_FILE_FLAG = "--additional_properties_file";
+
   @Parameter(
-      names = {"--open_ai_key_file"},
-      description = "Key to use for OpenAI calls.")
-  public File openAiKeyFile = null;
+      names = {ADDITIONAL_PROPERTIES_FILE_FLAG},
+      description =
+          "Additional Java properties to load. This may also be specified using the '"
+              + ADDITIONAL_PROPERTIES_FILE_ENV_VAR
+              + "' environment variable. The flag value and properties values are interpreted by "
+              + "https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringSubstitutor.html")
+  public String additionalPropertiesFile = null;
 
   private CommandLineArguments() {}
 }

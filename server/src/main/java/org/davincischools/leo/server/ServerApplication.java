@@ -1,14 +1,18 @@
 package org.davincischools.leo.server;
 
+import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_ARGUMENTS;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
 import com.google.common.base.Charsets;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -22,10 +26,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 @SpringBootApplication
 public class ServerApplication {
+
   private static final Logger log = LogManager.getLogger();
 
   @Configuration
   static class ServerApplicationConfigurer extends WebMvcConfigurationSupport {
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
       // Add the Protobuf converters to the list of converters.
@@ -38,32 +44,52 @@ public class ServerApplication {
     }
   }
 
-  public static void main(String[] args) throws IOException {
-    CommandLineArguments.initialize(args);
-
-    // Read and set java properties from resources/java.properties.
-    try (InputStream in =
-        ServerApplication.class.getClassLoader().getResourceAsStream("java.properties")) {
-      if (in != null) {
-        Properties props = new Properties();
-        props.load(new InputStreamReader(in, Charsets.UTF_8));
-        for (String name : props.stringPropertyNames()) {
-          String value = props.getProperty(name, "");
-          // If the property was already set, then we want to warn that it's value may be
-          // unexpected.
-          if (System.getProperty(name) != null) {
-            log.atWarn()
-                .log(
-                    "System property is already set. Check resources/java.properties: Name: {},"
-                        + " System Value: {}, Properties File Value: {}",
-                    name,
-                    System.getProperty(name),
-                    value);
-          }
-          System.setProperty(name, value);
+  private static void loadProperties(InputStream propertiesInputStream) throws IOException {
+    if (propertiesInputStream == null) {
+      return;
+    }
+    try (InputStream in = propertiesInputStream) {
+      Properties props = new Properties();
+      props.load(new InputStreamReader(in, Charsets.UTF_8));
+      for (String name : props.stringPropertyNames()) {
+        String value = StringSubstitutor.createInterpolator().replace(props.getProperty(name, ""));
+        if (System.getProperty(name) != null) {
+          log.atWarn().log("System property is already set: {}", name);
         }
+        System.setProperty(name, value);
       }
     }
+  }
+
+  public static void initializeSystem(String[] args) throws IOException {
+    CommandLineArguments.initialize(args);
+
+    loadProperties(
+        ServerApplication.class.getClassLoader().getResourceAsStream("application.properties"));
+    if (COMMAND_LINE_ARGUMENTS.additionalPropertiesFile != null) {
+      File propertiesFile =
+          new File(
+              StringSubstitutor.createInterpolator()
+                  .replace(COMMAND_LINE_ARGUMENTS.additionalPropertiesFile));
+      if (!propertiesFile.exists()) {
+        throw new IOException("Properties file doesn't exist: " + propertiesFile);
+      }
+      loadProperties(new FileInputStream(propertiesFile));
+    }
+    if (System.getenv(CommandLineArguments.ADDITIONAL_PROPERTIES_FILE_ENV_VAR) != null) {
+      File propertiesFile =
+          new File(
+              StringSubstitutor.createInterpolator()
+                  .replace(System.getenv(CommandLineArguments.ADDITIONAL_PROPERTIES_FILE_ENV_VAR)));
+      if (!propertiesFile.exists()) {
+        throw new IOException("Properties file doesn't exist: " + propertiesFile);
+      }
+      loadProperties(new FileInputStream(propertiesFile));
+    }
+  }
+
+  public static void main(String[] args) throws IOException {
+    initializeSystem(args);
 
     ApplicationContext context = SpringApplication.run(ServerApplication.class, args);
 

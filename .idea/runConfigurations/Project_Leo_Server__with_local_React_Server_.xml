@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Project Leo Server (with local React Server)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="project-leo-server" />
-    <option name="PROGRAM_PARAMETERS" value="--react_port 3000" />
+    <option name="PROGRAM_PARAMETERS" value="--react_port 3000 --additional_properties_file ${env:HOME}/project_leo_test.properties" />
     <selectedOptions>
       <option name="spring.boot.profiles" visible="false" />
     </selectedOptions>
