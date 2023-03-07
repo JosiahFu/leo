@@ -1,6 +1,6 @@
 package org.davincischools.leo.server;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
 import org.davincischools.leo.protos.message_of_the_day.MessageRequest;
