@@ -2,13 +2,27 @@ import {Message, Method, rpc, RPCImpl, RPCImplCallback} from 'protobufjs';
 
 export * from './protos/protobuf-js';
 
-/**
- * The below code is tuned for development. It converts request protos to JSON
- * and response JSON back to protos. For production, we'd want to use the
- * encoded byte versions of protos. This will involve a different protos-dev.ts
- * file. The selection
- */
+const memoizedServices: Map<string, unknown> = new Map();
+
 export function createService<Service>(
+  serviceClass: {
+    create: (
+      rpcImpl: RPCImpl,
+      requestDelimited?: boolean,
+      responseDelimited?: boolean
+    ) => Service;
+  },
+  serviceName: string
+): Service {
+  let service = memoizedServices.get(serviceName) as Service | undefined;
+  if (service === undefined) {
+    service = createNewService(serviceClass, serviceName);
+    memoizedServices.set(serviceName, service);
+  }
+  return service;
+}
+
+function createNewService<Service>(
   serviceClass: {
     create: (
       rpcImpl: RPCImpl,
@@ -42,7 +56,7 @@ export function createService<Service>(
       .then((response: Response) => response.arrayBuffer())
       .then((buffer: ArrayBuffer) => new Uint8Array(buffer))
       .then((array: Uint8Array) => callback(null, array))
-      .catch(error => callback(new Error(JSON.stringify(error))));
+      .catch((error: unknown) => callback(new Error(JSON.stringify(error))));
   };
 
   return serviceClass.create(rpcImpl, false, false);
