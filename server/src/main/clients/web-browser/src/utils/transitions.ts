@@ -43,21 +43,17 @@ export function doTransition(
   durationMs: number,
   ...transitions: {
     setFn: (value: number) => void;
-    start: number;
+    begin: number;
     end: number;
     fractionFn?: (fractionComplete: number) => number;
   }[]
 ): Promise<void> {
-  console.log('Starting tranition: ');
-  for (const transition of transitions) {
-    console.log(JSON.stringify(transition));
-  }
   const startTime = Date.now();
   const endTime = startTime + durationMs;
 
   // Initialize values.
   for (const transition of transitions) {
-    transition.setFn(transition.start);
+    transition.setFn(transition.begin);
   }
 
   return new Promise<void>(resolve => {
@@ -73,8 +69,8 @@ export function doTransition(
             ? transition.fractionFn(fractionComplete)
             : fractionComplete;
           transition.setFn(
-            transition.start +
-              (transition.end - transition.start) * adjustedFractionComplete
+            transition.begin +
+              (transition.end - transition.begin) * adjustedFractionComplete
           );
         }
 
@@ -87,7 +83,6 @@ export function doTransition(
       for (const transition of transitions) {
         transition.setFn(transition.end);
       }
-      console.log('Ending tranition.');
       resolve();
     };
 

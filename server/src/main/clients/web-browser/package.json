@@ -21,6 +21,7 @@
     "protobufjs": "~7.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.8.1-snapshot.1",
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "create-react-component": "^0.0.4",
+    "eslint-plugin-react-hooks": "^5.0.0-next-9fb2469a6-20230308",
     "gts": "^3.1.1",
     "npm-check-updates": "^16.7.5",
     "protobufjs-cli": "~1.1.1"

@@ -9,9 +9,8 @@ export function IkigaiCategory(props: {
   alpha: number;
   radians: number;
   distance: number;
-  divElementId: string;
-  formElementId: string;
-  hideFormElement: boolean;
+  resizeAndRotateElementId: string;
+  highlightBackground: boolean;
 }) {
   const x =
     props.origin.x + Math.cos(props.radians) * props.distance - props.size / 2;
@@ -21,34 +20,23 @@ export function IkigaiCategory(props: {
   const grayRgb = 192;
 
   const [initialRadians] = useState(props.radians);
-  const [selected, setSelected] = useState(false);
 
-  const formElement = document.getElementById(props.formElementId);
-  if (formElement) {
-    formElement.onchange = () => {
-      setSelected(true);
-    };
-    if (props.hideFormElement) {
-      formElement.style.visibility = 'hidden';
-    } else {
-      formElement.style.visibility = 'visible';
-    }
-  }
-
-  const divElement = document.getElementById(props.divElementId);
-  if (divElement) {
-    divElement.style.rotate =
+  const resizeAndRotateElement = document.getElementById(
+    props.resizeAndRotateElementId
+  );
+  if (resizeAndRotateElement) {
+    resizeAndRotateElement.style.rotate =
       (props.radians - initialRadians).toString() + 'rad';
-    divElement.style.position = 'absolute';
-    divElement.style.left =
+    resizeAndRotateElement.style.position = 'absolute';
+    resizeAndRotateElement.style.left =
       (x + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
-    divElement.style.top =
+    resizeAndRotateElement.style.top =
       (y + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
-    divElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
-    divElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
-    divElement.style.fontSize = (props.size / 12).toString() + 'px';
+    resizeAndRotateElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
+    resizeAndRotateElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
+    resizeAndRotateElement.style.fontSize = (props.size / 12).toString() + 'px';
     // Initially, these are set to hidden so that they don't appear before they are positioned.
-    divElement.style.visibility = 'visible';
+    resizeAndRotateElement.style.visibility = 'visible';
   }
 
   return (
@@ -63,15 +51,15 @@ export function IkigaiCategory(props: {
           top: y,
           height: props.size,
           backgroundColor: `rgba(
-          ${selected ? props.color.r : grayRgb},
-          ${selected ? props.color.g : grayRgb},
-          ${selected ? props.color.b : grayRgb},
+          ${props.highlightBackground ? props.color.r : grayRgb},
+          ${props.highlightBackground ? props.color.g : grayRgb},
+          ${props.highlightBackground ? props.color.b : grayRgb},
           ${props.alpha})`,
           border: `2px solid rgba(
           ${props.color.r},
           ${props.color.g},
           ${props.color.b},
-          ${props.alpha})`,
+          ${props.highlightBackground ? 0 : props.alpha})`,
         }}
       />
     </>
