@@ -1,0 +1,12 @@
+.partial-text-form-elements {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+}
+.partial-text-input {
+  flex-grow: 1;
+  width: 0%;
+}
+.partial-text-button {
+  flex-shrink: 1;
+}
