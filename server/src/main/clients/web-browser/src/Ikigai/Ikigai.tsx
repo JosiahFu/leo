@@ -45,10 +45,10 @@ export const Ikigai = forwardRef(
     const [alpha, setAlpha] = useState(0);
     const [size, setSize] = useState(0);
 
-    const [lovesValue, setLovesValue] = useState('');
-    const [worldNeedsValueIsSet, setWorldNeedsValueIsSet] = useState(false);
-    const [paidForValueIsSet, setPaidForValueIsSet] = useState(false);
-    const [goodAtValueIsSet, setGootAtValueIsSet] = useState(false);
+    const [lovesValue] = useState('');
+    const [worldNeedsValueIsSet] = useState(false);
+    const [paidForValueIsSet] = useState(false);
+    const [goodAtValueIsSet] = useState(false);
 
     const spinIcon = useRef<SpinIconFunctions>(null);
     const ikigai = {
