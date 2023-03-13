@@ -20,9 +20,7 @@ export function Root() {
         y: main.offsetTop + main.offsetHeight / 2,
       });
       setIkigaiSize((Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.9);
-      setIkigaiDistance(
-        (Math.min(main.offsetWidth, main.offsetHeight) / 4) * 0.9
-      );
+      setIkigaiDistance(Math.min(main.offsetWidth, main.offsetHeight) / 5);
     }
   }
 
