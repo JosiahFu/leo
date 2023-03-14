@@ -18,7 +18,6 @@
     <properties>
         <clients.directory>${basedir}/src/main/clients</clients.directory>
         <java.version>17</java.version>
-        <log4j.version>2.19.0</log4j.version>
         <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
         <proto.version>3.22.0</proto.version>
         <surefire.version>3.0.0-M8</surefire.version>
@@ -71,53 +70,6 @@
             <artifactId>truth-proto-extension</artifactId>
             <version>1.1.3</version>
             <scope>test</scope>
-        </dependency>
-
-        <!--  Java logging with Apache Log4j 2.  -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <!--
-            Other Spring packages use this as the logger. Log4j only allows
-            one logger implementation to be registered. So, we are stuck with
-            this instead of apache's implementation.
-        -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.5</version>
-        </dependency>
-
-        <!-- Libraries of useful functions. -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.10.0</version>
-        </dependency>
-
-        <!-- Google's java formatter. -->
-        <dependency>
-            <groupId>com.google.googlejavaformat</groupId>
-            <artifactId>google-java-format</artifactId>
-            <version>1.15.0</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Parse command line options. -->
@@ -269,33 +221,6 @@
                                     <arg file="${clients.directory}/web-browser/src/protos/protobuf-js.d.ts"/>
                                     <arg file="${clients.directory}/web-browser/src/protos/protobuf-js.js"/>
                                 </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-
-                    <!-- Format Java code using the Google Java formatter. -->
-                    <execution>
-                        <id>format-java-files</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <apply executable="java" failonerror="true" parallel="true">
-                                    <arg value="-classpath"/>
-                                    <arg pathref="maven.compile.classpath"/>
-                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED"/>
-                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED"/>
-                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED"/>
-                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED"/>
-                                    <arg line="--add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"/>
-                                    <arg value="com.google.googlejavaformat.java.Main"/>
-                                    <arg value="--replace"/>
-                                    <fileset dir="${project.build.sourceDirectory}" includes="**/*.java"/>
-                                    <fileset dir="${project.build.testSourceDirectory}" includes="**/*.java"/>
-                                    <fileset dir="${project.build.directory}" includes="**/*.java"/>
-                                </apply>
                             </target>
                         </configuration>
                     </execution>
