@@ -1,7 +1,5 @@
 package org.davincischools.leo.server.utils;
 
-import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_ARGUMENTS;
-
 import com.fasterxml.jackson.datatype.jdk8.WrappedIOException;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -50,11 +48,11 @@ public class HttpServletProxy {
     private final String springHostPort;
     private final String reactHostPort;
 
-    public URIRewriter(URI springServerUri) {
+    public URIRewriter(URI springServerUri, int reactPort) {
       this.springHostPort =
           springServerUri.getHost()
               + (springServerUri.getPort() >= 0 ? ":" + springServerUri.getPort() : "");
-      this.reactHostPort = "localhost:" + COMMAND_LINE_ARGUMENTS.reactPort;
+      this.reactHostPort = "localhost:" + reactPort;
     }
 
     public String rewriteForReact(String str) {
@@ -78,12 +76,13 @@ public class HttpServletProxy {
 
   public static void sendRequestToReact(
       URI uri,
+      int reactPort,
       Optional<MediaType> mediaType,
       HttpServletRequest request,
       HttpServletResponse response)
       throws IOException {
     try {
-      URIRewriter uriRewriter = new URIRewriter(uri);
+      URIRewriter uriRewriter = new URIRewriter(uri, reactPort);
 
       callAndProcessReactResponse(
           uri,
@@ -91,7 +90,7 @@ public class HttpServletProxy {
           uriRewriter,
           request,
           response,
-          buildReactWebClient(uri, uriRewriter, request));
+          buildReactWebClient(uri, reactPort, uriRewriter, request));
     } catch (URISyntaxException e) {
       throw new IOException(e);
     }
@@ -99,15 +98,12 @@ public class HttpServletProxy {
 
   // Translate the HttpServletRequest to a WebClient request, and URLs to React server URLs.
   private static WebClient buildReactWebClient(
-      URI uri, URIRewriter uriRewriter, HttpServletRequest request) throws URISyntaxException {
+      URI uri, int reactPort, URIRewriter uriRewriter, HttpServletRequest request)
+      throws URISyntaxException {
     Builder reactClient = WebClient.create().mutate();
 
     // Rewrite the URI to point to the React server.
-    URI reactUri =
-        URIBuilder.fromUri(uri)
-            .setHost("localhost")
-            .setPort(COMMAND_LINE_ARGUMENTS.reactPort)
-            .build();
+    URI reactUri = URIBuilder.fromUri(uri).setHost("localhost").setPort(reactPort).build();
     reactClient.baseUrl(reactUri.toString());
 
     // Reformat cookies for the WebClient.

@@ -21,6 +21,7 @@ import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRe
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsResponse;
 import org.davincischools.leo.server.utils.OpenAiUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +42,8 @@ public class PartialTextOpenAiPromptController {
               Prompt.SUGGEST_THINGS_YOU_LOVE,
               "Give me a list of 10 activity names starting with {}. Don't include descriptions.")
           .build();
+
+  @Autowired OpenAiUtils openAiUtils;
 
   // If the client sends an empty GetSuggestionsRequest then the body of the
   // request will have no bytes. Spring will then send either an optional
@@ -72,7 +75,8 @@ public class PartialTextOpenAiPromptController {
             .build();
 
     CreateCompletionResponse aiResponse =
-        OpenAiUtils.sendOpenAiRequest(
+        openAiUtils
+            .sendOpenAiRequest(
                 OpenAiUtils.COMPLETIONS_URI, aiRequest, CreateCompletionResponse.newBuilder())
             .build();
 

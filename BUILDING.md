@@ -106,6 +106,29 @@ git submodule update --init --recursive
 
 This will create a subfolder called ```project_leo``` with the source code in
 it.
+## External Dependencies
+
+By default, Project Leo creates temporary test instances of external
+dependencies. To override these to point to real resources, create an
+[external properties file](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files).
+
+Project Leo will read additional properties in
+```${HOME}/project_leo.properties``` by default. Additional files can
+be included with the
+[spring.config.import](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files.importing)
+command line flag or SPRING_CONFIG_IMPORT environment variable.
+
+```${HOME}/project_leo.properties``` can have the following properties:
+
+```properties
+# The OpenAI key used for queries will start with "sk-...". If left unset,
+# functionality will either be disabled or canned responses will be used.
+openai.api.key=<your_api_key>
+```
+
+Properties can also be set using environment variables. For instance,
+"openai.api.key" can be set using the environment variable "OPENAI_API_KEY".
+Environment variables take precedence over property values.
 
 ## Building Project Leo
 
@@ -156,7 +179,7 @@ flag):
 
 ```shell
 # Run the Spring server from the root project folder.
-java -jar server/target/project-leo-server-*.jar --react_port 3000
+java -jar server/target/project-leo-server-*.jar --react_port=3000
 ```
 
 ``` shell

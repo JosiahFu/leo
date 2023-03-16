@@ -1,7 +1,5 @@
 package org.davincischools.leo.server.controllers;
 
-import static org.davincischools.leo.server.CommandLineArguments.COMMAND_LINE_ARGUMENTS;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -16,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.server.utils.HttpServletProxy;
 import org.davincischools.leo.server.utils.URIBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -31,6 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ReactResourceController {
 
   private static final Logger log = LogManager.getLogger();
+
+  // Optional port of running React web development server.
+  @Value("${react_port:0}")
+  private int reactPort;
 
   private static final ImmutableMap<String, MediaType> EXTENSIONS_TO_MIME_TYPES =
       ImmutableMap.<String, MediaType>builder()
@@ -61,9 +64,9 @@ public class ReactResourceController {
 
     URI uri = getUri(request);
     Optional<MediaType> mediaType = getResponseMimeType(uri);
-    if (COMMAND_LINE_ARGUMENTS.reactPort != null) {
+    if (reactPort > 0) {
       // Forward the request to the React server running locally.
-      HttpServletProxy.sendRequestToReact(uri, mediaType, request, response);
+      HttpServletProxy.sendRequestToReact(uri, reactPort, mediaType, request, response);
     } else {
       // Get and copy a resource from the classpath.
       getResponseMimeType(uri).map(Object::toString).ifPresent(response::setContentType);

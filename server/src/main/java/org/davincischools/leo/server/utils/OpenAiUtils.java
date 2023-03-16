@@ -14,65 +14,56 @@ import java.util.Objects;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
-import org.davincischools.leo.server.CommandLineArguments;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
+@Component
 public class OpenAiUtils {
 
-  private static final Logger log = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
-  public static final String OPENAI_API_KEY_ENV_VAR = "OPENAI_API_KEY";
+  public static final String OPENAI_API_KEY_PROP_NAME = "openai.api.key";
+  public static final String OPENAI_API_KEY_ENV_NAME =
+      OPENAI_API_KEY_PROP_NAME.toUpperCase().replaceAll("\\.", "_");
   public static final String GPT_3_5_TURBO_MODEL = "gpt-3.5-turbo";
   public static final URI COMPLETIONS_URI =
       URI.create("https://api.openai.com/v1/chat/completions");
 
-  private static Optional<String> openAiKey = Optional.empty();
+  @Value("${" + OPENAI_API_KEY_PROP_NAME + ":}")
+  private String openAiKey;
+
+  public Optional<String> getOpenAiKey() {
+    return openAiKey.isEmpty() ? Optional.empty() : Optional.of(openAiKey);
+  }
 
   // Makes a call to OpenAI. If no key is available, returns an unmodified response.
-  public static <T extends Builder> T sendOpenAiRequest(URI uri, Message request, T responseBuilder)
+  public <T extends Builder> T sendOpenAiRequest(URI uri, Message request, T responseBuilder)
       throws IOException {
-    log.atInfo().log("OpenAI Request: " + JsonFormat.printer().print(request));
+    logger.atInfo().log("OpenAI Request: " + JsonFormat.printer().print(request));
     if (openAiKey.isEmpty()) {
-      openAiKey =
-          Optional.ofNullable(System.getenv(OPENAI_API_KEY_ENV_VAR))
-              .or(() -> Optional.ofNullable(System.getProperty(OPENAI_API_KEY_ENV_VAR)));
-      if (openAiKey.isEmpty()) {
-        log.atError()
-            .log(
-                OPENAI_API_KEY_ENV_VAR
-                    + " is missing. Set "
-                    + OPENAI_API_KEY_ENV_VAR
-                    + " in the environment or place it in a"
-                    + " properties file under the name "
-                    + OPENAI_API_KEY_ENV_VAR
-                    + " and point to it using the '"
-                    + CommandLineArguments.ADDITIONAL_PROPERTIES_FILE_FLAG
-                    + "' flag or the '"
-                    + CommandLineArguments.ADDITIONAL_PROPERTIES_FILE_ENV_VAR
-                    + "' environment variable.");
-        openAiKey = Optional.of(Strings.EMPTY);
-      }
-    }
-    if (openAiKey.get().isEmpty()) {
-      log.atWarn()
+      logger
+          .atWarn()
           .log(
-              "OpenAI Response: Not called due to missing '" + OPENAI_API_KEY_ENV_VAR + "' value.");
+              "OpenAI not called due to missing '"
+                  + OPENAI_API_KEY_PROP_NAME
+                  + "' property and missing '"
+                  + OPENAI_API_KEY_ENV_NAME
+                  + "' environment variable.");
       return responseBuilder;
     }
-
     ResponseSpec responseSpec =
         WebClient.create()
             .post()
             .uri(uri)
             .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + openAiKey.get())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + openAiKey)
             .header(HttpHeaders.CACHE_CONTROL, "no-cache,no-store,max-age=0")
             .header(HttpHeaders.PRAGMA, "No-Cache")
             .header(HttpHeaders.EXPIRES, "0") // I.e., now.
@@ -102,12 +93,12 @@ public class OpenAiUtils {
                   })
               .collect(ImmutableList.toImmutableList())
               .block();
-      reactBody = Bytes.concat(streamedBytes.toArray(size -> new byte[size][]));
+      reactBody = Bytes.concat(Objects.requireNonNull(streamedBytes).toArray(byte[][]::new));
     } catch (WrappedIOException e) {
       throw e.getCause();
     }
 
-    log.atInfo().log("OpenAI Response: {}.", new String(reactBody, StandardCharsets.UTF_8));
+    logger.atInfo().log("OpenAI Response: {}.", new String(reactBody, StandardCharsets.UTF_8));
 
     // Translate the bytes into a proto.
     JsonFormat.parser()
