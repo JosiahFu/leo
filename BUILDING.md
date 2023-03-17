@@ -8,89 +8,6 @@ If you use Windows, you can install an instance of
 [Ubuntu 22.04 LTS on Windows](https://www.microsoft.com/store/productId/9PN20MSR04DW)
 from the Microsoft Store to work in.
 
-## Build Dependencies
-
-Building and running Project Leo requires the following dependencies:
-
-* [Apache Maven 3](https://maven.apache.org/)
-* [Git](https://git-scm.com/)
-* [Java 17](https://www.java.com/)
-* [Node.js](https://nodejs.org/)
-
-The first three can be installed in Ubuntu using the following commands:
-
-```shell
-# Install Apache Maven, Git, and Java.
-sudo apt update
-sudo apt install maven git openjdk-17-doc openjdk-17-jdk openjdk-17-source
-```
-
-However, [Node.js](https://nodejs.org/) is a little more complex to install.
-The version available through Ubuntu's default apt repository is out of date.
-Instead, do one of the following:
-
-### Install Node.js from the Website
-
-Install Node.js from the [Node.js](https://nodejs.org/) website. See the
-website for instructions.
-
-> <picture>
->   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
->   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
-> </picture><br>
-> I prefer the option below because the website instructions eventually lead to
-> commands that download and run an unverified script as sudo. The option below
-> does the same thing. But, it is easy to examine it first.
-
-### Add the Official Node.js Repository to Ubuntu
-
-Add the official Node.js repository to Ubuntu and install the current version
-of Node.js from there.
-
-To automatically add the Node.js repository to Ubuntu, executing the following
-***as sudo*** (run ```sudo su``` first).
-
-> <picture>
->   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/info.svg">
->   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
-> </picture><br>
-> You must run the following as sudo.
-
-```shell
-# The file in which to store the apt repository entry.
-SOURCES_FILE=/etc/apt/sources.list.d/nodejs.sources
-
-# The version of Node.js to use. 18.x is an LTS version.
-NODE_VERSION=node_18.x
-
-# Create the Node.js apt sources file.
-cat <<EOF >"${SOURCES_FILE}"
-X-Repolib-Name: Node.js
-Enabled: yes
-Architectures: amd64
-Types: deb deb-src
-URIs: https://deb.nodesource.com/${NODE_VERSION}
-Components: main
-# The currently installed Ubuntu codename.
-Suites: $(lsb_release --codename --short)
-# The Node.js signing key.
-Signed-By:
-$(wget -qO - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | \
-      sed -r "s/^\$/./" | sed -e "s/^/ /")
-EOF
-
-# Make the sources file world-readable.
-chmod a+r "${SOURCES_FILE}"
-```
-
-Once the sources file is present, you can install Node.js as follows:
-
-```shell
-# Install Node.js.
-sudo apt update
-sudo apt-get install nodejs
-```
-
 ## Checking out Source Code
 
 Project Leo has references to other git repositories (submodules). To do a
@@ -106,6 +23,43 @@ git submodule update --init --recursive
 
 This will create a subfolder called ```project_leo``` with the source code in
 it.
+
+## Build Dependencies
+
+Building and running Project Leo requires the following dependencies:
+
+* [Apache Maven 3](https://maven.apache.org/)
+* [Java 17](https://www.java.com/)
+* [Node.js](https://nodejs.org/)
+* [Docker](https://www.docker.com/)
+
+The first two of these can be installed in Ubuntu using the following
+commands:
+
+```shell
+# Install Apache Maven and Java.
+sudo apt update
+sudo apt install maven openjdk-17-doc openjdk-17-jdk openjdk-17-source
+```
+
+However, [Node.js](https://nodejs.org/) and [Docker](https://www.docker.com/)
+are a little more difficult to install because the versions shipped with
+Ubuntu are very out of date.
+
+You can install these manually or run the helper scripts located in the
+[/bin/apt](https://github.com/DaVinciSchools/leo/tree/main/bin/apt) folder
+under ```project_leo```. You'll need to run the helper scripts ***as
+sudo*** (e.g., run them with the word ```sudo``` in front, like ```sudo
+./bin/install-docker```).
+
+> <picture>
+>   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
+>   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
+> </picture><br>
+> In Windows WSL, you have to manually start the Docker service every time WSL
+> is started. Do this by running "sudo service docker start" once in WSL before
+> running and testing Project Leo for the first time.
+
 ## External Dependencies
 
 By default, Project Leo creates temporary test instances of external
@@ -113,17 +67,27 @@ dependencies. To override these to point to real resources, create an
 [external properties file](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files).
 
 Project Leo will read additional properties in
-```${HOME}/project_leo.properties``` by default. Additional files can
-be included with the
+```${HOME}/project_leo.properties``` by default. Additional files can be
+included with the
 [spring.config.import](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files.importing)
 command line flag or SPRING_CONFIG_IMPORT environment variable.
 
-```${HOME}/project_leo.properties``` can have the following properties:
+The default properties override file, ```${HOME}/project_leo.properties```,
+can have the following properties (only specify the ones you want):
 
 ```properties
-# The OpenAI key used for queries will start with "sk-...". If left unset,
-# functionality will either be disabled or canned responses will be used.
+# Set to the OpenAI key used for queries. Its value starts with "sk-".
 openai.api.key=<your_api_key>
+
+# Set to "false" so that the database configuration below will be used.
+project_leo.use.test.database=false
+
+# The database that Project Leo will connect to.
+spring.datasource.url=jdbc:mysql://localhost:3306/<database_name>
+spring.datasource.username=<user>
+spring.datasource.password=<password>
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
 ```
 
 Properties can also be set using environment variables. For instance,
@@ -146,9 +110,19 @@ This will do a number of things:
 * Install Node.js and NPM for the React web client.
 * Build the React web client.
 * Embed the React web client in the Spring server.
+* Run all tests. **Note: These will pause (for a long time) while waiting for 
+  docker to start a test database.**
 * Format code for a code review (see [CONTRIBUTING](CONTRIBUTING.md)).
 
-## Running Project Leo
+## Running & Testing Project Leo
+
+> <picture>
+>   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
+>   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
+> </picture><br>
+> In Windows WSL, you have to manually start the Docker service every time WSL
+> is started. Do this by running "sudo service docker start" once in WSL before
+> running and testing Project Leo for the first time.
 
 Project Leo can be run in the following ways:
 
@@ -171,7 +145,7 @@ Then, open a browser to http://localhost:8080.
 Running separate Spring and React servers in parallel allows you to modify the
 React content and serve it through the Spring server live. The Spring server
 will proxy requests to the React server for http content. It's necessary to run
-both because the React website makes callss to the Spring server to retrieve
+both because the React website makes calls to the Spring server to retrieve
 and set data. This is useful when working on the website.
 
 The following commands run the servers in parallel (Note the ```--react_port```
@@ -202,8 +176,8 @@ Then, open a browser to http://localhost:8080.
 
 ### As a Docker Container
 
-Running the server in a Docker container is most helpful for development for 
-those without access to a Linux distribution. Go to the parent directory of the 
+Running the server in a Docker container is most helpful for development
+without access to a Linux distribution. Go to the parent directory of the
 repository and run the following command in the terminal:
 
 ```shell
@@ -211,7 +185,10 @@ repository and run the following command in the terminal:
 docker build -t project_leo -f project_leo\Dockerfile .
 ```
 
-This will build a Docker image with all the dependencies and configuration packed together. It will also expose the port `8080` automatically. From here, run the following command to run the Docker container, making sure to replace `<OPENAI_API_KEY>` with a valid key:
+This will build a Docker image with all the dependencies and configuration
+packed together. It will also expose the port `8080` automatically. From
+here, run the following command to run the Docker container, making sure
+to replace `<OPENAI_API_KEY>` with a valid key:
 
 ```shell
 # the -e option is to define the environment variable for the API call

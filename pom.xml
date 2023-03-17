@@ -12,41 +12,21 @@
     <description>Project Leo</description>
 
     <modules>
+        <module>database</module>
         <module>server</module>
     </modules>
 
     <properties>
-        <log4j.version>2.19.0</log4j.version>
-
         <revision>0.0.1-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <spring.boot.version>3.0.3</spring.boot.version>
+        <spring.framework.version>6.0.6</spring.framework.version>
     </properties>
 
     <dependencies>
-        <!--  Java logging with Apache Log4j 2.  -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <!--
-            Other Spring packages use this as the logger. Log4j only allows
-            one logger implementation to be registered. So, we are stuck with
-            this instead of apache's implementation.
-        -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.5</version>
-        </dependency>
-
         <!-- Libraries of useful functions. -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -71,6 +51,16 @@
 
         <!-- MySQL -->
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.32</version>
@@ -82,6 +72,54 @@
             <artifactId>google-java-format</artifactId>
             <version>1.15.0</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- JUnit/Junit-Jupiter testing. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <!-- This needs to be "compile" scope because of the test database
+                 that is spun up when run without a database specified. -->
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Assertions using Truth. -->
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>1.1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth.extensions</groupId>
+            <artifactId>truth-proto-extension</artifactId>
+            <version>1.1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring testing. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.framework.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <!-- This is built into Spring. So we must use it if we don't want to
+             incorporate excludes in dependencies. -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.6</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

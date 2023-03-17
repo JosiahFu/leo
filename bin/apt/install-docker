@@ -1,0 +1,25 @@
+#!/bin/bash -x
+
+# Where we'll create the Docker repository entry.
+SOURCES_FILE=/etc/apt/sources.list.d/docker.sources
+
+# Create the repository definition. It includes the key for verification.
+cat <<EOF >"${SOURCES_FILE}"
+X-Repolib-Name: Docker
+Enabled: yes
+Architectures: amd64
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Components: stable
+Suites: $(lsb_release --codename --short)
+Signed-By:
+$(wget -qO - https://download.docker.com/linux/ubuntu/gpg | sed -r 's/^$/./' | sed -e 's/^/ /')
+EOF
+chmod a+r "${SOURCES_FILE}"
+
+# Download the new package information and install Docker.
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# The service doesn't start automatically on install (at least in WSL).
+service docker start || true

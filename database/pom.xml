@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>project-leo-database</artifactId>
+    <version>${revision}</version>
+
+    <name>Project Leo Database</name>
+    <description>Project Leo Database</description>
+
+    <parent>
+        <groupId>org.davincischools.leo</groupId>
+        <artifactId>project-leo</artifactId>
+        <version>${revision}</version>
+        <relativePath>./../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <test.containers.version>1.17.6</test.containers.version>
+    </properties>
+
+    <dependencies>
+        <!-- MySQL test containers. -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${test.containers.version}</version>
+            <!-- We spin up a temporary one for development. -->
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>${test.containers.version}</version>
+            <!-- We spin up a temporary one for development. -->
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -7,10 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="project-leo-database" />
         <module name="project-leo-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="database" target="17" />
+      <module name="maven-archiver" target="1.5" />
       <module name="root" target="17" />
       <module name="server" target="17" />
     </bytecodeTargetLevel>

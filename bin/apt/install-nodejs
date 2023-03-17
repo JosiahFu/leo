@@ -1,0 +1,25 @@
+#!/bin/bash -x
+
+# Where we'll create the Node.js repository entry.
+SOURCES_FILE=/etc/apt/sources.list.d/nodejs.sources
+
+# The major node version to use.
+NODE_REPO=node_18.x
+
+# Create the repository definition. It includes the key for verification.
+cat <<EOF >"${SOURCES_FILE}"
+X-Repolib-Name: Node.js
+Enabled: yes
+Architectures: amd64
+Types: deb deb-src
+URIs: https://deb.nodesource.com/${NODE_REPO}
+Components: main
+Suites: $(lsb_release --codename --short)
+Signed-By:
+$(wget -qO - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sed -r 's/^$/./' | sed -e 's/^/ /')
+EOF
+chmod a+r "${SOURCES_FILE}"
+
+# Download the new package information and install Node.js.
+apt-get update
+apt-get install -y nodejs

@@ -17,11 +17,9 @@
 
     <properties>
         <clients.directory>${basedir}/src/main/clients</clients.directory>
-        <java.version>17</java.version>
         <npm.binary.directory>${project.build.directory}/org.davincischools.leo/npm</npm.binary.directory>
         <proto.version>3.22.0</proto.version>
         <surefire.version>3.0.0-M8</surefire.version>
-        <spring.version>3.0.2</spring.version>
     </properties>
 
     <dependencies>
@@ -29,52 +27,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>6.0.6</version>
+            <version>${spring.framework.version}</version>
         </dependency>
         <!-- Needed to proxy services to React web server. -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
-            <version>6.0.4</version>
-        </dependency>
-
-        <!-- JUnit/Junit-Jupiter testing. -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Assertions using Truth. -->
-        <dependency>
-            <groupId>com.google.truth</groupId>
-            <artifactId>truth</artifactId>
-            <version>1.1.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.truth.extensions</groupId>
-            <artifactId>truth-proto-extension</artifactId>
-            <version>1.1.3</version>
-            <scope>test</scope>
+            <version>${spring.framework.version}</version>
         </dependency>
 
         <!-- Parse command line options. -->
@@ -94,6 +64,13 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
             <version>${proto.version}</version>
+        </dependency>
+
+        <!-- Project Leo -->
+        <dependency>
+            <groupId>org.davincischools.leo</groupId>
+            <artifactId>project-leo-database</artifactId>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
@@ -137,7 +114,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring.boot.version}</version>
             </plugin>
 
             <!-- Build the browser client. -->
