@@ -42,23 +42,22 @@ sudo apt update
 sudo apt install maven openjdk-17-doc openjdk-17-jdk openjdk-17-source
 ```
 
-However, [Node.js](https://nodejs.org/) and [Docker](https://www.docker.com/)
-are a little more difficult to install because the versions shipped with
-Ubuntu are very out of date.
+### Build Dependencies: Node.js
 
-You can install these manually or run the helper scripts located in the
-[/bin/apt](https://github.com/DaVinciSchools/leo/tree/main/bin/apt) folder
-under ```project_leo```. You'll need to run the helper scripts ***as
-sudo*** (e.g., run them with the word ```sudo``` in front, like ```sudo
-./bin/install-docker```).
+[Node.js](https://nodejs.org/) in the standard Ubuntu repository is very old.
 
-> <picture>
->   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
->   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
-> </picture><br>
-> In Windows WSL, you have to manually start the Docker service every time WSL
-> is started. Do this by running "sudo service docker start" once in WSL before
-> running and testing Project Leo for the first time.
+We have a helper script that will add the official Node.js repository and
+install ```nodejs``` for you:
+[bin/apt/install-nodejs-ubuntu](https://github.com/DaVinciSchools/leo/blob/main/bin/apt/install-nodejs-ubuntu).
+
+### Build Dependencies: Docker Desktop
+
+If you are on a non-production server, it's easiest to install
+[Docker Desktop](https://docs.docker.com/get-docker/).
+
+We have a helper script that will add the official Docker repository and
+install Docker Desktop for you:
+[bin/apt/install-docker-desktop-ubuntu](https://github.com/DaVinciSchools/leo/blob/main/bin/apt/install-docker-desktop-ubuntu).
 
 ## External Dependencies
 
@@ -115,14 +114,6 @@ This will do a number of things:
 * Format code for a code review (see [CONTRIBUTING](CONTRIBUTING.md)).
 
 ## Running & Testing Project Leo
-
-> <picture>
->   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
->   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
-> </picture><br>
-> In Windows WSL, you have to manually start the Docker service every time WSL
-> is started. Do this by running "sudo service docker start" once in WSL before
-> running and testing Project Leo for the first time.
 
 Project Leo can be run in the following ways:
 

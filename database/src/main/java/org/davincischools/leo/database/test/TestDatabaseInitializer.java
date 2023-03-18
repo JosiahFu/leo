@@ -46,7 +46,7 @@ public class TestDatabaseInitializer {
     }
 
     String database = Optional.ofNullable(jdbcUri.getPath()).orElse("test");
-    String username = "mysql"; // environment.getProperty("spring.datasource.username", "test");
+    String username = environment.getProperty("spring.datasource.username", "test");
     String password = environment.getProperty("spring.datasource.password", "test");
 
     // Create a test database if one doesn't exist.
@@ -64,9 +64,7 @@ public class TestDatabaseInitializer {
     mySqlContainer.addParameter("TC_MY_CNF", null);
 
     try {
-      logger.atWarn().log("Waiting for Docker to start the test database.");
       mySqlContainer.start();
-      logger.atInfo().log("Done waiting for Docker to start the test database.");
     } catch (java.lang.IllegalStateException e) {
       // In Windows WSL, it's necessary to start the docker daemon each time you
       // first start WSL. Make a note of that in the exception.

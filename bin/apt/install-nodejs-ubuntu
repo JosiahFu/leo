@@ -1,5 +1,14 @@
 #!/bin/bash -x
 
+# Exit if there is an error.
+set -e
+
+# We need root to add the apt repository and install Docker Desktop.
+if [ "$EUID" -ne 0 ]; then
+  echo "Please allow root privileges."
+  sudo bash -c "echo Root privileges granted."
+fi
+
 # Where we'll create the Node.js repository entry.
 SOURCES_FILE=/etc/apt/sources.list.d/nodejs.sources
 
@@ -7,7 +16,7 @@ SOURCES_FILE=/etc/apt/sources.list.d/nodejs.sources
 NODE_REPO=node_18.x
 
 # Create the repository definition. It includes the key for verification.
-cat <<EOF >"${SOURCES_FILE}"
+cat <<EOF | sudo tee "${SOURCES_FILE}"
 X-Repolib-Name: Node.js
 Enabled: yes
 Architectures: amd64
@@ -18,8 +27,8 @@ Suites: $(lsb_release --codename --short)
 Signed-By:
 $(wget -qO - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sed -r 's/^$/./' | sed -e 's/^/ /')
 EOF
-chmod a+r "${SOURCES_FILE}"
+sudo chmod a+r "${SOURCES_FILE}"
 
 # Download the new package information and install Node.js.
-apt-get update
-apt-get install -y nodejs
+sudo apt-get update
+sudo apt-get install nodejs

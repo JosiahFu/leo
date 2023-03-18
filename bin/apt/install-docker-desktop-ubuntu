@@ -1,0 +1,56 @@
+#!/bin/bash -x
+
+# Exit if there is an error.
+set -e
+
+# Use the Windows installer for Windows WSL.
+if [[ "$(uname -r)" =~ icrosoft ]]; then
+  echo This is only for Ubuntu. Install Docker Desktop for Windows WSL.
+  echo Instructions are at https://docs.docker.com/desktop/install/windows-install/
+  exit
+fi
+
+# User the Mac installer for Mac.
+if [[ "$(uname -r)" =~ arwin ]]; then
+  echo This is only for Ubuntu. Install Docker Desktop for Mac.
+  echo Instructions are at https://docs.docker.com/desktop/install/mac-install/
+  exit
+fi
+
+# We need root to add the apt repository and install Docker Desktop.
+if [ "$EUID" -ne 0 ]; then
+  echo "Please allow root privileges."
+  sudo bash -c "echo Root privileges granted."
+fi
+
+# Where we'll create the Docker repository entry.
+SOURCES_FILE=/etc/apt/sources.list.d/docker.sources
+
+# Create the repository definition. It includes the key for verification.
+cat <<EOF | sudo tee "${SOURCES_FILE}"
+X-Repolib-Name: Docker
+Enabled: yes
+Architectures: amd64
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Components: stable
+Suites: $(lsb_release --codename --short)
+Signed-By:
+$(wget -qO - https://download.docker.com/linux/ubuntu/gpg | sed -r 's/^$/./' | sed -e 's/^/ /')
+EOF
+sudo chmod a+r "${SOURCES_FILE}"
+
+# Extract the latest DEB package URL.
+DEB_URL=$( \
+  wget -qO - https://docs.docker.com/desktop/install/ubuntu/ | \
+  /usr/bin/grep --only-matching --max-count=1 \
+      'https://desktop\.docker\.com/linux/main/amd64/docker-desktop-[0-9.]\+-amd64.deb' )
+echo "Using the DEB package at: ${DEB_URL}"
+
+# Download DEB package locally.
+DEB_FILE="$(mktemp).docker-desktop-amd64.deb"
+wget -qO - "${DEB_URL}" > "${DEB_FILE}"
+
+# Download the new package information and install Docker Desktop.
+sudo apt-get update
+sudo apt-get install "${DEB_FILE}"
