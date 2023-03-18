@@ -16,7 +16,7 @@ commands in a Terminal to do this:
 
 ```shell
 # Check out the Project Leo source code and submodules.
-git clone https://github.com/DaVinciSchools/leo.git project_leo
+git clone git@github.com:DaVinciSchools/leo.git project_leo
 cd project_leo
 git submodule update --init --recursive
 ```
