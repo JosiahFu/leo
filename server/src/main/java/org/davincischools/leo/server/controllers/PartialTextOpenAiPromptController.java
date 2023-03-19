@@ -1,17 +1,13 @@
 package org.davincischools.leo.server.controllers;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Streams;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.text.StringEscapeUtils;
 import org.davincischools.leo.protos.open_ai.CreateCompletionMessage;
 import org.davincischools.leo.protos.open_ai.CreateCompletionRequest;
@@ -80,16 +76,16 @@ public class PartialTextOpenAiPromptController {
                 OpenAiUtils.COMPLETIONS_URI, aiRequest, CreateCompletionResponse.newBuilder())
             .build();
 
-    Set<String> suggestions =
+    List<String> suggestions =
         aiResponse.getChoicesList().stream()
             .map(CreateCompletionChoice::getMessage)
             .map(CreateCompletionMessage::getContent)
-            .flatMap(content -> Streams.stream(parseContentIntoList(content)))
-            .collect(Collectors.toSet());
-    List<String> suggestionsList = new ArrayList<>(suggestions);
-    Collections.sort(suggestionsList);
+            .flatMap(content -> parseContentIntoList(content).stream())
+            .distinct()
+            .sorted()
+            .toList();
 
-    return GetSuggestionsResponse.newBuilder().addAllSuggestions(suggestionsList).build();
+    return GetSuggestionsResponse.newBuilder().addAllSuggestions(suggestions).build();
   }
 
   public static List<String> parseContentIntoList(String content) {

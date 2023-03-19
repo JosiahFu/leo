@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jdk8.WrappedIOException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Bytes;
 import com.google.protobuf.GeneratedMessageV3.Builder;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
@@ -44,8 +45,8 @@ public class OpenAiUtils {
   }
 
   // Makes a call to OpenAI. If no key is available, returns an unmodified response.
-  public <T extends Builder> T sendOpenAiRequest(URI uri, Message request, T responseBuilder)
-      throws IOException {
+  public <T extends Builder<?>> T sendOpenAiRequest(URI uri, Message request, T responseBuilder)
+      throws IOException, InvalidProtocolBufferException {
     logger.atInfo().log("OpenAI Request: " + JsonFormat.printer().print(request));
     if (openAiKey.isEmpty()) {
       logger
