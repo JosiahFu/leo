@@ -58,6 +58,14 @@ If you are on a non-production server, it's easiest to install
 We have a helper script that will add the official Docker repository and
 install Docker Desktop for you:
 [bin/apt/install-docker-desktop-ubuntu](https://github.com/DaVinciSchools/leo/blob/main/bin/apt/install-docker-desktop-ubuntu).
+Log out and log back in so that your group membership is re-evaluated.
+
+> <picture>
+>   <source media="(prefers-color-scheme: light)" srcset="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/light-theme/warning.svg">
+>   <img alt="Warning" src="https://github.com/Mqxx/GitHub-Markdown/blob/main/blockquotes/badge/dark-theme/warning.svg">
+> </picture><br>
+> Be sure to log out and back in. Docker will not work until this is done
+> (including for Maven).
 
 ## External Dependencies
 
