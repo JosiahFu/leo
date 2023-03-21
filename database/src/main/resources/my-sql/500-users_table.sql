@@ -8,4 +8,4 @@ CREATE TABLE users
     email_address VARCHAR(254) UNIQUE NOT NULL,
     password_hash BINARY(64) NOT NULL,
     PRIMARY KEY (id)
-) CHAR SET `UTF8`;
+) CHAR SET `UTF8MB4`;
