@@ -24,6 +24,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.test.util.TestSocketUtils;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -31,6 +32,8 @@ import org.testcontainers.utility.DockerImageName;
 public class TestDatabase {
 
   private static final Logger log = LogManager.getLogger();
+
+  public static final String TEST_DATABASE_PORT_KEY = "project_leo.test.database.port";
 
   public static final String ROOT_USERNAME = "root";
   public static final String ROOT_PASSWORD = "password";
@@ -55,7 +58,8 @@ public class TestDatabase {
       synchronized (mySqlContainers) {
         container = mySqlContainers.get(lastDataSource);
         if (container == null) {
-          container = createContainer(lastDataSource);
+          int port = environment.getProperty(TEST_DATABASE_PORT_KEY, Integer.class, TestSocketUtils.findAvailableTcpPort());
+          container = createContainer(lastDataSource, port);
           mySqlContainers.put(lastDataSource, container);
           DataSource source = getDataSource(container);
           grantAllAccess(source, lastDataSource, ADMIN_USERNAME);
@@ -107,14 +111,14 @@ public class TestDatabase {
         .build();
   }
 
-  private static MySQLContainer<?> createContainer(String database) {
+  private static MySQLContainer<?> createContainer(String database, int port) {
     MySQLContainer<?> container =
         new MySQLContainer<>(DockerImageName.parse("mysql").withTag("8-debian"))
             .withDatabaseName(database)
             .withUsername(ADMIN_USERNAME)
             .withPassword(ADMIN_PASSWORD)
             .withEnv("MYSQL_ROOT_PASSWORD", ROOT_PASSWORD);
-    container.setPortBindings(ImmutableList.of("3307:3306"));
+    container.setPortBindings(ImmutableList.of(port + ":3306"));
     // Workaround for
     // "STDERR: mysqld: Can't read dir of '/etc/mysql/conf.d/' (Errcode: 13 - Permission denied)"
     // It causes a fatal error and tests hang waiting for the container to start.
