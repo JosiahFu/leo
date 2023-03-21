@@ -168,7 +168,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <target>
                                 <mkdir dir="${clients.directory}/web-browser/src/protos"/>
@@ -182,7 +182,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <target>
                                 <!-- Compile Protocol Buffers to JavaScript. -->
@@ -288,7 +288,7 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
                             <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>

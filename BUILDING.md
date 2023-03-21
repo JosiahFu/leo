@@ -108,7 +108,7 @@ command:
 
 ```shell
 # Build Project Leo using the Apache Maven tool.
-mvn verify
+mvn install
 ```
 
 This will do a number of things:

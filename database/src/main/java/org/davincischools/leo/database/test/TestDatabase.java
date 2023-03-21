@@ -1,5 +1,7 @@
 package org.davincischools.leo.database.test;
 
+import static org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor.USE_TEST_DATABASE_KEY;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mysql.cj.jdbc.MysqlDataSource;
@@ -8,78 +10,99 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.admin.DatabaseManagement;
+import org.davincischools.leo.database.daos.Database;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.stereotype.Component;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-public class TestDatabaseInitializer {
+@Component
+public class TestDatabase {
+
+  private static final Logger log = LogManager.getLogger();
 
   public static final String ROOT_USERNAME = "root";
   public static final String ROOT_PASSWORD = "password";
   public static final String ADMIN_USERNAME = "project_leo_admin";
   public static final String ADMIN_PASSWORD = "password";
 
-  private static MySQLContainer<?> mySqlContainer = null;
-  private static DataSource mySqlSource = null;
+  private static Map<String, MySQLContainer<?>> mySqlContainers = new HashMap<>();
+  private static String lastDataSource = null;
 
-  public static synchronized DataSource initializeTestDatabase(
-      Environment environment, Optional<ConfigurableEnvironment> updateEnvironment)
+  public TestDatabase(@Autowired ConfigurableEnvironment environment)
       throws SQLException, IOException {
+    URI jdbcUri =
+        URI.create(
+            environment.getProperty("spring.datasource.url", "jdbc:mysql//localhost:3307/test"));
+    URI databasePath = URI.create(jdbcUri.getSchemeSpecificPart());
+    lastDataSource = Optional.ofNullable(databasePath.getPath()).orElse("/test").substring(1);
+    log.atInfo().log("Creating a test database: " + lastDataSource);
 
-    URI jdbcUri = URI.create("jdbc:mysql//localhost:3307/test");
-    String database = Optional.ofNullable(jdbcUri.getPath()).orElse("test");
-    String username = environment.getProperty("spring.datasource.username", "test");
-    String password = environment.getProperty("spring.datasource.password", "test");
+    try {
+      // Create a test database if one doesn't exist.
+      MySQLContainer<?> container;
+      synchronized (mySqlContainers) {
+        container = mySqlContainers.get(lastDataSource);
+        if (container == null) {
+          container = createContainer(lastDataSource);
+          mySqlContainers.put(lastDataSource, container);
+          DataSource source = getDataSource(container);
+          grantAllAccess(source, lastDataSource, ADMIN_USERNAME);
+          DatabaseManagement.loadSchema(source);
+        }
+      }
 
-    // Create a test database if one doesn't exist.
-    if (mySqlContainer == null) {
-      MySQLContainer<?> container = createContainer(database);
-      DataSource source =
-          DataSourceBuilder.create()
-              .driverClassName(org.testcontainers.jdbc.ContainerDatabaseDriver.class.getName())
-              .url(container.getJdbcUrl())
-              .username(ROOT_USERNAME)
-              .password(ROOT_PASSWORD)
-              .type(MysqlDataSource.class)
-              .build();
-      grantAllAccess(source, database, ADMIN_USERNAME);
-      DatabaseManagement.loadSchema(source);
+      String username = environment.getProperty("spring.datasource.username", "test");
+      String password = environment.getProperty("spring.datasource.password", "test");
+      DataSource source = getDataSource(container);
+      createUser(source, username, password);
+      grantAllAccess(source, lastDataSource, username);
 
-      mySqlContainer = container;
-      mySqlSource = source;
-    }
-    createUser(database, username, password);
-    grantAllAccess(mySqlSource, database, username);
-
-    // Set database properties, if requested.
-    if (updateEnvironment.isPresent()) {
-      updateEnvironment
-          .get()
+      // Set database properties, if requested.
+      environment
           .getPropertySources()
           .addFirst(
               new MapPropertySource(
-                  TestDatabaseInitializer.class.getName(),
+                  TestDatabase.class.getName(),
                   ImmutableMap.<String, Object>builder()
-                      .put("spring.datasource.url", mySqlContainer.getJdbcUrl())
+                      .put("spring.datasource.url", container.getJdbcUrl())
                       .put("spring.datasource.username", username)
                       .put("spring.datasource.password", password)
-                      .put(
-                          "spring.datasource.driver-class-name",
-                          mySqlContainer.getDriverClassName())
+                      .put("spring.datasource.driver-class-name", container.getDriverClassName())
+                      .put(USE_TEST_DATABASE_KEY, true)
+                      .put(Database.DATABASE_SALT_KEY, "salt")
                       .build()));
+      System.setProperty(Database.DATABASE_SALT_KEY, "salt");
+    } catch (SQLException | IOException | RuntimeException e) {
+      environment.getPropertySources().remove(TestDatabase.class.getName());
+      throw e;
     }
+  }
 
+  public DataSource getDataSource() {
+    return getDataSource(
+        Objects.requireNonNull(
+            mySqlContainers.get(lastDataSource),
+            () -> "Data source name not available: " + lastDataSource));
+  }
+
+  private static DataSource getDataSource(MySQLContainer<?> container) {
     return DataSourceBuilder.create()
         .driverClassName(org.testcontainers.jdbc.ContainerDatabaseDriver.class.getName())
-        .url(mySqlContainer.getJdbcUrl())
-        .username(username)
-        .password(password)
+        .url(container.getJdbcUrl())
+        .username(ROOT_USERNAME)
+        .password(ROOT_PASSWORD)
         .type(MysqlDataSource.class)
         .build();
   }
@@ -129,9 +152,9 @@ public class TestDatabaseInitializer {
     }
   }
 
-  private static void createUser(String database, String username, String password)
+  private static void createUser(DataSource source, String username, String password)
       throws SQLException {
-    try (Connection connection = mySqlSource.getConnection()) {
+    try (Connection connection = source.getConnection()) {
       // Drop an existing user.
       PreparedStatement statement = connection.prepareStatement("DROP USER ?@'%';");
       statement.setString(1, username);

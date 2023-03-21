@@ -2,6 +2,7 @@ package org.davincischools.leo.server.post_environment_processors;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
+import org.davincischools.leo.database.daos.Database;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -17,6 +18,7 @@ public class CopyEnvironmentPropertiesToSystemProperties implements EnvironmentP
     ImmutableList.of(
             "hibernate.dialect",
             "jdk.httpclient.allowRestrictedHeaders",
+            Database.DATABASE_SALT_KEY,
             "spring.jpa.hibernate.ddl-auto")
         .forEach(property -> copyEnvironmentPropertyToSystemProperty(environment, property));
   }

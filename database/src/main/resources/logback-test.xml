@@ -19,5 +19,7 @@
     </root>
 
     <logger name="org.davincischools.leo" level="debug" />
-    <logger name="org.testcontainers.containers" level="trace" />
+    <logger name="org.testcontainers.containers" level="info" />
+    <!-- TODO(https://github.com/spring-projects/spring-framework/issues/30103): Release 6.0.8? -->
+    <logger name="org.springframework.core.LocalVariableTableParameterNameDiscoverer" level="error" />
 </configuration>

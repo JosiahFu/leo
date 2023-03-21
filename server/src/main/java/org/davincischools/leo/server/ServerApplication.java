@@ -16,7 +16,7 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.davincischools.leo")
 public class ServerApplication {
 
   private static final Logger log = LogManager.getLogger();

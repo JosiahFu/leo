@@ -1,8 +1,12 @@
 package org.davincischools.leo.server;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor.USE_TEST_DATABASE;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
+import org.davincischools.leo.database.daos.Database;
+import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.protos.message_of_the_day.MessageRequest;
 import org.davincischools.leo.protos.message_of_the_day.MessageResponse;
 import org.davincischools.leo.server.controllers.ReactResourceController;
@@ -15,13 +19,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(properties = {USE_TEST_DATABASE})
 public class ServerApplicationTest {
   @Autowired private ReactResourceController controller;
   @Autowired private TestRestTemplate restTemplate;
+  @Autowired private TestData testData;
+  @Autowired private Database db;
 
   @Value(value = "${" + LOCAL_SERVER_PORT_PROPERTY + "}")
   private int port;
@@ -82,5 +90,12 @@ public class ServerApplicationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     // Serializing the default instance returned from MOTDService will result in no bytes.
     assertThat(response.getBody()).isNull();
+  }
+
+  @Test
+  public void usersAddedTest() {
+    User student = db.users.findByEmailAddress(testData.spongeBob.getEmailAddress());
+    assertThat(student).isNotNull();
+    assertThat(student.getId()).isGreaterThan(0);
   }
 }
