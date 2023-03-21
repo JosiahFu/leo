@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,7 @@ public class User {
 
   @Repository
   public interface Repo extends CrudRepository<User, Long> {
-    User findByEmailAddress(String emailAddress);
+    Optional<User> findByEmailAddress(String emailAddress);
   }
 
   private static final String SALT = Objects.requireNonNull(System.getProperty(DATABASE_SALT_KEY));
