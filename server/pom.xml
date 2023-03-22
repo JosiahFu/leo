@@ -89,6 +89,7 @@
             </extension>
         </extensions>
         <plugins>
+            <!-- Add java-protos to the source folders. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -110,6 +111,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <!-- Build the spring web server. -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -168,7 +170,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <target>
                                 <mkdir dir="${clients.directory}/web-browser/src/protos"/>
@@ -182,7 +184,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <target>
                                 <!-- Compile Protocol Buffers to JavaScript. -->
@@ -288,7 +290,7 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <protocArtifact>com.google.protobuf:protoc:${proto.version}:exe:${os.detected.classifier}</protocArtifact>
                             <protoSourceRoot>${project.build.sourceDirectory}/../protos</protoSourceRoot>
@@ -347,7 +349,7 @@
                 <executions>
                     <execution>
                         <id>copy maven dependencies</id>
-                        <phase>prepare-package</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

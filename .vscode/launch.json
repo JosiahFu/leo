@@ -6,19 +6,21 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Project Leo Server",
+            "name": "Server",
             "request": "launch",
             "mainClass": "org.davincischools.leo.server.ServerApplication",
             "projectName": "project-leo-server",
+            "args": "--project_leo.test.database.port=3307",
             "classPaths": ["$Auto", "${workspaceFolder}/server/target/classes"]
         },
         {
             "type": "java",
-            "name": "Launch Project Leo Server (with local React Server)",
+            "name": "Server + React Server",
             "request": "launch",
             "mainClass": "org.davincischools.leo.server.ServerApplication",
             "projectName": "project-leo-server",
-            "args": "--react_port 3000"
+            "args": "--react_port=3000  --project_leo.test.database.port=3307",
+            "classPaths": ["$Auto", "${workspaceFolder}/server/target/classes"]
         }
     ]
 }

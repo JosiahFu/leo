@@ -48,7 +48,9 @@ export function Root() {
 
   return (
     <>
-      <Link to={'/student/project-gen'}>Project Idea Generation Prototype</Link>
+      <Link to={'create-user'}>Create User</Link>
+      <br />
+      <Link to={'student/project-gen'}>Project Idea Generation Prototype</Link>
       <Ikigai
         id="ikigai"
         origin={ikigaiCenter}

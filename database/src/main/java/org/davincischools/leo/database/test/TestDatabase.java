@@ -75,7 +75,7 @@ public class TestDatabase {
       createUser(source, username, password);
       grantAllAccess(source, lastDataSource, username);
 
-      // Set database properties, if requested.
+      // Set database properties to point to the test database.
       environment
           .getPropertySources()
           .addFirst(
@@ -134,8 +134,8 @@ public class TestDatabase {
       // Ths failure is probably due to Docker Desktop not being installed.
       if (e.getMessage().contains("Could not find a valid Docker environment")) {
         throw new IllegalArgumentException(
-            "You may need to install Docker Desktop. See instructions at: "
-                + "https://github.com/DaVinciSchools/leo/edit/main/BUILDING.md#build-dependencies.",
+            "You may need to start or install Docker Desktop. See instructions at: "
+                + "https://github.com/DaVinciSchools/leo/blob/main/BUILDING.md#build-dependencies-docker-desktop.",
             e);
       }
       throw e;
