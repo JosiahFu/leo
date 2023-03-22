@@ -16,7 +16,7 @@ export default function CreateUser() {
   );
   const navigate = useNavigate();
 
-  const [role, setRole] = useState(Role.TEACHER);
+  const [role, setRole] = useState(Role.STUDENT);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -54,15 +54,6 @@ export default function CreateUser() {
     setVerifyPasswordError(response.verifyPasswordError || '');
   }
 
-  function onBlur(): void {
-    // Do nothing.
-    // userManagementService
-    //   .upsertUser(createUpsertUserRequest(Operation.CHECK))
-    //   .then(response => parseUpsertUserResponse(response))
-    //   // If there's an exception that's okay for the check.
-    //   .catch(error => console.log(error));
-  }
-
   function onAddUser(): void {
     userManagementService
       .upsertUser(createUpsertUserRequest(Operation.INSERT))
@@ -91,12 +82,7 @@ export default function CreateUser() {
                   <label htmlFor="role">User Type:</label>
                 </th>
                 <td>
-                  <select
-                    id="role"
-                    value={Role[role]}
-                    onChange={onRoleChanged}
-                    onBlur={onBlur}
-                  >
+                  <select id="role" value={Role[role]} onChange={onRoleChanged}>
                     {Object.keys(Role).map((key: string) => (
                       <option key={key} value={key}>
                         {key}
@@ -115,7 +101,6 @@ export default function CreateUser() {
                     value={firstName}
                     setValue={setFirstName}
                     autoComplete="given-name"
-                    onBlur={onBlur}
                     type="text"
                     maxLength={255}
                     error={firstNameError}
@@ -132,7 +117,6 @@ export default function CreateUser() {
                     value={lastName}
                     setValue={setLastName}
                     autoComplete="family-name"
-                    onBlur={onBlur}
                     type="text"
                     maxLength={255}
                     error={lastNameError}
@@ -149,7 +133,6 @@ export default function CreateUser() {
                     value={emailAddress}
                     setValue={setEmailAddress}
                     autoComplete="username"
-                    onBlur={onBlur}
                     type="email"
                     maxLength={254}
                     error={emailAddressError}
@@ -166,7 +149,6 @@ export default function CreateUser() {
                     value={password}
                     setValue={setPassword}
                     autoComplete="new-password"
-                    onBlur={onBlur}
                     type="password"
                     maxLength={128}
                     error={passwordError}
@@ -183,7 +165,6 @@ export default function CreateUser() {
                     value={verifyPassword}
                     setValue={setVerifyPassword}
                     autoComplete="new-password"
-                    onBlur={onBlur}
                     type="password"
                     maxLength={128}
                     error={verifyPasswordError}
@@ -193,7 +174,7 @@ export default function CreateUser() {
               <tr>
                 <td colSpan={2}>
                   <div className="form-buttons">
-                    <input type="button" value="Add User" onClick={onAddUser} />
+                    <input type="submit" value="Add User" onClick={onAddUser} />
                     &nbsp;
                     <input type="button" value="Cancel" onClick={onCancel} />
                   </div>

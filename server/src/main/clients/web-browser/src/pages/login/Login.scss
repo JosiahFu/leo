@@ -1,9 +1,10 @@
+@use '../../FieldWithError/FieldWithError.scss';
+
 .form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  white-space: nowrap;
 }
 
 form {
@@ -31,4 +32,3 @@ form td select {
   flex-flow: row;
   width: fit-content;
 }
-

@@ -48,6 +48,8 @@ export function Root() {
 
   return (
     <>
+      <Link to={'login'}>Login</Link>
+      <br />
       <Link to={'create-user'}>Create User</Link>
       <br />
       <Link to={'student/project-gen'}>Project Idea Generation Prototype</Link>

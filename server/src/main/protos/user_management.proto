@@ -19,6 +19,7 @@ enum Role {
 
 service UserManagementService {
   rpc UpsertUser (UpsertUserRequest) returns (UpsertUserResponse) {}
+  rpc Login (LoginRequest) returns (LoginResponse) {}
 }
 
 message UpsertUserRequest {
@@ -39,4 +40,16 @@ message UpsertUserResponse {
   optional string email_address_error = 5;
   optional string password_error = 6;
   optional string verify_password_error = 7;
+}
+
+message LoginRequest {
+  optional string email_address = 1;
+  optional string password = 2;
+}
+
+message LoginResponse {
+  optional bool success = 1;
+  optional bool login_failure = 2;
+  optional string email_address_error = 3;
+  optional string password_error = 4;
 }

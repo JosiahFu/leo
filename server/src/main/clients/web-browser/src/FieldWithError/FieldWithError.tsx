@@ -6,10 +6,10 @@ export function FieldWithError<T>(props: {
   value: T;
   setValue: (value: T) => void;
   autoComplete: string;
-  onBlur: () => void;
+  onBlur?: () => void;
   type: HTMLInputTypeAttribute;
   maxLength: number;
-  error: string | null | undefined;
+  error?: string;
 }) {
   function valueChanged(event: ChangeEvent<HTMLInputElement>): void {
     props.setValue(event.target.value as T);
