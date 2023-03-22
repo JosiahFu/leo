@@ -1,9 +1,11 @@
 package org.davincischools.leo.server;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor.USE_TEST_DATABASE;
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
+import java.util.Optional;
 import org.davincischools.leo.database.daos.Database;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.test.TestData;
@@ -94,8 +96,8 @@ public class ServerApplicationTest {
 
   @Test
   public void usersAddedTest() {
-    User student = db.users.findByEmailAddress(testData.spongeBob.getEmailAddress());
-    assertThat(student).isNotNull();
-    assertThat(student.getId()).isGreaterThan(0);
+    Optional<User> student = db.users.findByEmailAddress(testData.spongeBob.getEmailAddress());
+    assertThat(student).isPresent();
+    assertThat(student.get().getId()).isGreaterThan(0);
   }
 }
