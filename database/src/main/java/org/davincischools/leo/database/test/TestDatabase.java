@@ -58,7 +58,9 @@ public class TestDatabase {
       synchronized (mySqlContainers) {
         container = mySqlContainers.get(lastDataSource);
         if (container == null) {
-          int port = environment.getProperty(TEST_DATABASE_PORT_KEY, Integer.class, TestSocketUtils.findAvailableTcpPort());
+          int port =
+              environment.getProperty(
+                  TEST_DATABASE_PORT_KEY, Integer.class, TestSocketUtils.findAvailableTcpPort());
           container = createContainer(lastDataSource, port);
           mySqlContainers.put(lastDataSource, container);
           DataSource source = getDataSource(container);

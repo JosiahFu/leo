@@ -1,7 +1,7 @@
+import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import './index.scss';
+import {HashRouter, Route, Routes} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import {Root} from './pages/Root';
@@ -10,37 +10,31 @@ import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
 import StudentUpload from './pages/student/Upload';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-  },
-  {
-    path: '/student',
-    element: <StudentNav />,
-    children: [
-      {
-        path: 'project-gen',
-        element: <StudentProjectGen />,
-      },
-      {
-        path: 'project-implement',
-        element: <StudentProjectImplementation />,
-      },
-      {
-        path: 'upload',
-        element: <StudentUpload />,
-      },
-    ],
-  },
-]);
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// We use HashRouter as a temporary fix for a longer-term solution.
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <div className="header">
+      <a href="/">PROJECT LEO</a>
+    </div>
+    <div className="main">
+      <HashRouter>
+        <Routes>
+          <Route path="/" Component={Root} />
+          <Route path="/studdent" Component={StudentNav} />
+          <Route path="/student/project-gen" Component={StudentProjectGen} />
+          <Route
+            path="/student/project-implement"
+            Component={StudentProjectImplementation}
+          />
+          <Route path="/student/upload" Component={StudentUpload} />
+        </Routes>
+      </HashRouter>
+    </div>
+    <div className="footer">&nbsp;</div>
   </React.StrictMode>
 );
 

@@ -5,8 +5,7 @@ import './Root.scss';
 import {Link} from 'react-router-dom';
 
 export function Root() {
-  // motd = MessageOfTheDay
-  const [motd, setMotd] = useState('');
+  const [messageOfTheDay, setMessageOfTheDay] = useState('');
 
   const [ikigaiCenter, setIkigaiCenter] = useState<Coordinate | null>(null);
   const [ikigaiDistance, setIkigaiDistance] = useState(0);
@@ -40,28 +39,23 @@ export function Root() {
     motdService
       .getMessage(protos.message_of_the_day.MessageRequest.create({}))
       .then((response: protos.message_of_the_day.MessageResponse) => {
-        setMotd(response.message!);
+        setMessageOfTheDay(response.message!);
       })
       .catch((error: Error) => {
-        setMotd(`${error.name}: ${error.message}`);
+        setMessageOfTheDay(`${error.name}: ${error.message}`);
       });
   }, []);
 
   return (
     <>
-      <div className="header">PROJECT LEO</div>
-      <div className="main">
-        <Link to={'student/project-gen'}>
-          Project Idea Generation Prototype
-        </Link>
-        <Ikigai
-          id="ikigai"
-          origin={ikigaiCenter}
-          size={ikigaiSize}
-          distance={ikigaiDistance}
-        />
-      </div>
-      <div className="footer">{motd}</div>
+      <Link to={'/student/project-gen'}>Project Idea Generation Prototype</Link>
+      <Ikigai
+        id="ikigai"
+        origin={ikigaiCenter}
+        size={ikigaiSize}
+        distance={ikigaiDistance}
+      />
+      {messageOfTheDay}
     </>
   );
 }
