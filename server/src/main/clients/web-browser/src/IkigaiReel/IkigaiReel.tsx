@@ -1,5 +1,5 @@
 import './IkigaiReel.scss';
-import {forwardRef, Ref, useEffect, useImperativeHandle, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {IkigaiCategory} from '../IkigaiCategory/IkigaiCategory';
 import {doTransition} from '../utils/transitions';
 

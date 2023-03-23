@@ -21,7 +21,6 @@ export function IkigaiCategory(props: {
   const edgeAt45Deg = (props.size / 2) * Math.cos(0.25 * Math.PI);
   const grayRgb = 192;
 
-  const [initialRadians] = useState(props.radians);
   const [initialTextRadians] = useState(props.textRadians || props.radians);
 
   for (let i = 0; i < props.resizeAndRotateElementIds.length; ++i) {
