@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import * as protos from '../protos';
-import {Coordinate, Ikigai} from '../Ikigai/Ikigai';
+import {Coordinate, IkigaiReel} from '../IkigaiReel/IkigaiReel';
 import './Root.scss';
 import {Link} from 'react-router-dom';
 
@@ -16,10 +16,15 @@ export function Root() {
     if (main) {
       setIkigaiCenter({
         x: main.offsetLeft + main.offsetWidth / 2,
-        y: main.offsetTop + main.offsetHeight / 2,
+        y:
+          main.offsetTop +
+          main.offsetHeight / 2 +
+          (Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.07,
       });
-      setIkigaiSize((Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.9);
-      setIkigaiDistance(Math.min(main.offsetWidth, main.offsetHeight) / 5);
+      setIkigaiSize((Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.8);
+      setIkigaiDistance(
+        (Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.8 * 0.4
+      );
     }
   }
 
@@ -53,11 +58,13 @@ export function Root() {
       <Link to={'create-user'}>Create User</Link>
       <br />
       <Link to={'student/project-gen'}>Project Idea Generation Prototype</Link>
-      <Ikigai
-        id="ikigai"
+      <IkigaiReel
+        id="IkigaiReel"
         origin={ikigaiCenter}
         size={ikigaiSize}
-        distance={ikigaiDistance}
+        sizeDelta={ikigaiSize / 6}
+        distance={ikigaiDistance * 1.1}
+        distanceDelta={ikigaiDistance / 6}
       />
       {messageOfTheDay}
     </>

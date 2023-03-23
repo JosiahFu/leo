@@ -45,7 +45,7 @@ export const Ikigai = forwardRef(
     const [alpha, setAlpha] = useState(0);
     const [size, setSize] = useState(0);
 
-    const [lovesValue] = useState('');
+    const [lovesValueIsSet] = useState(false);
     const [worldNeedsValueIsSet] = useState(false);
     const [paidForValueIsSet] = useState(false);
     const [goodAtValueIsSet] = useState(false);
@@ -143,8 +143,8 @@ export const Ikigai = forwardRef(
             alpha={alpha}
             radians={radians + 1.5 * Math.PI}
             distance={distance}
-            resizeAndRotateElementId={props.id + '.lovesPanel'}
-            highlightBackground={lovesValue !== ''}
+            resizeAndRotateElementIds={[props.id + '.lovesPanel']}
+            highlightBackground={lovesValueIsSet ? 1 : 0}
           />
           <IkigaiCategory
             id={props.id + '.worldNeedsCategory'}
@@ -154,8 +154,8 @@ export const Ikigai = forwardRef(
             alpha={alpha}
             radians={radians + 0 * Math.PI}
             distance={distance}
-            resizeAndRotateElementId={props.id + '.worldNeedsPanel'}
-            highlightBackground={worldNeedsValueIsSet}
+            resizeAndRotateElementIds={[props.id + '.worldNeedsPanel']}
+            highlightBackground={worldNeedsValueIsSet ? 1 : 0}
           />
           <IkigaiCategory
             id={props.id + '.paidForCategory'}
@@ -165,8 +165,8 @@ export const Ikigai = forwardRef(
             alpha={alpha}
             radians={radians + 0.5 * Math.PI}
             distance={distance}
-            resizeAndRotateElementId={props.id + '.paidForPanel'}
-            highlightBackground={paidForValueIsSet}
+            resizeAndRotateElementIds={[props.id + '.paidForPanel']}
+            highlightBackground={paidForValueIsSet ? 1 : 0}
           />
           <IkigaiCategory
             id={props.id + '.goodAtCategory'}
@@ -176,8 +176,8 @@ export const Ikigai = forwardRef(
             alpha={alpha}
             radians={radians + Math.PI}
             distance={distance}
-            resizeAndRotateElementId={props.id + '.goodAtPanel'}
-            highlightBackground={goodAtValueIsSet}
+            resizeAndRotateElementIds={[props.id + '.goodAtPanel']}
+            highlightBackground={goodAtValueIsSet ? 1 : 0}
           />
           <form>
             {/* Initially, set everything to hidden to not flash before being positioned.*/}

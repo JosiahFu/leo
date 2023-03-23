@@ -8,9 +8,11 @@ export function IkigaiCategory(props: {
   color: {r: number; g: number; b: number};
   alpha: number;
   radians: number;
+  textRadians?: number;
   distance: number;
-  resizeAndRotateElementId: string;
-  highlightBackground: boolean;
+  resizeAndRotateElementIds: string[];
+  // From 0 (gray with only colored border) to 1 (colored background no border).
+  highlightBackground: number;
 }) {
   const x =
     props.origin.x + Math.cos(props.radians) * props.distance - props.size / 2;
@@ -20,23 +22,27 @@ export function IkigaiCategory(props: {
   const grayRgb = 192;
 
   const [initialRadians] = useState(props.radians);
+  const [initialTextRadians] = useState(props.textRadians || props.radians);
 
-  const resizeAndRotateElement = document.getElementById(
-    props.resizeAndRotateElementId
-  );
-  if (resizeAndRotateElement) {
-    resizeAndRotateElement.style.rotate =
-      (props.radians - initialRadians).toString() + 'rad';
-    resizeAndRotateElement.style.position = 'absolute';
-    resizeAndRotateElement.style.left =
-      (x + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
-    resizeAndRotateElement.style.top =
-      (y + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
-    resizeAndRotateElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
-    resizeAndRotateElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
-    resizeAndRotateElement.style.fontSize = (props.size / 12).toString() + 'px';
-    // Initially, these are set to hidden so that they don't appear before they are positioned.
-    resizeAndRotateElement.style.visibility = 'visible';
+  for (let i = 0; i < props.resizeAndRotateElementIds.length; ++i) {
+    const resizeAndRotateElement = document.getElementById(
+      props.resizeAndRotateElementIds[i]
+    );
+    if (resizeAndRotateElement) {
+      resizeAndRotateElement.style.rotate =
+        (props.radians - initialTextRadians).toString() + 'rad';
+      resizeAndRotateElement.style.position = 'absolute';
+      resizeAndRotateElement.style.left =
+        (x + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
+      resizeAndRotateElement.style.top =
+        (y + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
+      resizeAndRotateElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
+      resizeAndRotateElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
+      resizeAndRotateElement.style.fontSize =
+        (props.size / 12).toString() + 'px';
+      // Initially, these are set to hidden so that they don't appear before they are positioned.
+      resizeAndRotateElement.style.visibility = 'visible';
+    }
   }
 
   return (
@@ -51,15 +57,24 @@ export function IkigaiCategory(props: {
           top: y,
           height: props.size,
           backgroundColor: `rgba(
-          ${props.highlightBackground ? props.color.r : grayRgb},
-          ${props.highlightBackground ? props.color.g : grayRgb},
-          ${props.highlightBackground ? props.color.b : grayRgb},
+          ${
+            props.highlightBackground * props.color.r +
+            (1 - props.highlightBackground) * grayRgb
+          },
+          ${
+            props.highlightBackground * props.color.g +
+            (1 - props.highlightBackground) * grayRgb
+          },
+          ${
+            props.highlightBackground * props.color.b +
+            (1 - props.highlightBackground) * grayRgb
+          },
           ${props.alpha})`,
           border: `2px solid rgba(
           ${props.color.r},
           ${props.color.g},
           ${props.color.b},
-          ${props.highlightBackground ? 0 : props.alpha})`,
+          ${(1 - props.highlightBackground) * props.alpha})`,
         }}
       />
     </>
