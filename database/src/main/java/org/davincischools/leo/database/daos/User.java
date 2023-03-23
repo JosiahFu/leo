@@ -12,14 +12,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Repository;
-import org.testcontainers.shaded.org.bouncycastle.crypto.generators.Argon2BytesGenerator;
-import org.testcontainers.shaded.org.bouncycastle.crypto.params.Argon2Parameters;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +27,7 @@ public class User {
   public static final int MAX_LAST_NAME_LENGTH = 255;
   public static final int MAX_EMAIL_ADDRESS_LENGTH = 254;
   public static final int MAX_PASSWORD_LENGTH = 128;
+  public static final int MAX_ENCODED_PASSWORD_LENGTH = 65535;
 
   public static boolean isEmailAddressValid(String emailAddress) {
     String[] split = emailAddress.split("@", 3);
@@ -47,14 +46,6 @@ public class User {
   }
 
   private static final String SALT = Objects.requireNonNull(System.getProperty(DATABASE_SALT_KEY));
-  private static final Argon2Parameters ARGON_2_PARAMETERS =
-      new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
-          .withVersion(Argon2Parameters.ARGON2_VERSION_13)
-          .withIterations(4)
-          .withMemoryPowOfTwo(20) // 1 MiB
-          .withParallelism(1)
-          .withSalt(SALT.getBytes(StandardCharsets.UTF_8))
-          .build();
 
   public enum Role {
     STUDENT,
@@ -81,8 +72,8 @@ public class User {
   @Column(nullable = false, unique = true, length = MAX_EMAIL_ADDRESS_LENGTH)
   private String emailAddress;
 
-  @Column(nullable = false, length = 65)
-  private byte[] passwordHash;
+  @Column(nullable = false)
+  private byte[] encodedPassword;
 
   public long getId() {
     return id;
@@ -131,24 +122,21 @@ public class User {
     return this;
   }
 
-  private byte[] getPasswordHash(String password) {
-    Preconditions.checkArgument(password.length() <= MAX_PASSWORD_LENGTH, "Password too long.");
-    byte[] result = new byte[65];
-    result[0] = 1; // Hashing mechanism version.
-
-    Argon2BytesGenerator gen = new Argon2BytesGenerator();
-    gen.init(ARGON_2_PARAMETERS);
-    gen.generateBytes(password.getBytes(StandardCharsets.UTF_8), result, 1, result.length - 1);
-
-    return result;
-  }
-
   public boolean checkPassword(String password) {
-    return Arrays.equals(passwordHash, getPasswordHash(password));
+    Preconditions.checkArgument(password.length() <= MAX_PASSWORD_LENGTH, "Password too long.");
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+        .matches(password, new String(encodedPassword, StandardCharsets.UTF_8));
   }
 
   public User setPassword(String password) {
-    passwordHash = getPasswordHash(password);
+    Preconditions.checkArgument(password.length() <= MAX_PASSWORD_LENGTH, "Password too long.");
+    byte[] encodedPassword =
+        PasswordEncoderFactories.createDelegatingPasswordEncoder()
+            .encode(password)
+            .getBytes(StandardCharsets.UTF_8);
+    Preconditions.checkArgument(
+        encodedPassword.length <= MAX_ENCODED_PASSWORD_LENGTH, "Encoded password too long.");
+    this.encodedPassword = encodedPassword;
     return this;
   }
 }

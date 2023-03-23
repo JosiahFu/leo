@@ -7,6 +7,6 @@ CREATE TABLE users
     -- https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
     email_address VARCHAR(254) UNIQUE NOT NULL,
     -- First byte is the hash version.
-    password_hash BINARY(65) NOT NULL,
+    encoded_password BLOB NOT NULL,
     PRIMARY KEY (id)
 ) CHAR SET `UTF8MB4`;
