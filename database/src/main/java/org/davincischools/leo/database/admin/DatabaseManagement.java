@@ -9,10 +9,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import javax.sql.DataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 public final class DatabaseManagement {
+
+  private static final Logger log = LogManager.getLogger();
 
   public static void loadSchema(DataSource db) throws SQLException, IOException {
     try (Connection connection = db.getConnection()) {
@@ -23,6 +27,7 @@ public final class DatabaseManagement {
       // Apply each schema file in order.
       resources.sort(Comparator.comparing(Resource::getFilename));
       for (Resource resource : resources) {
+        log.atInfo().log("Loading schema: {}", resource.getFilename());
         byte[] sqlBytes = ByteStreams.toByteArray(resource.getInputStream());
         String sql = new String(sqlBytes, StandardCharsets.UTF_8);
         connection.prepareCall(sql).execute();

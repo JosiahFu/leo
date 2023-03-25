@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.admin.DatabaseManagement;
-import org.davincischools.leo.database.daos.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -87,9 +86,7 @@ public class TestDatabase {
                       .put("spring.datasource.password", password)
                       .put("spring.datasource.driver-class-name", container.getDriverClassName())
                       .put(USE_TEST_DATABASE_KEY, true)
-                      .put(Database.DATABASE_SALT_KEY, "salt")
                       .build()));
-      System.setProperty(Database.DATABASE_SALT_KEY, "salt");
     } catch (SQLException | IOException | RuntimeException e) {
       environment.getPropertySources().remove(TestDatabase.class.getName());
       throw e;

@@ -1,6 +1,6 @@
 import {Message, Method, rpc, RPCImpl, RPCImplCallback} from 'protobufjs';
 
-export * from './protos/protobuf-js';
+export * from './generated/protobuf-js';
 
 const memoizedServices: Map<string, unknown> = new Map();
 

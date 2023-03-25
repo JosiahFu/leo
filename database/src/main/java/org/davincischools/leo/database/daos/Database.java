@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 @EntityScan(basePackageClasses = Database.class)
 public class Database {
 
-  public static final String DATABASE_SALT_KEY = "project_leo.database.salt";
-
   public final Repo users;
 
   public Database(@Autowired Repo users) {

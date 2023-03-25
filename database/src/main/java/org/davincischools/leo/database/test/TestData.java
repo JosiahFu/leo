@@ -3,7 +3,6 @@ package org.davincischools.leo.database.test;
 import java.util.UUID;
 import org.davincischools.leo.database.daos.Database;
 import org.davincischools.leo.database.daos.User;
-import org.davincischools.leo.database.daos.User.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,6 @@ public class TestData {
     db.users.save(
         mrsPuff =
             new User()
-                .setRole(Role.TEACHER)
                 .setFirstName("Poppy")
                 .setLastName("Puff")
                 .setEmailAddress("poppy.puff@bikinibottom.com")
@@ -32,7 +30,6 @@ public class TestData {
     db.users.save(
         spongeBob =
             new User()
-                .setRole(Role.STUDENT)
                 .setFirstName("SpongeBob")
                 .setLastName("SquarePants")
                 .setEmailAddress("spongebob.squarepants@bikinibottom.com")
@@ -40,7 +37,6 @@ public class TestData {
     db.users.save(
         sandy =
             new User()
-                .setRole(Role.ADMIN)
                 .setFirstName("Sandy")
                 .setLastName("Cheeks")
                 .setEmailAddress("sandy.cheeks@bikinibottom.com")

@@ -1,18 +1,13 @@
 package org.davincischools.leo.database.daos;
 
-import static org.davincischools.leo.database.daos.Database.DATABASE_SALT_KEY;
-
 import com.google.common.base.Preconditions;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.Optional;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.repository.CrudRepository;
@@ -45,8 +40,6 @@ public class User {
     Optional<User> findByEmailAddress(String emailAddress);
   }
 
-  private static final String SALT = Objects.requireNonNull(System.getProperty(DATABASE_SALT_KEY));
-
   public enum Role {
     STUDENT,
     TEACHER,
@@ -64,10 +57,6 @@ public class User {
 
   @Column(nullable = false, length = MAX_LAST_NAME_LENGTH)
   private String lastName;
-
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private Role role;
 
   @Column(nullable = false, unique = true, length = MAX_EMAIL_ADDRESS_LENGTH)
   private String emailAddress;
@@ -97,15 +86,6 @@ public class User {
   public User setLastName(String lastName) {
     Preconditions.checkArgument(lastName.length() <= MAX_LAST_NAME_LENGTH, "Last name too long.");
     this.lastName = lastName;
-    return this;
-  }
-
-  public Role getRole() {
-    return role;
-  }
-
-  public User setRole(Role role) {
-    this.role = role;
     return this;
   }
 

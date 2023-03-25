@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.davincischools.leo.database.daos.Database;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +17,9 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-@SpringBootApplication(scanBasePackages = "org.davincischools.leo")
+@SpringBootApplication(
+    scanBasePackages = "org.davincischools.leo",
+    scanBasePackageClasses = Database.class)
 public class ServerApplication {
 
   private static final Logger log = LogManager.getLogger();

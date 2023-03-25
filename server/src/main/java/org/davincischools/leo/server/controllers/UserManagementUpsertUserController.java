@@ -72,7 +72,6 @@ public class UserManagementUpsertUserController {
 
     db.users.save(
         new User()
-            .setRole(User.Role.valueOf(request.getRole().name()))
             .setFirstName(request.getFirstName())
             .setLastName(request.getLastName())
             .setEmailAddress(request.getEmailAddress())

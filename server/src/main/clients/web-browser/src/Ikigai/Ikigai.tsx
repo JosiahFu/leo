@@ -11,7 +11,7 @@ import {IkigaiCategory} from '../IkigaiCategory/IkigaiCategory';
 import {doTransition, overshootTransition} from '../utils/transitions';
 import {SpinButton, SpinIconFunctions} from '../SpinIcon/SpinButton';
 import {PartialTextOpenAiPrompt} from '../PartialTextOpenAiPrompt/PartialTextOpenAiPrompt';
-import {partial_text_openai_prompt} from '../protos/protobuf-js';
+import {partial_text_openai_prompt} from '../protos';
 import GetSuggestionsRequest = partial_text_openai_prompt.GetSuggestionsRequest;
 
 export type IkigaiFunctions = {
