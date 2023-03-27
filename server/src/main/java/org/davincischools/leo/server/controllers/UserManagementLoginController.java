@@ -1,13 +1,12 @@
 package org.davincischools.leo.server.controllers;
 
-import static org.davincischools.leo.database.daos.EntityUtils.checkRequiredMaxLength;
-import static org.davincischools.leo.database.daos.EntityUtils.checkThat;
-import static org.davincischools.leo.database.daos.User.MAX_EMAIL_ADDRESS_LENGTH;
-import static org.davincischools.leo.database.daos.User.MAX_PASSWORD_LENGTH;
+import static org.davincischools.leo.database.utils.EntityUtils.checkRequiredMaxLength;
+import static org.davincischools.leo.database.utils.EntityUtils.checkThat;
 
 import java.util.Optional;
-import org.davincischools.leo.database.daos.Database;
 import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.database.utils.UserUtils;
 import org.davincischools.leo.protos.user_management.LoginRequest;
 import org.davincischools.leo.protos.user_management.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +41,8 @@ public class UserManagementLoginController {
       return;
     }
 
-    Optional<User> user = db.users.findByEmailAddress(request.getEmailAddress());
-    if (user.isPresent() && user.get().checkPassword(request.getPassword())) {
+    Optional<User> user = db.getUsers().findByEmailAddress(request.getEmailAddress());
+    if (user.isPresent() && UserUtils.checkPassword(user.get(), request.getPassword())) {
       response.setSuccess(true);
       return;
     }
@@ -58,18 +57,22 @@ public class UserManagementLoginController {
 
     inputValid &=
         checkThat(
-            User.isEmailAddressValid(request.getEmailAddress()),
+            UserUtils.isEmailAddressValid(request.getEmailAddress()),
             response::setEmailAddressError,
             "Invalid email address.");
     inputValid &=
         checkRequiredMaxLength(
             request.getEmailAddress(),
             "Email address",
-            MAX_EMAIL_ADDRESS_LENGTH,
+            Database.USER_MAX_EMAIL_ADDRESS_LENGTH,
             response::setEmailAddressError);
+
     inputValid &=
-        checkRequiredMaxLength(
-            request.getPassword(), "Password", MAX_PASSWORD_LENGTH, response::setPasswordError);
+        checkThat(
+            request.getPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+            response::setPasswordError,
+            "Password must be at least %s characters long.",
+            Database.USER_MIN_PASSWORD_LENGTH);
 
     return !inputValid;
   }

@@ -9,18 +9,25 @@ CREATE TABLE users
     -- First byte is the hash version.
     encoded_password BLOB                NOT NULL,
 
-    teacher_id       BIGINT,
+    admin_id       BIGINT UNIQUE,
+    CONSTRAINT users_admin_id
+        FOREIGN KEY (admin_id)
+            REFERENCES admins (id)
+            ON DELETE RESTRICT
+            ON UPDATE RESTRICT,
+
+    teacher_id       BIGINT UNIQUE,
     CONSTRAINT users_teacher_id
         FOREIGN KEY (teacher_id)
             REFERENCES teachers (id)
-            ON DELETE SET NULL
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    student_id       BIGINT,
+    student_id       BIGINT UNIQUE,
     CONSTRAINT users_student_id
         FOREIGN KEY (student_id)
             REFERENCES students (id)
-            ON DELETE SET NULL
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

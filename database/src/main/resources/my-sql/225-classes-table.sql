@@ -9,6 +9,7 @@ CREATE TABLE classes
     CONSTRAINT classes_school_id
         FOREIGN KEY (school_id)
             REFERENCES schools (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

@@ -13,12 +13,14 @@ CREATE TABLE projects
     CONSTRAINT projects_assignment_id
         FOREIGN KEY (assignment_id)
             REFERENCES assignments (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
     student_id     BIGINT       NOT NULL,
     CONSTRAINT projects_student_id
         FOREIGN KEY (student_id)
             REFERENCES students (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

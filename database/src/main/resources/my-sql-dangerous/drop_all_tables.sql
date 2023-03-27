@@ -1,0 +1,16 @@
+DROP TABLE portfolios;
+DROP TABLE project_posts;
+DROP TABLE project_cycles;
+DROP TABLE projects;
+DROP TABLE knowledge_and_skills;
+DROP TABLE classes_teachers;
+DROP TABLE classes_students;
+DROP TABLE assignments;
+DROP TABLE users;
+DROP TABLE teachers_schools;
+DROP TABLE classes;
+DROP TABLE teachers;
+DROP TABLE students;
+DROP TABLE admins;
+DROP TABLE schools;
+DROP TABLE districts;

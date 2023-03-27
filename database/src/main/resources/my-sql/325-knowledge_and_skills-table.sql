@@ -11,6 +11,7 @@ CREATE TABLE knowledge_and_skills
     CONSTRAINT knowledge_and_skills_project_id
         FOREIGN KEY (project_id)
             REFERENCES projects (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

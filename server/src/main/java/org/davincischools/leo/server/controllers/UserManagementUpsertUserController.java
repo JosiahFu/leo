@@ -1,18 +1,14 @@
 package org.davincischools.leo.server.controllers;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.davincischools.leo.database.daos.EntityUtils.checkMaxLength;
-import static org.davincischools.leo.database.daos.EntityUtils.checkRequired;
-import static org.davincischools.leo.database.daos.EntityUtils.checkRequiredMaxLength;
-import static org.davincischools.leo.database.daos.EntityUtils.checkThat;
-import static org.davincischools.leo.database.daos.User.MAX_EMAIL_ADDRESS_LENGTH;
-import static org.davincischools.leo.database.daos.User.MAX_FIRST_NAME_LENGTH;
-import static org.davincischools.leo.database.daos.User.MAX_LAST_NAME_LENGTH;
-import static org.davincischools.leo.database.daos.User.MAX_PASSWORD_LENGTH;
+import static org.davincischools.leo.database.utils.EntityUtils.checkRequired;
+import static org.davincischools.leo.database.utils.EntityUtils.checkRequiredMaxLength;
+import static org.davincischools.leo.database.utils.EntityUtils.checkThat;
 
 import java.util.Optional;
-import org.davincischools.leo.database.daos.Database;
 import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.database.utils.UserUtils;
 import org.davincischools.leo.protos.user_management.UpsertUserRequest;
 import org.davincischools.leo.protos.user_management.UpsertUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +45,7 @@ public class UserManagementUpsertUserController {
     Optional<User> user = Optional.empty();
     if (request.hasId()) {
       checkArgument(!request.hasRole(), "Role cannot be changed.");
-      user = db.users.findById(request.getId());
+      user = db.getUsers().findById(request.getId());
     } else {
       checkArgument(request.hasRole(), "Role is required.");
     }
@@ -70,12 +66,14 @@ public class UserManagementUpsertUserController {
       return;
     }
 
-    db.users.save(
-        new User()
-            .setFirstName(request.getFirstName())
-            .setLastName(request.getLastName())
-            .setEmailAddress(request.getEmailAddress())
-            .setPassword(request.getPassword()));
+    db.getUsers()
+        .save(
+            UserUtils.setPassword(
+                new User()
+                    .setFirstName(request.getFirstName())
+                    .setLastName(request.getLastName())
+                    .setEmailAddress(request.getEmailAddress()),
+                request.getPassword()));
 
     response.setSuccess(true);
   }
@@ -84,7 +82,7 @@ public class UserManagementUpsertUserController {
     checkArgument(request.hasId());
     checkArgument(!request.hasRole(), "Role cannot be changed.");
 
-    Optional<User> user = db.users.findById(request.getId());
+    Optional<User> user = db.getUsers().findById(request.getId());
     if (user.isEmpty()) {
       throw new IllegalArgumentException("User ID does not exist: " + request.getId());
     }
@@ -104,10 +102,10 @@ public class UserManagementUpsertUserController {
       user.get().setEmailAddress(request.getEmailAddress());
     }
     if (request.hasPassword() && !request.getPassword().isEmpty()) {
-      user.get().setPassword(request.getPassword());
+      UserUtils.setPassword(user.get(), request.getPassword());
     }
 
-    db.users.save(user.get());
+    db.getUsers().save(user.get());
 
     response.setSuccess(true);
   }
@@ -121,21 +119,24 @@ public class UserManagementUpsertUserController {
         checkRequiredMaxLength(
             request.getFirstName(),
             "First name",
-            MAX_FIRST_NAME_LENGTH,
+            Database.USER_MAX_FIRST_NAME_LENGTH,
             response::setFirstNameError);
     inputValid &=
         checkRequiredMaxLength(
-            request.getLastName(), "Last name", MAX_LAST_NAME_LENGTH, response::setLastNameError);
+            request.getLastName(),
+            "Last name",
+            Database.USER_MAX_LAST_NAME_LENGTH,
+            response::setLastNameError);
     inputValid &=
         checkThat(
-            User.isEmailAddressValid(request.getEmailAddress()),
+            UserUtils.isEmailAddressValid(request.getEmailAddress()),
             response::setEmailAddressError,
             "Invalid email address.");
     inputValid &=
         checkRequiredMaxLength(
             request.getEmailAddress(),
             "Email address",
-            MAX_EMAIL_ADDRESS_LENGTH,
+            Database.USER_MAX_EMAIL_ADDRESS_LENGTH,
             response::setEmailAddressError);
 
     inputValid &=
@@ -150,19 +151,38 @@ public class UserManagementUpsertUserController {
     if (!existingUser.isPresent()) {
       inputValid &= checkRequired(request.getPassword(), "Password", response::setPasswordError);
       inputValid &=
-          checkRequired(request.getVerifyPassword(), "Password", response::setVerifyPasswordError);
-    }
-    inputValid &=
-        checkMaxLength(
-            request.getPassword(), "Password", MAX_PASSWORD_LENGTH, response::setPasswordError);
-    inputValid &=
-        checkMaxLength(
-            request.getVerifyPassword(),
-            "Password",
-            MAX_PASSWORD_LENGTH,
-            response::setVerifyPasswordError);
+          checkThat(
+              request.getPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+              response::setVerifyPasswordError,
+              "Password must be at least %s characters long.",
+              Database.USER_MIN_PASSWORD_LENGTH);
 
-    Optional<User> emailUser = db.users.findByEmailAddress(request.getEmailAddress());
+      inputValid &=
+          checkRequired(request.getVerifyPassword(), "Password", response::setVerifyPasswordError);
+      inputValid &=
+          checkThat(
+              request.getVerifyPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+              response::setVerifyPasswordError,
+              "Password must be at least %s characters long.",
+              Database.USER_MIN_PASSWORD_LENGTH);
+    } else {
+      if (request.hasPassword() || request.hasVerifyPassword()) {
+        inputValid &=
+            checkThat(
+                request.getPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+                response::setVerifyPasswordError,
+                "Password must be at least %s characters long.",
+                Database.USER_MIN_PASSWORD_LENGTH);
+        inputValid &=
+            checkThat(
+                request.getVerifyPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+                response::setVerifyPasswordError,
+                "Password must be at least %s characters long.",
+                Database.USER_MIN_PASSWORD_LENGTH);
+      }
+    }
+
+    Optional<User> emailUser = db.getUsers().findByEmailAddress(request.getEmailAddress());
     if (emailUser.isPresent()) {
       inputValid &=
           checkThat(

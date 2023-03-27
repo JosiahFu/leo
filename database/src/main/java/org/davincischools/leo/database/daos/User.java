@@ -1,122 +1,134 @@
 package org.davincischools.leo.database.daos;
 
-import com.google.common.base.Preconditions;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.stereotype.Repository;
 
-@Entity
-@Table(name = "users")
+@Entity(name = User.ENTITY_NAME)
+@Table(
+    name = User.TABLE_NAME,
+    schema = "leo_sahendrickson",
+    indexes = {
+      @Index(name = "email_address", columnList = "email_address", unique = true),
+      @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
+      @Index(name = "admin_id", columnList = "admin_id", unique = true),
+      @Index(name = "student_id", columnList = "student_id", unique = true)
+    })
 public class User {
 
-  public static final int MAX_FIRST_NAME_LENGTH = 255;
-  public static final int MAX_LAST_NAME_LENGTH = 255;
-  public static final int MAX_EMAIL_ADDRESS_LENGTH = 254;
-  public static final int MAX_PASSWORD_LENGTH = 128;
-  public static final int MAX_ENCODED_PASSWORD_LENGTH = 65535;
+  public static final String ENTITY_NAME = "User";
+  public static final String TABLE_NAME = "users";
+  public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_FIRSTNAME_NAME = "first_name";
+  public static final String COLUMN_LASTNAME_NAME = "last_name";
+  public static final String COLUMN_EMAILADDRESS_NAME = "email_address";
+  public static final String COLUMN_ENCODEDPASSWORD_NAME = "encoded_password";
 
-  public static boolean isEmailAddressValid(String emailAddress) {
-    String[] split = emailAddress.split("@", 3);
-    if (split.length != 2) {
-      return false;
-    }
-    if (split[0].isEmpty() || split[1].isEmpty()) {
-      return false;
-    }
-    return true;
-  }
+  private Long id;
 
-  @Repository
-  public interface Repo extends CrudRepository<User, Long> {
-    Optional<User> findByEmailAddress(String emailAddress);
-  }
-
-  public enum Role {
-    STUDENT,
-    TEACHER,
-    ADMIN
-  }
-
-  @Id
-  @Column(updatable = false)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users.id.PRIMARY")
-  @GenericGenerator(name = "users.id.PRIMARY", strategy = "native")
-  private long id;
-
-  @Column(nullable = false, length = MAX_FIRST_NAME_LENGTH)
   private String firstName;
 
-  @Column(nullable = false, length = MAX_LAST_NAME_LENGTH)
   private String lastName;
 
-  @Column(nullable = false, unique = true, length = MAX_EMAIL_ADDRESS_LENGTH)
   private String emailAddress;
 
-  @Column(nullable = false)
   private byte[] encodedPassword;
 
-  public long getId() {
+  private Admin admin;
+
+  private Teacher teacher;
+
+  private Student student;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = COLUMN_ID_NAME, nullable = false)
+  public Long getId() {
     return id;
   }
 
+  public User setId(Long id) {
+    this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_FIRSTNAME_NAME, nullable = false)
   public String getFirstName() {
     return firstName;
   }
 
   public User setFirstName(String firstName) {
-    Preconditions.checkArgument(
-        firstName.length() <= MAX_FIRST_NAME_LENGTH, "First name too long.");
     this.firstName = firstName;
     return this;
   }
 
+  @Column(name = COLUMN_LASTNAME_NAME, nullable = false)
   public String getLastName() {
     return lastName;
   }
 
   public User setLastName(String lastName) {
-    Preconditions.checkArgument(lastName.length() <= MAX_LAST_NAME_LENGTH, "Last name too long.");
     this.lastName = lastName;
     return this;
   }
 
+  @Column(name = COLUMN_EMAILADDRESS_NAME, nullable = false, length = 254)
   public String getEmailAddress() {
     return emailAddress;
   }
 
   public User setEmailAddress(String emailAddress) {
-    Preconditions.checkArgument(
-        emailAddress.length() <= MAX_EMAIL_ADDRESS_LENGTH, "Email address too long.");
-    Preconditions.checkArgument(
-        isEmailAddressValid(emailAddress), "Malformed email address: %s", emailAddress);
     this.emailAddress = emailAddress;
     return this;
   }
 
-  public boolean checkPassword(String password) {
-    Preconditions.checkArgument(password.length() <= MAX_PASSWORD_LENGTH, "Password too long.");
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-        .matches(password, new String(encodedPassword, StandardCharsets.UTF_8));
+  @Column(name = COLUMN_ENCODEDPASSWORD_NAME, nullable = false)
+  public byte[] getEncodedPassword() {
+    return encodedPassword;
   }
 
-  public User setPassword(String password) {
-    Preconditions.checkArgument(password.length() <= MAX_PASSWORD_LENGTH, "Password too long.");
-    byte[] encodedPassword =
-        PasswordEncoderFactories.createDelegatingPasswordEncoder()
-            .encode(password)
-            .getBytes(StandardCharsets.UTF_8);
-    Preconditions.checkArgument(
-        encodedPassword.length <= MAX_ENCODED_PASSWORD_LENGTH, "Encoded password too long.");
+  public User setEncodedPassword(byte[] encodedPassword) {
     this.encodedPassword = encodedPassword;
+    return this;
+  }
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "admin_id")
+  public Admin getAdmin() {
+    return admin;
+  }
+
+  public User setAdmin(Admin admin) {
+    this.admin = admin;
+    return this;
+  }
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "teacher_id")
+  public Teacher getTeacher() {
+    return teacher;
+  }
+
+  public User setTeacher(Teacher teacher) {
+    this.teacher = teacher;
+    return this;
+  }
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "student_id")
+  public Student getStudent() {
+    return student;
+  }
+
+  public User setStudent(Student student) {
+    this.student = student;
     return this;
   }
 }

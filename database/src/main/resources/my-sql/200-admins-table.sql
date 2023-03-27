@@ -1,9 +1,9 @@
-CREATE TABLE students
+CREATE TABLE admins
 (
-    id        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
 
     district_id BIGINT NOT NULL,
-    CONSTRAINT students_district_id
+    CONSTRAINT admins_district_id
         FOREIGN KEY (district_id)
             REFERENCES districts (id)
             ON DELETE RESTRICT

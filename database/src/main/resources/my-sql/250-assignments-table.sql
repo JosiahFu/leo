@@ -9,6 +9,7 @@ CREATE TABLE assignments
     CONSTRAINT assignments_class_id
         FOREIGN KEY (class_id)
             REFERENCES classes (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

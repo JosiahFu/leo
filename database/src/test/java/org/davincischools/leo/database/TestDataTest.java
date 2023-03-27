@@ -5,11 +5,11 @@ import static com.google.common.truth.Truth8.assertThat;
 import static org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor.USE_TEST_DATABASE;
 
 import java.util.Optional;
-import org.davincischools.leo.database.daos.Database;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.test.TestApplication;
 import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.test.TestDatabase;
+import org.davincischools.leo.database.utils.Database;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class TestDataTest {
 
   @Test
   public void usersAddedTest() {
-    Optional<User> student = db.users.findByEmailAddress(testData.spongeBob.getEmailAddress());
+    Optional<User> student = db.getUsers().findByEmailAddress(testData.spongeBob.getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.get().getId()).isGreaterThan(0);
   }

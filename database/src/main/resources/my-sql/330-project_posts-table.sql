@@ -10,6 +10,7 @@ CREATE TABLE project_posts
     CONSTRAINT project_posts_project_cycle_id
         FOREIGN KEY (project_cycle_id)
             REFERENCES project_cycles (id)
+            ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;
