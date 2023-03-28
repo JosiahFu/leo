@@ -29,7 +29,7 @@ public class ConfigureTestDatabaseEnvironmentPostProcessorTest {
       while (resultSet.next()) {
         tableNames.add(resultSet.getString("TABLE_NAME"));
       }
-      assertThat(tableNames).contains("users");
+      assertThat(tableNames).contains("user");
     }
   }
 }

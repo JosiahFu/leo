@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,8 +23,7 @@ import java.util.Set;
       @Index(name = "email_address", columnList = "email_address", unique = true),
       @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
       @Index(name = "admin_id", columnList = "admin_id", unique = true),
-      @Index(name = "student_id", columnList = "student_id", unique = true),
-      @Index(name = "district_id", columnList = "district_id", unique = true)
+      @Index(name = "student_id", columnList = "student_id", unique = true)
     })
 public class User {
 
@@ -109,7 +109,7 @@ public class User {
     return this;
   }
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "district_id")
   public District getDistrict() {
     return district;
