@@ -241,6 +241,7 @@
                                         <exclude name="*/node_modules/**/*"/>
                                         <exclude name="*/src/generated/**/*"/>
                                         <exclude name="*/build/**/*"/>
+                                        <exclude name="*/.prettierrc.js"/>
                                     </fileset>
                                 </apply>
                             </target>
