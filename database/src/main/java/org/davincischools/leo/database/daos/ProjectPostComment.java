@@ -10,21 +10,19 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 
 @Entity(name = ProjectPostComment.ENTITY_NAME)
-@Table(name = ProjectPostComment.TABLE_NAME, schema = "leo_temp", indexes = {
-    @Index(name = "project_post_id", columnList = "project_post_id")
-})
-public class ProjectPostComment implements Serializable {
+@Table(
+    name = ProjectPostComment.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {@Index(name = "project_post_id", columnList = "project_post_id")})
+public class ProjectPostComment {
 
   public static final String ENTITY_NAME = "ProjectPostComment";
-  public static final String TABLE_NAME = "project_post_comments";
+  public static final String TABLE_NAME = "project_post_comment";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_COMMENTQUILL_NAME = "comment_quill";
   public static final String COLUMN_ORDERINDEX_NAME = "order_index";
-  private static final long serialVersionUID = 1658844183243386953L;
-
 
   private Integer id;
 
@@ -89,5 +87,4 @@ public class ProjectPostComment implements Serializable {
     this.projectPost = projectPost;
     return this;
   }
-
 }

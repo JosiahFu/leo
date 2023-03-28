@@ -7,22 +7,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Portfolio.ENTITY_NAME)
 @Table(name = Portfolio.TABLE_NAME, schema = "leo_temp")
-public class Portfolio implements Serializable {
+public class Portfolio {
 
   public static final String ENTITY_NAME = "Portfolio";
-  public static final String TABLE_NAME = "portfolios";
+  public static final String TABLE_NAME = "portfolio";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  private static final long serialVersionUID = -3420430987938610021L;
-
 
   private Integer id;
 
@@ -85,5 +82,4 @@ public class Portfolio implements Serializable {
     this.portfolioPosts = portfolioPosts;
     return this;
   }
-
 }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="JpaPluginProjectSettings">
+  <component name="JpaPluginProjectSettings" unpluralizeTableName="false" reExcludeTablePrefixes="" reExcludeColumnPrefixes="">
     <option name="entityNameTemplate" value="${className}" />
     <option name="generateJpaOnGetter" value="true" />
-    <option name="generateSerialVersionUID" value="true" />
     <option name="generateTypeOnEntity" value="true" />
     <option name="useConstantsForEntities" value="true" />
     <option name="useBuilderSetters" value="true" />

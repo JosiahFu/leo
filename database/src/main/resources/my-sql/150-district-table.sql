@@ -1,0 +1,7 @@
+CREATE TABLE district
+(
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+
+    district VARCHAR(255) NOT NULL
+) ENGINE InnoDB
+  CHAR SET UTF8MB4;

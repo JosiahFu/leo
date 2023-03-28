@@ -28,31 +28,37 @@ public class TestData {
   public TestData(@Autowired Database db) {
     this.db = db;
 
-    db.getPortfolios().deleteAll();
-    db.getProjectCycles().deleteAll();
-    db.getProjectPosts().deleteAll();
-    db.getProjects().deleteAll();
-    db.getKnowledgeAndSkills().deleteAll();
-    db.getAssignments().deleteAll();
-    db.getUsers().deleteAll();
-    db.getClasses().deleteAll();
-    db.getAdmins().deleteAll();
-    db.getTeachers().deleteAll();
-    db.getStudents().deleteAll();
-    db.getSchools().deleteAll();
-    db.getDistricts().deleteAll();
+    db.getPortfolioPostRepository().deleteAll();
+    db.getProjectPostCommentRepository().deleteAll();
+    db.getPortfolioRepository().deleteAll();
+    db.getProjectPostRepository().deleteAll();
+    db.getProjectCycleRepository().deleteAll();
+    db.getKnowledgeAndSkillRepository().deleteAll();
+    db.getProjectRepository().deleteAll();
+    db.getClassTeacherRepository().deleteAll();
+    db.getClassStudentRepository().deleteAll();
+    db.getAssignmentRepository().deleteAll();
+    db.getTeacherSchoolRepository().deleteAll();
+    db.getUserRepository().deleteAll();
+    db.getClassRepository().deleteAll();
+    db.getTeacherRepository().deleteAll();
+    db.getStudentRepository().deleteAll();
+    db.getAdminRepository().deleteAll();
+    db.getSchoolRepository().deleteAll();
+    db.getDistrictRepository().deleteAll();
 
     District district =
-        db.getDistricts().save(new District().setDistrict("Bikini Bottom School District"));
+        db.getDistrictRepository()
+            .save(new District().setDistrict("Bikini Bottom School District"));
     School school =
-        db.getSchools()
+        db.getSchoolRepository()
             .save(
                 new School()
                     .setSchool("Bikini Bottom Drivers School")
                     .setCity("Bikini Bottom")
                     .setDistrict(district));
 
-    db.getUsers()
+    db.getUserRepository()
         .save(
             sandy =
                 setPassword(
@@ -60,10 +66,11 @@ public class TestData {
                         .setFirstName("Sandy")
                         .setLastName("Cheeks")
                         .setEmailAddress("sandy.cheeks@bikinibottom.com")
-                        .setAdmin(db.getAdmins().save(new Admin().setDistrict(district))),
+                        .setDistrict(district)
+                        .setAdmin(db.getAdminRepository().save(new Admin())),
                     password));
 
-    db.getUsers()
+    db.getUserRepository()
         .save(
             mrsPuff =
                 setPassword(
@@ -71,12 +78,13 @@ public class TestData {
                         .setFirstName("Poppy")
                         .setLastName("Puff")
                         .setEmailAddress("poppy.puff@bikinibottom.com")
+                        .setDistrict(district)
                         .setTeacher(
-                            db.getTeachers()
+                            db.getTeacherRepository()
                                 .save(new Teacher().setSchools(ImmutableSet.of(school)))),
                     password));
 
-    db.getUsers()
+    db.getUserRepository()
         .save(
             spongeBob =
                 setPassword(
@@ -84,7 +92,8 @@ public class TestData {
                         .setFirstName("SpongeBob")
                         .setLastName("SquarePants")
                         .setEmailAddress("spongebob.squarepants@bikinibottom.com")
-                        .setStudent(db.getStudents().save(new Student().setDistrict(district))),
+                        .setDistrict(district)
+                        .setStudent(db.getStudentRepository().save(new Student())),
                     password));
   }
 }

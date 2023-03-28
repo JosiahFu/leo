@@ -8,20 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = District.ENTITY_NAME)
 @Table(name = District.TABLE_NAME, schema = "leo_temp")
-public class District implements Serializable {
+public class District {
 
   public static final String ENTITY_NAME = "District";
-  public static final String TABLE_NAME = "districts";
+  public static final String TABLE_NAME = "district";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_DISTRICT_NAME = "district";
-  private static final long serialVersionUID = -8027440663847399888L;
-
 
   private Integer id;
 
@@ -72,5 +69,4 @@ public class District implements Serializable {
     this.user = user;
     return this;
   }
-
 }

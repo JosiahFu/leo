@@ -28,7 +28,8 @@ public class TestDataTest {
 
   @Test
   public void usersAddedTest() {
-    Optional<User> student = db.getUsers().findByEmailAddress(testData.spongeBob.getEmailAddress());
+    Optional<User> student =
+        db.getUserRepository().findByEmailAddress(testData.spongeBob.getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.get().getId()).isGreaterThan(0);
   }

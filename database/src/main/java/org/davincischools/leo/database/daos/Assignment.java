@@ -10,22 +10,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Assignment.ENTITY_NAME)
 @Table(name = Assignment.TABLE_NAME, schema = "leo_temp")
-public class Assignment implements Serializable {
+public class Assignment {
 
   public static final String ENTITY_NAME = "Assignment";
-  public static final String TABLE_NAME = "assignments";
+  public static final String TABLE_NAME = "assignment";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  private static final long serialVersionUID = -8118395507200037639L;
-
 
   private Integer id;
 
@@ -101,5 +98,4 @@ public class Assignment implements Serializable {
     this.projects = projects;
     return this;
   }
-
 }

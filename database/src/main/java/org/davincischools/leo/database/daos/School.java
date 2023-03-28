@@ -12,24 +12,21 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = School.ENTITY_NAME)
 @Table(name = School.TABLE_NAME, schema = "leo_temp")
-public class School implements Serializable {
+public class School {
 
   public static final String ENTITY_NAME = "School";
-  public static final String TABLE_NAME = "schools";
+  public static final String TABLE_NAME = "school";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_SCHOOL_NAME = "school";
   public static final String COLUMN_CITY_NAME = "city";
-  public static final String JOINTABLE_TEACHERS_NAME = "teachers_schools";
+  public static final String JOINTABLE_TEACHERS_NAME = "teacher_school";
   public static final String JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "school_id";
   public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "teacher_id";
-  private static final long serialVersionUID = -6786946202509475457L;
-
 
   private Integer id;
 
@@ -39,9 +36,9 @@ public class School implements Serializable {
 
   private District district;
 
-  private Set<Teacher> teachers = new LinkedHashSet<>();
+  private Set<Class> classFields = new LinkedHashSet<>();
 
-  private Set<Class> classes = new LinkedHashSet<>();
+  private Set<Teacher> teachers = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,8 +83,19 @@ public class School implements Serializable {
     return this;
   }
 
+  @OneToMany(mappedBy = "school")
+  public Set<Class> getClassFields() {
+    return classFields;
+  }
+
+  public School setClassFields(Set<Class> classFields) {
+    this.classFields = classFields;
+    return this;
+  }
+
   @ManyToMany
-  @JoinTable(name = JOINTABLE_TEACHERS_NAME,
+  @JoinTable(
+      name = JOINTABLE_TEACHERS_NAME,
       joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME),
       inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME))
   public Set<Teacher> getTeachers() {
@@ -98,15 +106,4 @@ public class School implements Serializable {
     this.teachers = teachers;
     return this;
   }
-
-  @OneToMany(mappedBy = "school")
-  public Set<Class> getClasses() {
-    return classes;
-  }
-
-  public School setClasses(Set<Class> classes) {
-    this.classes = classes;
-    return this;
-  }
-
 }

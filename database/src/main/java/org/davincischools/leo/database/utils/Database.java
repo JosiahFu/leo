@@ -4,15 +4,20 @@ import java.util.Optional;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
+import org.davincischools.leo.database.daos.ClassStudent;
+import org.davincischools.leo.database.daos.ClassTeacher;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Portfolio;
+import org.davincischools.leo.database.daos.PortfolioPost;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
 import org.davincischools.leo.database.daos.ProjectPost;
+import org.davincischools.leo.database.daos.ProjectPostComment;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
+import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -35,115 +40,155 @@ public class Database {
   public static final int USER_MAX_LAST_NAME_LENGTH =
       EntityUtils.getColumn(User.class, User.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
-  public static final int USER_MAX_PASSWORD_BLOB_LENGTH =
-      EntityUtils.getColumn(User.class, User.COLUMN_ENCODEDPASSWORD_NAME).length();
+  public static final int USER_MAX_ENCODED_PASSWORD_UTF8_BLOB_LENGTH = 65535;
 
   @Repository
-  public interface AdminsRepository extends CrudRepository<Admin, Long> {}
+  public interface AdminRepository extends CrudRepository<Admin, Integer> {}
 
   @Repository
-  public interface AssignmentsRepository extends CrudRepository<Assignment, Long> {}
+  public interface AssignmentRepository extends CrudRepository<Assignment, Integer> {}
 
   @Repository
-  public interface ClassesRepository extends CrudRepository<Class, Long> {}
+  public interface ClassRepository extends CrudRepository<Class, Integer> {}
 
   @Repository
-  public interface DistrictsRepository extends CrudRepository<District, Long> {}
+  public interface ClassStudentRepository extends CrudRepository<ClassStudent, Integer> {}
 
   @Repository
-  public interface KnowledgeAndSkillsRepository extends CrudRepository<KnowledgeAndSkill, Long> {}
+  public interface ClassTeacherRepository extends CrudRepository<ClassTeacher, Integer> {}
 
   @Repository
-  public interface PortfoliosRepository extends CrudRepository<Portfolio, Long> {}
+  public interface DistrictRepository extends CrudRepository<District, Integer> {}
 
   @Repository
-  public interface ProjectsRepository extends CrudRepository<Project, Long> {}
+  public interface KnowledgeAndSkillRepository extends CrudRepository<KnowledgeAndSkill, Integer> {}
 
   @Repository
-  public interface ProjectCyclesRepository extends CrudRepository<ProjectCycle, Long> {}
+  public interface PortfolioRepository extends CrudRepository<Portfolio, Integer> {}
 
   @Repository
-  public interface ProjectPostsRepository extends CrudRepository<ProjectPost, Long> {}
+  public interface PortfolioPostRepository extends CrudRepository<PortfolioPost, Integer> {}
 
   @Repository
-  public interface SchoolsRepository extends CrudRepository<School, Long> {}
+  public interface ProjectRepository extends CrudRepository<Project, Integer> {}
 
   @Repository
-  public interface StudentsRepository extends CrudRepository<Student, Long> {}
+  public interface ProjectCycleRepository extends CrudRepository<ProjectCycle, Integer> {}
 
   @Repository
-  public interface TeachersRepository extends CrudRepository<Teacher, Long> {}
+  public interface ProjectPostRepository extends CrudRepository<ProjectPost, Integer> {}
 
   @Repository
-  public interface UsersRepository extends CrudRepository<User, Long> {
+  public interface ProjectPostCommentRepository
+      extends CrudRepository<ProjectPostComment, Integer> {}
+
+  @Repository
+  public interface SchoolRepository extends CrudRepository<School, Integer> {}
+
+  @Repository
+  public interface StudentRepository extends CrudRepository<Student, Integer> {}
+
+  @Repository
+  public interface TeacherRepository extends CrudRepository<Teacher, Integer> {}
+
+  @Repository
+  public interface TeacherSchoolRepository extends CrudRepository<TeacherSchool, Integer> {}
+
+  @Repository
+  public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findByEmailAddress(String emailAddress);
   }
 
-  @Autowired private AdminsRepository admins;
-  @Autowired private AssignmentsRepository assignments;
-  @Autowired private ClassesRepository classes;
-  @Autowired private DistrictsRepository districts;
-  @Autowired private KnowledgeAndSkillsRepository knowledgeAndSkills;
-  @Autowired private PortfoliosRepository portfolios;
-  @Autowired private ProjectsRepository projects;
-  @Autowired private ProjectCyclesRepository projectCycles;
-  @Autowired private ProjectPostsRepository projectPosts;
-  @Autowired private SchoolsRepository schools;
-  @Autowired private StudentsRepository students;
-  @Autowired private TeachersRepository teachers;
-  @Autowired private UsersRepository users;
+  @Autowired private AdminRepository adminRepository;
+  @Autowired private AssignmentRepository assignmentRepository;
+  @Autowired private ClassRepository classRepository;
+  @Autowired private ClassStudentRepository classStudentRepository;
+  @Autowired private ClassTeacherRepository classTeacherRepository;
+  @Autowired private DistrictRepository districtRepository;
+  @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
+  @Autowired private PortfolioRepository portfolioRepository;
+  @Autowired private PortfolioPostRepository portfolioPostRepository;
+  @Autowired private ProjectRepository projectRepository;
+  @Autowired private ProjectCycleRepository projectCycleRepository;
+  @Autowired private ProjectPostRepository projectPostRepository;
+  @Autowired private ProjectPostCommentRepository projectPostCommentRepository;
+  @Autowired private SchoolRepository schoolRepository;
+  @Autowired private StudentRepository studentRepository;
+  @Autowired private TeacherRepository teacherRepository;
+  @Autowired private TeacherSchoolRepository teacherSchoolRepository;
+  @Autowired private UserRepository userRepository;
 
   public Database() {}
 
-  public AdminsRepository getAdmins() {
-    return admins;
+  public AdminRepository getAdminRepository() {
+    return adminRepository;
   }
 
-  public AssignmentsRepository getAssignments() {
-    return assignments;
+  public AssignmentRepository getAssignmentRepository() {
+    return assignmentRepository;
   }
 
-  public ClassesRepository getClasses() {
-    return classes;
+  public ClassRepository getClassRepository() {
+    return classRepository;
   }
 
-  public DistrictsRepository getDistricts() {
-    return districts;
+  public ClassStudentRepository getClassStudentRepository() {
+    return classStudentRepository;
   }
 
-  public KnowledgeAndSkillsRepository getKnowledgeAndSkills() {
-    return knowledgeAndSkills;
+  public ClassTeacherRepository getClassTeacherRepository() {
+    return classTeacherRepository;
   }
 
-  public PortfoliosRepository getPortfolios() {
-    return portfolios;
+  public DistrictRepository getDistrictRepository() {
+    return districtRepository;
   }
 
-  public ProjectsRepository getProjects() {
-    return projects;
+  public KnowledgeAndSkillRepository getKnowledgeAndSkillRepository() {
+    return knowledgeAndSkillRepository;
   }
 
-  public ProjectCyclesRepository getProjectCycles() {
-    return projectCycles;
+  public PortfolioRepository getPortfolioRepository() {
+    return portfolioRepository;
   }
 
-  public ProjectPostsRepository getProjectPosts() {
-    return projectPosts;
+  public PortfolioPostRepository getPortfolioPostRepository() {
+    return portfolioPostRepository;
   }
 
-  public SchoolsRepository getSchools() {
-    return schools;
+  public ProjectRepository getProjectRepository() {
+    return projectRepository;
   }
 
-  public StudentsRepository getStudents() {
-    return students;
+  public ProjectCycleRepository getProjectCycleRepository() {
+    return projectCycleRepository;
   }
 
-  public TeachersRepository getTeachers() {
-    return teachers;
+  public ProjectPostRepository getProjectPostRepository() {
+    return projectPostRepository;
   }
 
-  public UsersRepository getUsers() {
-    return users;
+  public ProjectPostCommentRepository getProjectPostCommentRepository() {
+    return projectPostCommentRepository;
+  }
+
+  public SchoolRepository getSchoolRepository() {
+    return schoolRepository;
+  }
+
+  public StudentRepository getStudentRepository() {
+    return studentRepository;
+  }
+
+  public TeacherRepository getTeacherRepository() {
+    return teacherRepository;
+  }
+
+  public TeacherSchoolRepository getTeacherSchoolRepository() {
+    return teacherSchoolRepository;
+  }
+
+  public UserRepository getUserRepository() {
+    return userRepository;
   }
 }

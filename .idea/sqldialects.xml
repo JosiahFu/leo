@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql-dangerous/drop_all_tables.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/150-districts-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/175-schools-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-admins-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-students-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-teachers-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-classes-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-teachers_schools-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-users-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-assignments-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-classes_students-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-classes_teachers-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/275-projects-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-project_cycles-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-project_posts-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-portfolios-table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql-dangerous/drop_all_tables.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/150-district-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/175-school-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-admin-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-student-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-teacher-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-class-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-teacher_school-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-user-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-assignment-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-class_student-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-class_teacher-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/275-project-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-knowledge_and_skill-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-project_cycle-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-project_post-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-portfolio-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-project_post_comment-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/375-portfolio_post-table.sql" dialect="GenericSQL" />
     <file url="PROJECT" dialect="GenericSQL" />
   </component>
 </project>

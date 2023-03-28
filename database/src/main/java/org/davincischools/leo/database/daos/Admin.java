@@ -7,16 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 
 @Entity(name = Admin.ENTITY_NAME)
 @Table(name = Admin.TABLE_NAME, schema = "leo_temp")
-public class Admin implements Serializable {
+public class Admin {
 
   public static final String ENTITY_NAME = "Admin";
-  public static final String TABLE_NAME = "admins";
+  public static final String TABLE_NAME = "admin";
   public static final String COLUMN_ID_NAME = "id";
-  private static final long serialVersionUID = 7538037748653687312L;
 
   private Integer id;
 
@@ -43,5 +41,4 @@ public class Admin implements Serializable {
     this.user = user;
     return this;
   }
-
 }

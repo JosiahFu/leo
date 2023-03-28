@@ -10,16 +10,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Project.ENTITY_NAME)
 @Table(name = Project.TABLE_NAME, schema = "leo_temp")
-public class Project implements Serializable {
+public class Project {
 
   public static final String ENTITY_NAME = "Project";
-  public static final String TABLE_NAME = "projects";
+  public static final String TABLE_NAME = "project";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
@@ -28,8 +27,6 @@ public class Project implements Serializable {
   public static final String COLUMN_NEED_NAME = "need";
   public static final String COLUMN_PAID_NAME = "paid";
   public static final String COLUMN_STARTTIMEMICROSUTC_NAME = "start_time_micros_utc";
-  private static final long serialVersionUID = -5262263287519406971L;
-
 
   private Integer id;
 
@@ -166,5 +163,4 @@ public class Project implements Serializable {
     this.projectCycles = projectCycles;
     return this;
   }
-
 }

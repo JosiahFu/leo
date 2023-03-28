@@ -11,28 +11,25 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Student.ENTITY_NAME)
 @Table(name = Student.TABLE_NAME, schema = "leo_temp")
-public class Student implements Serializable {
+public class Student {
 
   public static final String ENTITY_NAME = "Student";
-  public static final String TABLE_NAME = "students";
+  public static final String TABLE_NAME = "student";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String JOINTABLE_CLASSES_NAME = "classes_students";
-  public static final String JOINCOLUMNS_JOINCOLUMN_CLASSES_NAME = "student_id";
-  public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_CLASSES_NAME = "class_id";
-  private static final long serialVersionUID = -8569926720834054274L;
-
+  public static final String JOINTABLE_CLASSFIELDS_NAME = "class_student";
+  public static final String JOINCOLUMNS_JOINCOLUMN_CLASSFIELDS_NAME = "student_id";
+  public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_CLASSFIELDS_NAME = "class_id";
 
   private Integer id;
 
   private Set<Project> projects = new LinkedHashSet<>();
 
-  private Set<Class> classes = new LinkedHashSet<>();
+  private Set<Class> classFields = new LinkedHashSet<>();
 
   private User user;
 
@@ -59,15 +56,16 @@ public class Student implements Serializable {
   }
 
   @ManyToMany
-  @JoinTable(name = JOINTABLE_CLASSES_NAME,
-      joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_CLASSES_NAME),
-      inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_CLASSES_NAME))
-  public Set<Class> getClasses() {
-    return classes;
+  @JoinTable(
+      name = JOINTABLE_CLASSFIELDS_NAME,
+      joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_CLASSFIELDS_NAME),
+      inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_CLASSFIELDS_NAME))
+  public Set<Class> getClassFields() {
+    return classFields;
   }
 
-  public Student setClasses(Set<Class> classes) {
-    this.classes = classes;
+  public Student setClassFields(Set<Class> classFields) {
+    this.classFields = classFields;
     return this;
   }
 
@@ -80,5 +78,4 @@ public class Student implements Serializable {
     this.user = user;
     return this;
   }
-
 }

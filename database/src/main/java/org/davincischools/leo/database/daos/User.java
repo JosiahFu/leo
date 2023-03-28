@@ -11,29 +11,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = User.ENTITY_NAME)
-@Table(name = User.TABLE_NAME, schema = "leo_temp", indexes = {
-    @Index(name = "email_address", columnList = "email_address", unique = true),
-    @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
-    @Index(name = "admin_id", columnList = "admin_id", unique = true),
-    @Index(name = "student_id", columnList = "student_id", unique = true),
-    @Index(name = "district_id", columnList = "district_id", unique = true)
-})
-public class User implements Serializable {
+@Table(
+    name = User.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {
+      @Index(name = "email_address", columnList = "email_address", unique = true),
+      @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
+      @Index(name = "admin_id", columnList = "admin_id", unique = true),
+      @Index(name = "student_id", columnList = "student_id", unique = true),
+      @Index(name = "district_id", columnList = "district_id", unique = true)
+    })
+public class User {
 
   public static final String ENTITY_NAME = "User";
-  public static final String TABLE_NAME = "users";
+  public static final String TABLE_NAME = "user";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_FIRSTNAME_NAME = "first_name";
   public static final String COLUMN_LASTNAME_NAME = "last_name";
   public static final String COLUMN_EMAILADDRESS_NAME = "email_address";
   public static final String COLUMN_ENCODEDPASSWORDUTF8_NAME = "encoded_password_utf8";
-  private static final long serialVersionUID = -1587187592571257676L;
-
 
   private Integer id;
 
@@ -172,5 +172,4 @@ public class User implements Serializable {
     this.projectPosts = projectPosts;
     return this;
   }
-
 }

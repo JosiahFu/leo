@@ -10,23 +10,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = ProjectPost.ENTITY_NAME)
 @Table(name = ProjectPost.TABLE_NAME, schema = "leo_temp")
-public class ProjectPost implements Serializable {
+public class ProjectPost {
 
   public static final String ENTITY_NAME = "ProjectPost";
-  public static final String TABLE_NAME = "project_posts";
+  public static final String TABLE_NAME = "project_post";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_POSTTIMEMICROSUTC_NAME = "post_time_micros_utc";
-  private static final long serialVersionUID = 5119959435699846169L;
-
 
   private Integer id;
 
@@ -126,5 +123,4 @@ public class ProjectPost implements Serializable {
     this.portfolioPosts = portfolioPosts;
     return this;
   }
-
 }

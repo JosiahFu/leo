@@ -10,24 +10,24 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
 
 @Entity(name = PortfolioPost.ENTITY_NAME)
-@Table(name = PortfolioPost.TABLE_NAME, schema = "leo_temp", indexes = {
-    @Index(name = "project_post_id", columnList = "project_post_id"),
-    @Index(name = "portfolio_id", columnList = "portfolio_id")
-})
-public class PortfolioPost implements Serializable {
+@Table(
+    name = PortfolioPost.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {
+      @Index(name = "project_post_id", columnList = "project_post_id"),
+      @Index(name = "portfolio_id", columnList = "portfolio_id")
+    })
+public class PortfolioPost {
 
   public static final String ENTITY_NAME = "PortfolioPost";
-  public static final String TABLE_NAME = "portfolio_posts";
+  public static final String TABLE_NAME = "portfolio_post";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_ORDERINDEX_NAME = "order_index";
-  private static final long serialVersionUID = 2987351247926026328L;
-
 
   private Integer id;
 
@@ -116,5 +116,4 @@ public class PortfolioPost implements Serializable {
     this.projectPost = projectPost;
     return this;
   }
-
 }
