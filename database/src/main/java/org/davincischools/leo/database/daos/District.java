@@ -6,37 +6,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = District.ENTITY_NAME)
-@Table(name = District.TABLE_NAME)
-public class District {
+@Table(name = District.TABLE_NAME, schema = "leo_temp")
+public class District implements Serializable {
 
   public static final String ENTITY_NAME = "District";
   public static final String TABLE_NAME = "districts";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_DISTRICT_NAME = "district";
+  private static final long serialVersionUID = -8027440663847399888L;
 
-  private Long id;
+
+  private Integer id;
 
   private String district;
 
-  private Set<Admin> admins = new LinkedHashSet<>();
-
   private Set<School> schools = new LinkedHashSet<>();
 
-  private Set<Student> students = new LinkedHashSet<>();
+  private User user;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public District setId(Long id) {
+  public District setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -52,16 +54,6 @@ public class District {
   }
 
   @OneToMany(mappedBy = "district")
-  public Set<Admin> getAdmins() {
-    return admins;
-  }
-
-  public District setAdmins(Set<Admin> admins) {
-    this.admins = admins;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "district")
   public Set<School> getSchools() {
     return schools;
   }
@@ -71,13 +63,14 @@ public class District {
     return this;
   }
 
-  @OneToMany(mappedBy = "district")
-  public Set<Student> getStudents() {
-    return students;
+  @OneToOne(mappedBy = "district")
+  public User getUser() {
+    return user;
   }
 
-  public District setStudents(Set<Student> students) {
-    this.students = students;
+  public District setUser(User user) {
+    this.user = user;
     return this;
   }
+
 }

@@ -10,31 +10,34 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Project.ENTITY_NAME)
-@Table(name = Project.TABLE_NAME)
-public class Project {
+@Table(name = Project.TABLE_NAME, schema = "leo_temp")
+public class Project implements Serializable {
 
   public static final String ENTITY_NAME = "Project";
   public static final String TABLE_NAME = "projects";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
-  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
-  public static final String COLUMN_STARTTIMEUTC_NAME = "start_time_utc";
+  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
+  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_LOVE_NAME = "love";
   public static final String COLUMN_NEED_NAME = "need";
   public static final String COLUMN_PAID_NAME = "paid";
+  public static final String COLUMN_STARTTIMEMICROSUTC_NAME = "start_time_micros_utc";
+  private static final long serialVersionUID = -5262263287519406971L;
 
-  private Long id;
+
+  private Integer id;
 
   private String title;
 
-  private String shortDescr;
+  private byte[] shortDescrQuill;
 
-  private Instant startTimeUtc;
+  private byte[] longDescrQuill;
 
   private String love;
 
@@ -42,22 +45,22 @@ public class Project {
 
   private String paid;
 
+  private Long startTimeMicrosUtc;
+
   private Assignment assignment;
 
   private Student student;
-
-  private Set<KnowledgeAndSkill> knowledgeAndSkills = new LinkedHashSet<>();
 
   private Set<ProjectCycle> projectCycles = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public Project setId(Long id) {
+  public Project setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -72,23 +75,23 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
-  public String getShortDescr() {
-    return shortDescr;
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  public byte[] getShortDescrQuill() {
+    return shortDescrQuill;
   }
 
-  public Project setShortDescr(String shortDescr) {
-    this.shortDescr = shortDescr;
+  public Project setShortDescrQuill(byte[] shortDescrQuill) {
+    this.shortDescrQuill = shortDescrQuill;
     return this;
   }
 
-  @Column(name = COLUMN_STARTTIMEUTC_NAME, nullable = false)
-  public Instant getStartTimeUtc() {
-    return startTimeUtc;
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  public byte[] getLongDescrQuill() {
+    return longDescrQuill;
   }
 
-  public Project setStartTimeUtc(Instant startTimeUtc) {
-    this.startTimeUtc = startTimeUtc;
+  public Project setLongDescrQuill(byte[] longDescrQuill) {
+    this.longDescrQuill = longDescrQuill;
     return this;
   }
 
@@ -122,6 +125,16 @@ public class Project {
     return this;
   }
 
+  @Column(name = COLUMN_STARTTIMEMICROSUTC_NAME, nullable = false)
+  public Long getStartTimeMicrosUtc() {
+    return startTimeMicrosUtc;
+  }
+
+  public Project setStartTimeMicrosUtc(Long startTimeMicrosUtc) {
+    this.startTimeMicrosUtc = startTimeMicrosUtc;
+    return this;
+  }
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "assignment_id", nullable = false)
   public Assignment getAssignment() {
@@ -145,16 +158,6 @@ public class Project {
   }
 
   @OneToMany(mappedBy = "project")
-  public Set<KnowledgeAndSkill> getKnowledgeAndSkills() {
-    return knowledgeAndSkills;
-  }
-
-  public Project setKnowledgeAndSkills(Set<KnowledgeAndSkill> knowledgeAndSkills) {
-    this.knowledgeAndSkills = knowledgeAndSkills;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "project")
   public Set<ProjectCycle> getProjectCycles() {
     return projectCycles;
   }
@@ -163,4 +166,5 @@ public class Project {
     this.projectCycles = projectCycles;
     return this;
   }
+
 }

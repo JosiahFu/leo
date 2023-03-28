@@ -8,38 +8,50 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity(name = ProjectPost.ENTITY_NAME)
-@Table(name = ProjectPost.TABLE_NAME)
-public class ProjectPost {
+@Table(name = ProjectPost.TABLE_NAME, schema = "leo_temp")
+public class ProjectPost implements Serializable {
 
   public static final String ENTITY_NAME = "ProjectPost";
   public static final String TABLE_NAME = "project_posts";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
-  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
-  public static final String COLUMN_POSTTIMEUTC_NAME = "post_time_utc";
+  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
+  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
+  public static final String COLUMN_POSTTIMEMICROSUTC_NAME = "post_time_micros_utc";
+  private static final long serialVersionUID = 5119959435699846169L;
 
-  private Long id;
+
+  private Integer id;
 
   private String title;
 
-  private String shortDescr;
+  private byte[] shortDescrQuill;
 
-  private Instant postTimeUtc;
+  private byte[] longDescrQuill;
 
-  private ProjectCycle projectCycle;
+  private Long postTimeMicrosUtc;
+
+  private User user;
+
+  private Set<ProjectPostComment> projectPostComments = new LinkedHashSet<>();
+
+  private Set<PortfolioPost> portfolioPosts = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public ProjectPost setId(Long id) {
+  public ProjectPost setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -54,34 +66,65 @@ public class ProjectPost {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
-  public String getShortDescr() {
-    return shortDescr;
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  public byte[] getShortDescrQuill() {
+    return shortDescrQuill;
   }
 
-  public ProjectPost setShortDescr(String shortDescr) {
-    this.shortDescr = shortDescr;
+  public ProjectPost setShortDescrQuill(byte[] shortDescrQuill) {
+    this.shortDescrQuill = shortDescrQuill;
     return this;
   }
 
-  @Column(name = COLUMN_POSTTIMEUTC_NAME, nullable = false)
-  public Instant getPostTimeUtc() {
-    return postTimeUtc;
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  public byte[] getLongDescrQuill() {
+    return longDescrQuill;
   }
 
-  public ProjectPost setPostTimeUtc(Instant postTimeUtc) {
-    this.postTimeUtc = postTimeUtc;
+  public ProjectPost setLongDescrQuill(byte[] longDescrQuill) {
+    this.longDescrQuill = longDescrQuill;
+    return this;
+  }
+
+  @Column(name = COLUMN_POSTTIMEMICROSUTC_NAME, nullable = false)
+  public Long getPostTimeMicrosUtc() {
+    return postTimeMicrosUtc;
+  }
+
+  public ProjectPost setPostTimeMicrosUtc(Long postTimeMicrosUtc) {
+    this.postTimeMicrosUtc = postTimeMicrosUtc;
     return this;
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "project_cycle_id", nullable = false)
-  public ProjectCycle getProjectCycle() {
-    return projectCycle;
+  @JoinColumn(name = "user_id", nullable = false)
+  public User getUser() {
+    return user;
   }
 
-  public ProjectPost setProjectCycle(ProjectCycle projectCycle) {
-    this.projectCycle = projectCycle;
+  public ProjectPost setUser(User user) {
+    this.user = user;
     return this;
   }
+
+  @OneToMany(mappedBy = "projectPost")
+  public Set<ProjectPostComment> getProjectPostComments() {
+    return projectPostComments;
+  }
+
+  public ProjectPost setProjectPostComments(Set<ProjectPostComment> projectPostComments) {
+    this.projectPostComments = projectPostComments;
+    return this;
+  }
+
+  @OneToMany(mappedBy = "projectPost")
+  public Set<PortfolioPost> getPortfolioPosts() {
+    return portfolioPosts;
+  }
+
+  public ProjectPost setPortfolioPosts(Set<PortfolioPost> portfolioPosts) {
+    this.portfolioPosts = portfolioPosts;
+    return this;
+  }
+
 }

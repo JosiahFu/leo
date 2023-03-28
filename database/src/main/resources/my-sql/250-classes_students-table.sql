@@ -1,15 +1,15 @@
 CREATE TABLE classes_students
 (
-    class_id   BIGINT NOT NULL,
-    INDEX (class_id) USING HASH,
+    class_id   INT NOT NULL,
+    INDEX (class_id),
     CONSTRAINT classes_students_class_id
         FOREIGN KEY (class_id)
             REFERENCES classes (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    student_id BIGINT NOT NULL,
-    INDEX (student_id) USING HASH,
+    student_id INT NOT NULL,
+    INDEX (student_id),
     CONSTRAINT classes_students_student_id
         FOREIGN KEY (student_id)
             REFERENCES students (id)

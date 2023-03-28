@@ -3,11 +3,11 @@
   <component name="JpaPluginProjectSettings">
     <option name="entityNameTemplate" value="${className}" />
     <option name="generateJpaOnGetter" value="true" />
+    <option name="generateSerialVersionUID" value="true" />
     <option name="generateTypeOnEntity" value="true" />
     <option name="useConstantsForEntities" value="true" />
     <option name="useBuilderSetters" value="true" />
     <option name="isLombokToString" value="true" />
-    <option name="isLombokNoArgsConstructor" value="true" />
     <option name="useLazyOnToOneAssociations" value="true" />
     <option name="scaffoldingLanguage" />
   </component>

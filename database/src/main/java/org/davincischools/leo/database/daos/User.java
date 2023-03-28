@@ -8,20 +8,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity(name = User.ENTITY_NAME)
-@Table(
-    name = User.TABLE_NAME,
-    schema = "leo_sahendrickson",
-    indexes = {
-      @Index(name = "email_address", columnList = "email_address", unique = true),
-      @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
-      @Index(name = "admin_id", columnList = "admin_id", unique = true),
-      @Index(name = "student_id", columnList = "student_id", unique = true)
-    })
-public class User {
+@Table(name = User.TABLE_NAME, schema = "leo_temp", indexes = {
+    @Index(name = "email_address", columnList = "email_address", unique = true),
+    @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
+    @Index(name = "admin_id", columnList = "admin_id", unique = true),
+    @Index(name = "student_id", columnList = "student_id", unique = true),
+    @Index(name = "district_id", columnList = "district_id", unique = true)
+})
+public class User implements Serializable {
 
   public static final String ENTITY_NAME = "User";
   public static final String TABLE_NAME = "users";
@@ -29,9 +31,11 @@ public class User {
   public static final String COLUMN_FIRSTNAME_NAME = "first_name";
   public static final String COLUMN_LASTNAME_NAME = "last_name";
   public static final String COLUMN_EMAILADDRESS_NAME = "email_address";
-  public static final String COLUMN_ENCODEDPASSWORD_NAME = "encoded_password";
+  public static final String COLUMN_ENCODEDPASSWORDUTF8_NAME = "encoded_password_utf8";
+  private static final long serialVersionUID = -1587187592571257676L;
 
-  private Long id;
+
+  private Integer id;
 
   private String firstName;
 
@@ -39,7 +43,9 @@ public class User {
 
   private String emailAddress;
 
-  private byte[] encodedPassword;
+  private byte[] encodedPasswordUtf8;
+
+  private District district;
 
   private Admin admin;
 
@@ -47,14 +53,18 @@ public class User {
 
   private Student student;
 
+  private Set<ProjectPostComment> projectPostComments = new LinkedHashSet<>();
+
+  private Set<ProjectPost> projectPosts = new LinkedHashSet<>();
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public User setId(Long id) {
+  public User setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -89,13 +99,24 @@ public class User {
     return this;
   }
 
-  @Column(name = COLUMN_ENCODEDPASSWORD_NAME, nullable = false)
-  public byte[] getEncodedPassword() {
-    return encodedPassword;
+  @Column(name = COLUMN_ENCODEDPASSWORDUTF8_NAME, nullable = false)
+  public byte[] getEncodedPasswordUtf8() {
+    return encodedPasswordUtf8;
   }
 
-  public User setEncodedPassword(byte[] encodedPassword) {
-    this.encodedPassword = encodedPassword;
+  public User setEncodedPasswordUtf8(byte[] encodedPasswordUtf8) {
+    this.encodedPasswordUtf8 = encodedPasswordUtf8;
+    return this;
+  }
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "district_id")
+  public District getDistrict() {
+    return district;
+  }
+
+  public User setDistrict(District district) {
+    this.district = district;
     return this;
   }
 
@@ -131,4 +152,25 @@ public class User {
     this.student = student;
     return this;
   }
+
+  @OneToMany(mappedBy = "user")
+  public Set<ProjectPostComment> getProjectPostComments() {
+    return projectPostComments;
+  }
+
+  public User setProjectPostComments(Set<ProjectPostComment> projectPostComments) {
+    this.projectPostComments = projectPostComments;
+    return this;
+  }
+
+  @OneToMany(mappedBy = "user")
+  public Set<ProjectPost> getProjectPosts() {
+    return projectPosts;
+  }
+
+  public User setProjectPosts(Set<ProjectPost> projectPosts) {
+    this.projectPosts = projectPosts;
+    return this;
+  }
+
 }

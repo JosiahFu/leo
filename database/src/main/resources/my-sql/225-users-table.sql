@@ -1,29 +1,36 @@
 CREATE TABLE users
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id                    INT PRIMARY KEY AUTO_INCREMENT,
 
-    first_name       VARCHAR(255)        NOT NULL,
-    last_name        VARCHAR(255)        NOT NULL,
+    first_name            VARCHAR(255)        NOT NULL,
+    last_name             VARCHAR(255)        NOT NULL,
     -- https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
-    email_address    VARCHAR(254) UNIQUE NOT NULL,
+    email_address         VARCHAR(254) UNIQUE NOT NULL,
     -- First byte is the hash version.
-    encoded_password BLOB                NOT NULL,
+    encoded_password_utf8 BLOB                NOT NULL,
 
-    admin_id       BIGINT UNIQUE,
+    district_id           INT UNIQUE,
+    CONSTRAINT users_district_id
+        FOREIGN KEY (district_id)
+            REFERENCES districts (id)
+            ON DELETE RESTRICT
+            ON UPDATE RESTRICT,
+
+    admin_id              INT UNIQUE,
     CONSTRAINT users_admin_id
         FOREIGN KEY (admin_id)
             REFERENCES admins (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    teacher_id       BIGINT UNIQUE,
+    teacher_id            INT UNIQUE,
     CONSTRAINT users_teacher_id
         FOREIGN KEY (teacher_id)
             REFERENCES teachers (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    student_id       BIGINT UNIQUE,
+    student_id            INT UNIQUE,
     CONSTRAINT users_student_id
         FOREIGN KEY (student_id)
             REFERENCES students (id)

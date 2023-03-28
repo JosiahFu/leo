@@ -1,10 +1,11 @@
 CREATE TABLE schools
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id          INT PRIMARY KEY AUTO_INCREMENT,
 
-    school   VARCHAR(255) NOT NULL,
-    city     VARCHAR(255) NOT NULL,
-    district_id BIGINT NOT NULL,
+    school      VARCHAR(255) NOT NULL,
+    city        VARCHAR(255) NOT NULL,
+
+    district_id INT          NOT NULL,
     CONSTRAINT schools_district_id
         FOREIGN KEY (district_id)
             REFERENCES districts (id)

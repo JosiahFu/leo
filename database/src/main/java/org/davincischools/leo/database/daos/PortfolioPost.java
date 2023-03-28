@@ -6,23 +6,27 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 
-@Entity(name = ProjectCycle.ENTITY_NAME)
-@Table(name = ProjectCycle.TABLE_NAME, schema = "leo_temp")
-public class ProjectCycle implements Serializable {
+@Entity(name = PortfolioPost.ENTITY_NAME)
+@Table(name = PortfolioPost.TABLE_NAME, schema = "leo_temp", indexes = {
+    @Index(name = "project_post_id", columnList = "project_post_id"),
+    @Index(name = "portfolio_id", columnList = "portfolio_id")
+})
+public class PortfolioPost implements Serializable {
 
-  public static final String ENTITY_NAME = "ProjectCycle";
-  public static final String TABLE_NAME = "project_cycles";
+  public static final String ENTITY_NAME = "PortfolioPost";
+  public static final String TABLE_NAME = "portfolio_posts";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  public static final String COLUMN_STARTTIMEMICROSUTC_NAME = "start_time_micros_utc";
-  private static final long serialVersionUID = -544142327877516181L;
+  public static final String COLUMN_ORDERINDEX_NAME = "order_index";
+  private static final long serialVersionUID = 2987351247926026328L;
 
 
   private Integer id;
@@ -33,9 +37,11 @@ public class ProjectCycle implements Serializable {
 
   private byte[] longDescrQuill;
 
-  private Long startTimeMicrosUtc;
+  private Integer orderIndex;
 
-  private Project project;
+  private Portfolio portfolio;
+
+  private ProjectPost projectPost;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +50,7 @@ public class ProjectCycle implements Serializable {
     return id;
   }
 
-  public ProjectCycle setId(Integer id) {
+  public PortfolioPost setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -54,7 +60,7 @@ public class ProjectCycle implements Serializable {
     return title;
   }
 
-  public ProjectCycle setTitle(String title) {
+  public PortfolioPost setTitle(String title) {
     this.title = title;
     return this;
   }
@@ -64,7 +70,7 @@ public class ProjectCycle implements Serializable {
     return shortDescrQuill;
   }
 
-  public ProjectCycle setShortDescrQuill(byte[] shortDescrQuill) {
+  public PortfolioPost setShortDescrQuill(byte[] shortDescrQuill) {
     this.shortDescrQuill = shortDescrQuill;
     return this;
   }
@@ -74,29 +80,40 @@ public class ProjectCycle implements Serializable {
     return longDescrQuill;
   }
 
-  public ProjectCycle setLongDescrQuill(byte[] longDescrQuill) {
+  public PortfolioPost setLongDescrQuill(byte[] longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
     return this;
   }
 
-  @Column(name = COLUMN_STARTTIMEMICROSUTC_NAME, nullable = false)
-  public Long getStartTimeMicrosUtc() {
-    return startTimeMicrosUtc;
+  @Column(name = COLUMN_ORDERINDEX_NAME, nullable = false)
+  public Integer getOrderIndex() {
+    return orderIndex;
   }
 
-  public ProjectCycle setStartTimeMicrosUtc(Long startTimeMicrosUtc) {
-    this.startTimeMicrosUtc = startTimeMicrosUtc;
+  public PortfolioPost setOrderIndex(Integer orderIndex) {
+    this.orderIndex = orderIndex;
     return this;
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "project_id", nullable = false)
-  public Project getProject() {
-    return project;
+  @JoinColumn(name = "portfolio_id", nullable = false)
+  public Portfolio getPortfolio() {
+    return portfolio;
   }
 
-  public ProjectCycle setProject(Project project) {
-    this.project = project;
+  public PortfolioPost setPortfolio(Portfolio portfolio) {
+    this.portfolio = portfolio;
+    return this;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "project_post_id", nullable = false)
+  public ProjectPost getProjectPost() {
+    return projectPost;
+  }
+
+  public PortfolioPost setProjectPost(ProjectPost projectPost) {
+    this.projectPost = projectPost;
     return this;
   }
 

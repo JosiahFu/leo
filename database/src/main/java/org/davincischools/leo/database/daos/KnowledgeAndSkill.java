@@ -9,36 +9,42 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 
 @Entity(name = KnowledgeAndSkill.ENTITY_NAME)
-@Table(name = KnowledgeAndSkill.TABLE_NAME)
-public class KnowledgeAndSkill {
+@Table(name = KnowledgeAndSkill.TABLE_NAME, schema = "leo_temp")
+public class KnowledgeAndSkill implements Serializable {
 
   public static final String ENTITY_NAME = "KnowledgeAndSkill";
   public static final String TABLE_NAME = "knowledge_and_skills";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
-  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
+  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_MASTERY_NAME = "mastery";
+  private static final long serialVersionUID = 1026643933540632149L;
 
-  private Long id;
+
+  private Integer id;
 
   private String title;
 
-  private String shortDescr;
+  private byte[] shortDescrQuill;
+
+  private byte[] longDescrQuill;
 
   private String mastery;
 
-  private Project project;
+  private Class classField;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public KnowledgeAndSkill setId(Long id) {
+  public KnowledgeAndSkill setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -53,13 +59,23 @@ public class KnowledgeAndSkill {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
-  public String getShortDescr() {
-    return shortDescr;
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  public byte[] getShortDescrQuill() {
+    return shortDescrQuill;
   }
 
-  public KnowledgeAndSkill setShortDescr(String shortDescr) {
-    this.shortDescr = shortDescr;
+  public KnowledgeAndSkill setShortDescrQuill(byte[] shortDescrQuill) {
+    this.shortDescrQuill = shortDescrQuill;
+    return this;
+  }
+
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  public byte[] getLongDescrQuill() {
+    return longDescrQuill;
+  }
+
+  public KnowledgeAndSkill setLongDescrQuill(byte[] longDescrQuill) {
+    this.longDescrQuill = longDescrQuill;
     return this;
   }
 
@@ -74,13 +90,14 @@ public class KnowledgeAndSkill {
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "project_id", nullable = false)
-  public Project getProject() {
-    return project;
+  @JoinColumn(name = "class_id", nullable = false)
+  public Class getClassField() {
+    return classField;
   }
 
-  public KnowledgeAndSkill setProject(Project project) {
-    this.project = project;
+  public KnowledgeAndSkill setClassField(Class classField) {
+    this.classField = classField;
     return this;
   }
+
 }

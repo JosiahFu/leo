@@ -1,11 +1,12 @@
 CREATE TABLE classes
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id                INT PRIMARY KEY AUTO_INCREMENT,
 
-    title       VARCHAR(255) NOT NULL,
-    short_descr VARCHAR(255) NOT NULL,
+    title             VARCHAR(255) NOT NULL,
+    short_descr_quill BLOB         NOT NULL,
+    long_descr_quill  LONGBLOB     NOT NULL,
 
-    school_id   BIGINT       NOT NULL,
+    school_id         INT          NOT NULL,
     CONSTRAINT classes_school_id
         FOREIGN KEY (school_id)
             REFERENCES schools (id)

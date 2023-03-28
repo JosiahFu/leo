@@ -12,30 +12,38 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity(name = Class.ENTITY_NAME)
-@Table(name = Class.TABLE_NAME)
-public class Class {
+@Table(name = Class.TABLE_NAME, schema = "leo_temp")
+public class Class implements Serializable {
 
   public static final String ENTITY_NAME = "Class";
   public static final String TABLE_NAME = "classes";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_TITLE_NAME = "title";
-  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
+  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "class_id";
   public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "teacher_id";
   public static final String JOINCOLUMNS_JOINCOLUMN_STUDENTS_NAME = "class_id";
   public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_STUDENTS_NAME = "student_id";
+  private static final long serialVersionUID = -1487822773589610429L;
 
-  private Long id;
+
+  private Integer id;
 
   private String title;
 
-  private String shortDescr;
+  private byte[] shortDescrQuill;
+
+  private byte[] longDescrQuill;
 
   private School school;
+
+  private Set<KnowledgeAndSkill> knowledgeAndSkills = new LinkedHashSet<>();
 
   private Set<Teacher> teachers = new LinkedHashSet<>();
 
@@ -46,11 +54,11 @@ public class Class {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
-  public Class setId(Long id) {
+  public Class setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -65,13 +73,23 @@ public class Class {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
-  public String getShortDescr() {
-    return shortDescr;
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  public byte[] getShortDescrQuill() {
+    return shortDescrQuill;
   }
 
-  public Class setShortDescr(String shortDescr) {
-    this.shortDescr = shortDescr;
+  public Class setShortDescrQuill(byte[] shortDescrQuill) {
+    this.shortDescrQuill = shortDescrQuill;
+    return this;
+  }
+
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  public byte[] getLongDescrQuill() {
+    return longDescrQuill;
+  }
+
+  public Class setLongDescrQuill(byte[] longDescrQuill) {
+    this.longDescrQuill = longDescrQuill;
     return this;
   }
 
@@ -86,9 +104,18 @@ public class Class {
     return this;
   }
 
+  @OneToMany(mappedBy = "classField")
+  public Set<KnowledgeAndSkill> getKnowledgeAndSkills() {
+    return knowledgeAndSkills;
+  }
+
+  public Class setKnowledgeAndSkills(Set<KnowledgeAndSkill> knowledgeAndSkills) {
+    this.knowledgeAndSkills = knowledgeAndSkills;
+    return this;
+  }
+
   @ManyToMany
-  @JoinTable(
-      joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME),
+  @JoinTable(joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME),
       inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME))
   public Set<Teacher> getTeachers() {
     return teachers;
@@ -100,8 +127,7 @@ public class Class {
   }
 
   @ManyToMany
-  @JoinTable(
-      joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_STUDENTS_NAME),
+  @JoinTable(joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_STUDENTS_NAME),
       inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_STUDENTS_NAME))
   public Set<Student> getStudents() {
     return students;
@@ -121,4 +147,5 @@ public class Class {
     this.assignments = assignments;
     return this;
   }
+
 }

@@ -13,10 +13,9 @@
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-assignments-table.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-classes_students-table.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-classes_teachers-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-projects-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-knowledge_and_skills-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-project_cycles-table.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/330-project_posts-table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/275-projects-table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-project_cycles-table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-project_posts-table.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-portfolios-table.sql" dialect="MySQL" />
     <file url="PROJECT" dialect="GenericSQL" />
   </component>
