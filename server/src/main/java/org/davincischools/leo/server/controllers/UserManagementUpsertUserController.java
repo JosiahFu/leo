@@ -45,7 +45,7 @@ public class UserManagementUpsertUserController {
     Optional<User> user = Optional.empty();
     if (request.hasId()) {
       checkArgument(!request.hasRole(), "Role cannot be changed.");
-      user = db.getUsers().findById(request.getId());
+      user = db.getUserRepository().findById(request.getId());
     } else {
       checkArgument(request.hasRole(), "Role is required.");
     }
@@ -66,7 +66,7 @@ public class UserManagementUpsertUserController {
       return;
     }
 
-    db.getUsers()
+    db.getUserRepository()
         .save(
             UserUtils.setPassword(
                 new User()
@@ -82,7 +82,7 @@ public class UserManagementUpsertUserController {
     checkArgument(request.hasId());
     checkArgument(!request.hasRole(), "Role cannot be changed.");
 
-    Optional<User> user = db.getUsers().findById(request.getId());
+    Optional<User> user = db.getUserRepository().findById(request.getId());
     if (user.isEmpty()) {
       throw new IllegalArgumentException("User ID does not exist: " + request.getId());
     }
@@ -105,7 +105,7 @@ public class UserManagementUpsertUserController {
       UserUtils.setPassword(user.get(), request.getPassword());
     }
 
-    db.getUsers().save(user.get());
+    db.getUserRepository().save(user.get());
 
     response.setSuccess(true);
   }
@@ -182,11 +182,12 @@ public class UserManagementUpsertUserController {
       }
     }
 
-    Optional<User> emailUser = db.getUsers().findByEmailAddress(request.getEmailAddress());
+    Optional<User> emailUser = db.getUserRepository().findByEmailAddress(request.getEmailAddress());
     if (emailUser.isPresent()) {
       inputValid &=
           checkThat(
-              existingUser.isPresent() && emailUser.get().getId() == existingUser.get().getId(),
+              existingUser.isPresent()
+                  && emailUser.get().getId().equals(existingUser.get().getId()),
               response::setEmailAddressError,
               "Email address is already in use.");
     }

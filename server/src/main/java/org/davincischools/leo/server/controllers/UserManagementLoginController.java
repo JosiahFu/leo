@@ -41,7 +41,7 @@ public class UserManagementLoginController {
       return;
     }
 
-    Optional<User> user = db.getUsers().findByEmailAddress(request.getEmailAddress());
+    Optional<User> user = db.getUserRepository().findByEmailAddress(request.getEmailAddress());
     if (user.isPresent() && UserUtils.checkPassword(user.get(), request.getPassword())) {
       response.setSuccess(true);
       return;
