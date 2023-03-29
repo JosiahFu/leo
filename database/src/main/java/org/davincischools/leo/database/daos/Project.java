@@ -20,7 +20,7 @@ public class Project {
   public static final String ENTITY_NAME = "Project";
   public static final String TABLE_NAME = "project";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_TITLE_NAME = "title";
+  public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_LOVE_NAME = "love";
@@ -30,7 +30,7 @@ public class Project {
 
   private Integer id;
 
-  private String title;
+  private String name;
 
   private byte[] shortDescrQuill;
 
@@ -62,13 +62,13 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_TITLE_NAME, nullable = false)
-  public String getTitle() {
-    return title;
+  @Column(name = COLUMN_NAME_NAME, nullable = false)
+  public String getName() {
+    return name;
   }
 
-  public Project setTitle(String title) {
-    this.title = title;
+  public Project setName(String name) {
+    this.name = name;
     return this;
   }
 

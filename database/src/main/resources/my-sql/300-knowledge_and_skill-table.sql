@@ -2,7 +2,7 @@ CREATE TABLE knowledge_and_skill
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
 
-    title             VARCHAR(255)  NOT NULL,
+    name              VARCHAR(255)  NOT NULL,
     short_descr_quill BLOB          NOT NULL,
     long_descr_quill  LONGBLOB      NOT NULL,
     -- JSON array of strings: ["mastery_1", "mastery_2", ...]

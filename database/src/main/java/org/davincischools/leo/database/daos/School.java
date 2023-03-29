@@ -22,7 +22,7 @@ public class School {
   public static final String ENTITY_NAME = "School";
   public static final String TABLE_NAME = "school";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_SCHOOL_NAME = "school";
+  public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_CITY_NAME = "city";
   public static final String JOINTABLE_TEACHERS_NAME = "teacher_school";
   public static final String JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "school_id";
@@ -30,7 +30,7 @@ public class School {
 
   private Integer id;
 
-  private String school;
+  private String name;
 
   private String city;
 
@@ -52,13 +52,13 @@ public class School {
     return this;
   }
 
-  @Column(name = COLUMN_SCHOOL_NAME, nullable = false)
-  public String getSchool() {
-    return school;
+  @Column(name = COLUMN_NAME_NAME, nullable = false)
+  public String getName() {
+    return name;
   }
 
-  public School setSchool(String school) {
-    this.school = school;
+  public School setName(String name) {
+    this.name = name;
     return this;
   }
 

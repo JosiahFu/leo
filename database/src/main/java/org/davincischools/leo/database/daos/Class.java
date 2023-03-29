@@ -22,7 +22,7 @@ public class Class {
   public static final String ENTITY_NAME = "Class";
   public static final String TABLE_NAME = "class";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_TITLE_NAME = "title";
+  public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String JOINTABLE_STUDENTS_NAME = "class_student";
@@ -34,7 +34,7 @@ public class Class {
 
   private Integer id;
 
-  private String title;
+  private String name;
 
   private byte[] shortDescrQuill;
 
@@ -62,13 +62,13 @@ public class Class {
     return this;
   }
 
-  @Column(name = COLUMN_TITLE_NAME, nullable = false)
-  public String getTitle() {
-    return title;
+  @Column(name = COLUMN_NAME_NAME, nullable = false)
+  public String getName() {
+    return name;
   }
 
-  public Class setTitle(String title) {
-    this.title = title;
+  public Class setName(String name) {
+    this.name = name;
     return this;
   }
 

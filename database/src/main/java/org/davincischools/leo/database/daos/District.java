@@ -17,11 +17,11 @@ public class District {
   public static final String ENTITY_NAME = "District";
   public static final String TABLE_NAME = "district";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_DISTRICT_NAME = "district";
+  public static final String COLUMN_NAME_NAME = "name";
 
   private Integer id;
 
-  private String district;
+  private String name;
 
   private Set<School> schools = new LinkedHashSet<>();
 
@@ -39,13 +39,13 @@ public class District {
     return this;
   }
 
-  @Column(name = COLUMN_DISTRICT_NAME, nullable = false)
-  public String getDistrict() {
-    return district;
+  @Column(name = COLUMN_NAME_NAME, nullable = false)
+  public String getName() {
+    return name;
   }
 
-  public District setDistrict(String district) {
-    this.district = district;
+  public District setName(String name) {
+    this.name = name;
     return this;
   }
 

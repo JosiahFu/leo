@@ -3,7 +3,7 @@ package org.davincischools.leo.database.test;
 import static org.davincischools.leo.database.utils.UserUtils.setPassword;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.School;
@@ -17,44 +17,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestData {
 
+  private static final AtomicInteger counter = new AtomicInteger(0);
+
   private final Database db;
 
   public final User mrsPuff;
   public final User spongeBob;
   public final User sandy;
-
-  public final String password = UUID.randomUUID().toString();
+  public final String password = "password_" + counter.incrementAndGet();
 
   public TestData(@Autowired Database db) {
     this.db = db;
 
-    db.getPortfolioPostRepository().deleteAll();
-    db.getProjectPostCommentRepository().deleteAll();
-    db.getPortfolioRepository().deleteAll();
-    db.getProjectPostRepository().deleteAll();
-    db.getProjectCycleRepository().deleteAll();
-    db.getKnowledgeAndSkillRepository().deleteAll();
-    db.getProjectRepository().deleteAll();
-    db.getClassTeacherRepository().deleteAll();
-    db.getClassStudentRepository().deleteAll();
-    db.getAssignmentRepository().deleteAll();
-    db.getTeacherSchoolRepository().deleteAll();
-    db.getUserRepository().deleteAll();
-    db.getClassRepository().deleteAll();
-    db.getTeacherRepository().deleteAll();
-    db.getStudentRepository().deleteAll();
-    db.getAdminRepository().deleteAll();
-    db.getSchoolRepository().deleteAll();
-    db.getDistrictRepository().deleteAll();
+    // Rather than delete what's there, which could be dangerous since it is
+    // possible that a misconfiguration could point this to a real database,
+    // we create new users each time with unique ids.
 
     District district =
         db.getDistrictRepository()
-            .save(new District().setDistrict("Bikini Bottom School District"));
+            .save(new District().setName("Bikini Bottom School District - " + password));
+
     School school =
         db.getSchoolRepository()
             .save(
                 new School()
-                    .setSchool("Bikini Bottom Drivers School")
+                    .setName("Bikini Bottom Drivers School - " + password)
                     .setCity("Bikini Bottom")
                     .setDistrict(district));
 
@@ -65,7 +52,7 @@ public class TestData {
                     new User()
                         .setFirstName("Sandy")
                         .setLastName("Cheeks")
-                        .setEmailAddress("sandy.cheeks@bikinibottom.com")
+                        .setEmailAddress("sandy.cheeks." + password + "@bikinibottom.com")
                         .setDistrict(district)
                         .setAdmin(db.getAdminRepository().save(new Admin())),
                     password));
@@ -77,7 +64,7 @@ public class TestData {
                     new User()
                         .setFirstName("Poppy")
                         .setLastName("Puff")
-                        .setEmailAddress("poppy.puff@bikinibottom.com")
+                        .setEmailAddress("poppy.puff." + password + "@bikinibottom.com")
                         .setDistrict(district)
                         .setTeacher(
                             db.getTeacherRepository()
@@ -91,7 +78,7 @@ public class TestData {
                     new User()
                         .setFirstName("SpongeBob")
                         .setLastName("SquarePants")
-                        .setEmailAddress("spongebob.squarepants@bikinibottom.com")
+                        .setEmailAddress("spongebob.squarepants." + password + "@bikinibottom.com")
                         .setDistrict(district)
                         .setStudent(db.getStudentRepository().save(new Student())),
                     password));

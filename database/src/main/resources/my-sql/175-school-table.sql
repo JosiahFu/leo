@@ -2,7 +2,7 @@ CREATE TABLE school
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
 
-    school      VARCHAR(255) NOT NULL,
+    name        VARCHAR(255) NOT NULL,
     city        VARCHAR(255) NOT NULL,
 
     district_id INT          NOT NULL,
