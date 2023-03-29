@@ -1,0 +1,63 @@
+@mixin left {
+  text-align: left;
+  float: left;
+}
+
+@mixin center {
+  text-align: center;
+  float: initial;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin right {
+  text-align: right;
+  float: right;
+}
+
+@mixin top {
+  align-items: initial;
+}
+
+@mixin middle {
+  align-items: center;
+}
+
+@mixin bottom {
+  align-items: flex-end;
+}
+
+.form-table {
+  width: 90%;
+
+  @include center();
+}
+
+.form-table th {
+  width: 0;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.form-table td {
+  width: 100%;
+}
+
+.form-buttons {
+  text-align: right;
+  width: auto !important;
+}
+
+.form-buttons div {
+  border: 1px solid black;
+  background-color: lightgrey;
+  margin-left: 10px;
+  margin-right: 0px;
+  padding: 2px 5px 2px 5px;
+}
+
+.delete-button {
+  border-color: red !important;
+  background-color: lightpink !important;
+}

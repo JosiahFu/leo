@@ -183,7 +183,7 @@ export const Ikigai = forwardRef(
             {/* Initially, set everything to hidden to not flash before being positioned.*/}
             <div
               id={props.id + '.lovesPanel'}
-              className="rotating-panel center top"
+              className="rotating-panel loves-panel"
               style={{visibility: 'hidden'}}
             >
               <div className="rotating-panel-contents">
@@ -227,7 +227,7 @@ export const Ikigai = forwardRef(
 
             <div
               id={props.id + '.worldNeedsPanel'}
-              className="rotating-panel right middle"
+              className="rotating-panel world-needs-panel"
               style={{visibility: 'hidden'}}
             >
               <div className="rotating-panel-contents">
@@ -256,7 +256,7 @@ export const Ikigai = forwardRef(
 
             <div
               id={props.id + '.paidForPanel'}
-              className="rotating-panel center bottom"
+              className="rotating-panel paid-for-panel"
               style={{visibility: 'hidden'}}
             >
               <div className="rotating-panel-contents">
@@ -285,7 +285,7 @@ export const Ikigai = forwardRef(
 
             <div
               id={props.id + '.goodAtPanel'}
-              className="rotating-panel left middle"
+              className="rotating-panel good-at-panel"
               style={{visibility: 'hidden'}}
             >
               <div className="rotating-panel-contents">

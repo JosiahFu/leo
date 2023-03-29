@@ -1,3 +1,5 @@
+@Import '../generic';
+
 .rotating-panel {
   display: flex;
 }
@@ -14,29 +16,22 @@
   width:100%;
 }
 
-.left {
-  text-align: left;
-  float: left;
+.loves-panel {
+  @include center;
+  @include top;
 }
 
-.center {
-  text-align: center;
-  float: initial;
+.world-needs-panel {
+  @include right();
+  @include middle();
 }
 
-.right {
-  text-align: right;
-  float: right;
+.paid-for-panel {
+  @include center();
+  @include bottom();
 }
 
-.top {
-  align-items: initial;
-}
-
-.middle {
-  align-items: center;
-}
-
-.bottom {
-  align-items: flex-end;
+.good-at-panel {
+  @include left();
+  @include middle();
 }
