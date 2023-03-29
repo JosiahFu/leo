@@ -1,4 +1,25 @@
 /.attach_pid*
 /.metadata/
+
+### Maven ###
 /target/
-**/*.iml
+**/target/
+
+### NPM ###
+**/src/main/**/build/
+**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea/jarRepositories.xml
+.idea/libraries/
+*.iws
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Windows ###
+Desktop.ini
