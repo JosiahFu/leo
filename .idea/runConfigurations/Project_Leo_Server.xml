@@ -1,7 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Project Leo Server" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="project-leo-server" />
-    <option name="PROGRAM_PARAMETERS" value="--project_leo.test.database.port=3307" />
     <selectedOptions>
       <option name="spring.boot.profiles" visible="false" />
     </selectedOptions>
