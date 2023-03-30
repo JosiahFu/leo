@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.davincischools.leo.protos.district_management";
+
+package district_management;
+
+service DistrictManagementService {
+  rpc GetDistricts (GetDistrictsRequest) returns (DistrictInformationResponse) {}
+  rpc AddDistrict (AddDistrictRequest) returns (DistrictInformationResponse) {}
+  rpc UpdateDistrict (UpdateDistrictRequest) returns (DistrictInformationResponse) {}
+  rpc RemoveDistrict (RemoveDistrictRequest) returns (DistrictInformationResponse) {}
+}
+
+message GetDistrictsRequest {}
+
+message AddDistrictRequest {
+  optional string district = 1;
+}
+
+message UpdateDistrictRequest {
+  optional int32 district_id = 1;
+  optional string district = 2;
+}
+
+message RemoveDistrictRequest {
+  optional int32 district_id = 1;
+}
+
+message DistrictInformationResponse {
+  optional int32 modified_district_id = 1;
+  map<int32, string> districts = 2;
+}

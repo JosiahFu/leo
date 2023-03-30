@@ -53,11 +53,13 @@ export function Root() {
 
   return (
     <>
-      <Link to={'login'}>Login</Link>
+      <Link to="edit-districts">Edit Districts</Link>
       <br />
-      <Link to={'create-user'}>Create User</Link>
+      <Link to="create-user">Create User</Link>
       <br />
-      <Link to={'student/project-gen'}>Project Idea Generation Prototype</Link>
+      <Link to="login">Login</Link>
+      <br />
+      <Link to="student/project-gen">Project Idea Generation Prototype</Link>
       <IkigaiReel
         id="IkigaiReel"
         origin={ikigaiCenter}

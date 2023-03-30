@@ -83,7 +83,9 @@ public class Database {
       extends CrudRepository<ProjectPostComment, Integer> {}
 
   @Repository
-  public interface SchoolRepository extends CrudRepository<School, Integer> {}
+  public interface SchoolRepository extends CrudRepository<School, Integer> {
+    Iterable<School> findAllByDistrictId(Integer district_id);
+  }
 
   @Repository
   public interface StudentRepository extends CrudRepository<Student, Integer> {}
