@@ -29,6 +29,7 @@ public class TestData {
 
   public TestData(@Autowired Database db) {
     this.db = db;
+    counter.incrementAndGet();
 
     // Rather than delete what's there, which could be dangerous since it is
     // possible that a misconfiguration could point this to a real database,
