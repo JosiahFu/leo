@@ -99,6 +99,8 @@ public class Database {
   @Repository
   public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findByEmailAddress(String emailAddress);
+
+    Iterable<User> findAllByDistrictId(int districtId);
   }
 
   @Autowired private AdminRepository adminRepository;

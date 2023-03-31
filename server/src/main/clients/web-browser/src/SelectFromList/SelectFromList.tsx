@@ -90,7 +90,7 @@ export function SelectFromList<K, V>(props: {
               type="radio"
               name={props.id}
               value={String(emptyKey)}
-              onClick={() => props.onSelect(emptyKey)}
+              onChange={() => props.onSelect(emptyKey)}
               checked={props.selectedKey === emptyKey}
             />
             <label htmlFor={props.id + String(emptyKey)}>
@@ -106,7 +106,7 @@ export function SelectFromList<K, V>(props: {
                   type="radio"
                   name={props.id}
                   value={String(key)}
-                  onClick={() => props.onSelect(key)}
+                  onChange={() => props.onSelect(key)}
                   checked={props.selectedKey === key}
                 />
                 <label htmlFor={props.id + String(key)}>

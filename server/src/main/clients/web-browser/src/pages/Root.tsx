@@ -55,9 +55,9 @@ export function Root() {
     <>
       <Link to="edit-districts">Edit Districts</Link>
       <br />
-      <Link to="edit-schools">Edit Schools</Link>
+      <Link to="edit-users">Edit Users</Link>
       <br />
-      <Link to="create-user">Create User</Link>
+      <Link to="edit-schools">Edit Schools</Link>
       <br />
       <Link to="login">Login</Link>
       <br />

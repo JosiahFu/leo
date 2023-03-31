@@ -5,41 +5,51 @@ option java_package = "org.davincischools.leo.protos.user_management";
 
 package user_management;
 
-enum Operation {
-  CHECK = 0;
-  INSERT = 1;
-  UPDATE = 2;
-}
-
-enum Role {
-  STUDENT = 0;
-  TEACHER = 1;
-  ADMIN = 2;
-}
-
 service UserManagementService {
-  rpc UpsertUser (UpsertUserRequest) returns (UpsertUserResponse) {}
+  rpc GetUsers (GetUsersRequest) returns (UserInformationResponse) {}
+  rpc UpsertUser (UpsertUserRequest) returns (UserInformationResponse) {}
+  rpc RemoveUser (RemoveUserRequest) returns (UserInformationResponse) {}
   rpc Login (LoginRequest) returns (LoginResponse) {}
 }
 
-message UpsertUserRequest {
-  optional Operation operation = 1;
-  optional Role role = 2;
-  optional int32 id = 3;
-  optional string first_name = 4;
-  optional string last_name = 5;
-  optional string email_address = 6;
-  optional string password = 7;
-  optional string verifyPassword = 8;
+message User {
+  optional int32 id = 1;
+  optional int32 district_id = 2;
+  optional string first_name = 3;
+  optional string last_name = 4;
+  optional string email_address = 5;
+  optional string password = 6;
+  optional string verifyPassword = 7;
+
+  optional bool is_admin = 8;
+  optional bool is_teacher = 9;
+  optional bool is_student = 10;
 }
 
-message UpsertUserResponse {
-  optional bool success = 1;
-  optional string first_name_error = 3;
-  optional string last_name_error = 4;
-  optional string email_address_error = 5;
-  optional string password_error = 6;
-  optional string verify_password_error = 7;
+message GetUsersRequest {
+  optional int32 district_id = 1;
+}
+
+message UpsertUserRequest {
+  optional User user = 1;
+}
+
+message RemoveUserRequest {
+  optional int32 district_id = 1;
+  optional int32 user_id = 2;
+}
+
+message UserInformationResponse {
+  optional int32 district_id = 1;
+  optional int32 next_user_id = 2;
+  repeated User users = 3;
+
+  optional bool success = 4;
+  optional string first_name_error = 5;
+  optional string last_name_error = 6;
+  optional string email_address_error = 7;
+  optional string password_error = 8;
+  optional string verify_password_error = 9;
 }
 
 message LoginRequest {

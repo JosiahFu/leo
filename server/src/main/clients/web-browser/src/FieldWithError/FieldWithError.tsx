@@ -22,7 +22,7 @@ export function FieldWithError<T>(props: {
         maxLength={props.maxLength}
         onChange={valueChanged}
         onBlur={props.onBlur}
-        value={props.value as string}
+        value={String(props.value)}
         autoComplete={props.autoComplete}
       />
       {props.error && (

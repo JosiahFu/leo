@@ -185,7 +185,7 @@ export function EditSchools() {
             <div hidden={schoolId !== -1} onClick={upsertSchool}>
               Add
             </div>
-            <div hidden={districtId === -1} onClick={upsertSchool}>
+            <div hidden={schoolId === -1} onClick={upsertSchool}>
               Update
             </div>
             <div

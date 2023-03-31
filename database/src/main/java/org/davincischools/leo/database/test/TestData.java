@@ -34,14 +34,13 @@ public class TestData {
     // we create new users each time with unique ids.
 
     District district =
-        db.getDistrictRepository()
-            .save(new District().setName("Bikini Bottom School District - " + password));
+        db.getDistrictRepository().save(new District().setName("Bikini Bottom School District"));
 
     School school =
         db.getSchoolRepository()
             .save(
                 new School()
-                    .setName("Bikini Bottom Drivers School - " + password)
+                    .setName("Bikini Bottom Drivers School")
                     .setCity("Bikini Bottom")
                     .setDistrict(district));
 
