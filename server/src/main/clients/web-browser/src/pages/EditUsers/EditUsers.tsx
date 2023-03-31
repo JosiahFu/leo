@@ -151,6 +151,7 @@ export function EditUsers() {
 
   return (
     <>
+      <h2>Edit Users</h2>
       <table className="form-table">
         <tbody>
           <tr>
