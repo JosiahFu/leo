@@ -12,15 +12,19 @@ service DistrictManagementService {
   rpc RemoveDistrict (RemoveDistrictRequest) returns (DistrictInformationResponse) {}
 }
 
+message District {
+  optional int32 id = 1;
+  optional string name = 2;
+}
+
 message GetDistrictsRequest {}
 
 message AddDistrictRequest {
-  optional string district = 1;
+  optional District district = 1;
 }
 
 message UpdateDistrictRequest {
-  optional int32 district_id = 1;
-  optional string district = 2;
+  optional District district = 1;
 }
 
 message RemoveDistrictRequest {
@@ -29,5 +33,5 @@ message RemoveDistrictRequest {
 
 message DistrictInformationResponse {
   optional int32 modified_district_id = 1;
-  map<int32, string> districts = 2;
+  repeated District districts = 2;
 }

@@ -1,6 +1,8 @@
 package org.davincischools.leo.server.controllers;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.protos.district_management.AddDistrictRequest;
@@ -24,7 +26,7 @@ public class DistrictManagementService {
   public DistrictInformationResponse getDistricts(
       @RequestBody Optional<GetDistrictsRequest> request) {
     request = Optional.of(request.orElse(GetDistrictsRequest.getDefaultInstance()));
-    return getAllDistricts(null);
+    return getAllDistricts(-1);
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/AddDistrict")
@@ -34,12 +36,12 @@ public class DistrictManagementService {
     request = Optional.of(request.orElse(AddDistrictRequest.getDefaultInstance()));
 
     if (request.get().hasDistrict()) {
-      District district = new District().setName(request.get().getDistrict());
+      District district = new District().setName(request.get().getDistrict().getName());
       db.getDistrictRepository().save(district);
       return getAllDistricts(district.getId());
     }
 
-    return getAllDistricts(null);
+    return getAllDistricts(-1);
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/UpdateDistrict")
@@ -48,12 +50,16 @@ public class DistrictManagementService {
       @RequestBody Optional<UpdateDistrictRequest> request) {
     request = Optional.of(request.orElse(UpdateDistrictRequest.getDefaultInstance()));
 
-    if (request.get().hasDistrictId()) {
-      db.getDistrictRepository().save(new District().setId(request.get().getDistrictId()).setName(request.get().getDistrict()));
-      return getAllDistricts(request.get().getDistrictId());
+    if (request.get().getDistrict().hasId()) {
+      db.getDistrictRepository()
+          .save(
+              new District()
+                  .setId(request.get().getDistrict().getId())
+                  .setName(request.get().getDistrict().getName()));
+      return getAllDistricts(request.get().getDistrict().getId());
     }
 
-    return getAllDistricts(null);
+    return getAllDistricts(-1);
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/RemoveDistrict")
@@ -66,16 +72,22 @@ public class DistrictManagementService {
       db.getDistrictRepository().deleteById(request.get().getDistrictId());
     }
 
-    return getAllDistricts(null);
+    return getAllDistricts(-1);
   }
 
-  private DistrictInformationResponse getAllDistricts(Integer modifiedDistrictId) {
+  private DistrictInformationResponse getAllDistricts(int modifiedDistrictId) {
     DistrictInformationResponse.Builder response = DistrictInformationResponse.newBuilder();
-    response.setModifiedDistrictId(modifiedDistrictId != null ? modifiedDistrictId : -1);
 
-    for (District district : db.getDistrictRepository().findAll()) {
-      response.putDistricts(district.getId(), district.getName());
-    }
+    response.setModifiedDistrictId(modifiedDistrictId);
+    response.addAllDistricts(
+        StreamSupport.stream(db.getDistrictRepository().findAll().spliterator(), false)
+            .map(
+                district ->
+                    org.davincischools.leo.protos.district_management.District.newBuilder()
+                        .setId(district.getId())
+                        .setName(district.getName())
+                        .build())
+            .collect(Collectors.toList()));
 
     return response.build();
   }
