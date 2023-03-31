@@ -6,6 +6,7 @@ import static org.davincischools.leo.database.post_environment_processors.Config
 import static org.davincischools.leo.server.SpringConstants.LOCAL_SERVER_PORT_PROPERTY;
 
 import java.util.Optional;
+import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.protos.message_of_the_day.MessageRequest;
