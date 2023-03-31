@@ -3,6 +3,7 @@ package org.davincischools.leo.database.test;
 import static org.davincischools.leo.database.utils.UserUtils.setPassword;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.District;
@@ -17,14 +18,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestData {
 
-  private static final AtomicInteger counter = new AtomicInteger(0);
+  private static final AtomicInteger counter = new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE - 1000));
 
   private final Database db;
 
-  public final User mrsPuff;
-  public final User spongeBob;
-  public final User sandy;
-  public final String password = "password_" + counter.incrementAndGet();
+  public final User teacher;
+  public final User student;
+  public final User admin;
+  public final String password = "password";
 
   public TestData(@Autowired Database db) {
     this.db = db;
@@ -34,36 +35,78 @@ public class TestData {
     // we create new users each time with unique ids.
 
     District district =
-        db.getDistrictRepository().save(new District().setName("Bikini Bottom School District"));
+        db.getDistrictRepository().save(new District().setName("Wiseburn Unified School District"));
 
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Communications High School")
+                .setCity("El Segundo, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Connect (TK-8)")
+                .setCity("Hawthorne, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Connect High School")
+                .setCity("El Segundo, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Extension")
+                .setCity("El Segundo, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Rise High, RISE-Richstone")
+                .setCity("Hawthorne, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Rise High, RISE-APCH")
+                .setCity("Los Angeles, CA")
+                .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Rise High, RISE-New Earth")
+                .setCity("Culver City, CA")
+                .setDistrict(district));
     School school =
-        db.getSchoolRepository()
-            .save(
-                new School()
-                    .setName("Bikini Bottom Drivers School")
-                    .setCity("Bikini Bottom")
-                    .setDistrict(district));
+    db.getSchoolRepository()
+        .save(
+            new School()
+                .setName("Da Vinci Science High School")
+                .setCity("El Segundo, CA")
+                .setDistrict(district));
 
     db.getUserRepository()
         .save(
-            sandy =
+            admin =
                 setPassword(
                     new User()
-                        .setFirstName("Sandy")
-                        .setLastName("Cheeks")
-                        .setEmailAddress("sandy.cheeks." + password + "@bikinibottom.com")
+                        .setFirstName("Scott")
+                        .setLastName("Hendrickson")
+                        .setEmailAddress("sahendrickson." + counter.get() + "@davincischools.org")
                         .setDistrict(district)
                         .setAdmin(db.getAdminRepository().save(new Admin())),
                     password));
 
     db.getUserRepository()
         .save(
-            mrsPuff =
+            teacher =
                 setPassword(
                     new User()
-                        .setFirstName("Poppy")
-                        .setLastName("Puff")
-                        .setEmailAddress("poppy.puff." + password + "@bikinibottom.com")
+                        .setFirstName("Steven")
+                        .setLastName("Eno")
+                        .setEmailAddress("seno." + counter.get() + "@davincischools.org")
                         .setDistrict(district)
                         .setTeacher(
                             db.getTeacherRepository()
@@ -72,12 +115,12 @@ public class TestData {
 
     db.getUserRepository()
         .save(
-            spongeBob =
+            student =
                 setPassword(
                     new User()
-                        .setFirstName("SpongeBob")
-                        .setLastName("SquarePants")
-                        .setEmailAddress("spongebob.squarepants." + password + "@bikinibottom.com")
+                        .setFirstName("Steve")
+                        .setLastName("Wallis")
+                        .setEmailAddress("swallis." + counter.get() + "@davincischools.org")
                         .setDistrict(district)
                         .setStudent(db.getStudentRepository().save(new Student())),
                     password));
