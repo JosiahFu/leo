@@ -4,10 +4,12 @@ import {ChangeEvent, ReactElement, useEffect, useState} from 'react';
 export enum Display {
   DROP_DOWN,
   SCROLLING_LIST,
+  RADIO_BUTTONS,
 }
 
 export function SelectFromList<K, V>(props: {
   display: Display;
+  id: string;
   values: Array<V> | Map<K, V>;
   selectedKey: K;
   getKey: (value?: V) => K;
@@ -79,7 +81,41 @@ export function SelectFromList<K, V>(props: {
           })}
         </div>
       );
-    default:
-      return <>Display not recognized {Display[props.display]}</>;
+    case Display.RADIO_BUTTONS:
+      return (
+        <>
+          <div className="radio-span">
+            <input
+              id={props.id + String(emptyKey)}
+              type="radio"
+              name={props.id}
+              value={String(emptyKey)}
+              onClick={() => props.onSelect(emptyKey)}
+              checked={props.selectedKey === emptyKey}
+            />
+            <label htmlFor={props.id + String(emptyKey)}>
+              {props.renderValue(emptyKey)}
+            </label>
+          </div>
+          {sortedValues.map(value => {
+            const key = props.getKey(value);
+            return (
+              <div className="radio-span" key={String(key)}>
+                <input
+                  id={props.id + String(key)}
+                  type="radio"
+                  name={props.id}
+                  value={String(key)}
+                  onClick={() => props.onSelect(key)}
+                  checked={props.selectedKey === key}
+                />
+                <label htmlFor={props.id + String(key)}>
+                  {props.renderValue(key)}
+                </label>
+              </div>
+            );
+          })}
+        </>
+      );
   }
 }

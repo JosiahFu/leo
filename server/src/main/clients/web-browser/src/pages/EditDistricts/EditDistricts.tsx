@@ -6,6 +6,29 @@ import DistrictInformationResponse = district_management.DistrictInformationResp
 import IDistrict = district_management.IDistrict;
 import {Display, SelectFromList} from '../../SelectFromList/SelectFromList';
 
+export function SelectDistrictFromList(props: {
+  id: string;
+  display: Display;
+  districts: Map<number, IDistrict>;
+  districtId: number;
+  onSelect: (key: number) => void;
+  defaultText: string;
+}) {
+  return SelectFromList<number, IDistrict>({
+    id: props.id,
+    display: props.display,
+    values: props.districts,
+    selectedKey: props.districtId,
+    getKey: district => (district != null ? district.id! : -1),
+    stringToKey: Number,
+    compareValues: (a, b) => (a.name || '').localeCompare(b.name || ''),
+    onSelect: props.onSelect,
+    renderValue: key => (
+      <>{(props.districts.get(key) || {name: props.defaultText}).name!}</>
+    ),
+  });
+}
+
 export function EditDistricts() {
   const [districts, setDistricts] = useState(new Map<number, IDistrict>());
   const [districtId, setDistrictId] = useState(-1);
@@ -55,29 +78,18 @@ export function EditDistricts() {
         <tr>
           <th>District:</th>
           <td>
-            <SelectFromList<number, IDistrict>
-              display={Display.DROP_DOWN}
-              values={districts}
-              selectedKey={districtId}
-              getKey={district => (district != null ? district.id! : -1)}
-              stringToKey={key => Number(key)}
-              compareValues={(a, b) =>
-                (a.name || '').localeCompare(b.name || '')
-              }
-              onSelect={key => {
-                setDistrictId(key);
-                setDistrictName((districts.get(key) || {name: ''}).name!);
-              }}
-              renderValue={key => {
-                return (
-                  <>
-                    {
-                      (districts.get(key) || {name: '- Create New District -'})
-                        .name!
-                    }
-                  </>
+            <SelectDistrictFromList
+              id="districts"
+              display={Display.RADIO_BUTTONS}
+              districts={districts}
+              districtId={districtId}
+              onSelect={districtId => {
+                setDistrictId(districtId);
+                setDistrictName(
+                  (districts.get(districtId) || {name: ''}).name!
                 );
               }}
+              defaultText="[Create New District]"
             />
           </td>
         </tr>

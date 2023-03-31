@@ -12,6 +12,7 @@ import StudentUpload from './pages/student/Upload';
 import CreateUser from './pages/create-user/CreateUser';
 import Login from './pages/login/Login';
 import {EditDistricts} from './pages/EditDistricts/EditDistricts';
+import {EditSchools} from './pages/EditSchools/EditSchools';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -29,6 +30,7 @@ root.render(
           <Route path="/" Component={Root} />
           <Route path="/create-user" Component={CreateUser} />
           <Route path="/edit-districts" Component={EditDistricts} />
+          <Route path="/edit-schools" Component={EditSchools} />
           <Route path="/login" Component={Login} />
           <Route path="/studdent" Component={StudentNav} />
           <Route path="/student/project-gen" Component={StudentProjectGen} />

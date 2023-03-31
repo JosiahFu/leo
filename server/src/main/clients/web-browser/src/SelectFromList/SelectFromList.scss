@@ -23,3 +23,11 @@ select {
     background-color: lightgrey;
   }
 }
+
+.radio-span {
+  white-space: nowrap;
+}
+
+.radio-span input {
+  width: min-content;
+}
