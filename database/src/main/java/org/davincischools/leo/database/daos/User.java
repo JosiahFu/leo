@@ -9,11 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = User.ENTITY_NAME)
 @Table(
@@ -52,10 +49,6 @@ public class User {
   private Teacher teacher;
 
   private Student student;
-
-  private Set<ProjectPostComment> projectPostComments = new LinkedHashSet<>();
-
-  private Set<ProjectPost> projectPosts = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -150,26 +143,6 @@ public class User {
 
   public User setStudent(Student student) {
     this.student = student;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "user")
-  public Set<ProjectPostComment> getProjectPostComments() {
-    return projectPostComments;
-  }
-
-  public User setProjectPostComments(Set<ProjectPostComment> projectPostComments) {
-    this.projectPostComments = projectPostComments;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "user")
-  public Set<ProjectPost> getProjectPosts() {
-    return projectPosts;
-  }
-
-  public User setProjectPosts(Set<ProjectPost> projectPosts) {
-    this.projectPosts = projectPosts;
     return this;
   }
 }

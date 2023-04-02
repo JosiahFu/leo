@@ -5,10 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = District.ENTITY_NAME)
 @Table(name = District.TABLE_NAME, schema = "leo_temp")
@@ -22,10 +19,6 @@ public class District {
   private Integer id;
 
   private String name;
-
-  private Set<School> schools = new LinkedHashSet<>();
-
-  private Set<User> users = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,26 +39,6 @@ public class District {
 
   public District setName(String name) {
     this.name = name;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "district")
-  public Set<School> getSchools() {
-    return schools;
-  }
-
-  public District setSchools(Set<School> schools) {
-    this.schools = schools;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "district")
-  public Set<User> getUsers() {
-    return users;
-  }
-
-  public District setUsers(Set<User> users) {
-    this.users = users;
     return this;
   }
 }

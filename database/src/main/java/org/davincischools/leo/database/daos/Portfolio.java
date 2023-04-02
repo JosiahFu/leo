@@ -5,10 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = Portfolio.ENTITY_NAME)
 @Table(name = Portfolio.TABLE_NAME, schema = "leo_temp")
@@ -28,8 +25,6 @@ public class Portfolio {
   private byte[] shortDescrQuill;
 
   private byte[] longDescrQuill;
-
-  private Set<PortfolioPost> portfolioPosts = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,16 +65,6 @@ public class Portfolio {
 
   public Portfolio setLongDescrQuill(byte[] longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "portfolio")
-  public Set<PortfolioPost> getPortfolioPosts() {
-    return portfolioPosts;
-  }
-
-  public Portfolio setPortfolioPosts(Set<PortfolioPost> portfolioPosts) {
-    this.portfolioPosts = portfolioPosts;
     return this;
   }
 }

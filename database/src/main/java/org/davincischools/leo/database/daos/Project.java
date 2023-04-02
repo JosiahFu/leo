@@ -8,10 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = Project.ENTITY_NAME)
 @Table(name = Project.TABLE_NAME, schema = "leo_temp")
@@ -47,8 +44,6 @@ public class Project {
   private Assignment assignment;
 
   private Student student;
-
-  private Set<ProjectCycle> projectCycles = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -151,16 +146,6 @@ public class Project {
 
   public Project setStudent(Student student) {
     this.student = student;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "project")
-  public Set<ProjectCycle> getProjectCycles() {
-    return projectCycles;
-  }
-
-  public Project setProjectCycles(Set<ProjectCycle> projectCycles) {
-    this.projectCycles = projectCycles;
     return this;
   }
 }

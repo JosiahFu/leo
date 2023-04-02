@@ -8,10 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = Assignment.ENTITY_NAME)
 @Table(name = Assignment.TABLE_NAME, schema = "leo_temp")
@@ -33,8 +30,6 @@ public class Assignment {
   private byte[] longDescrQuill;
 
   private Class classField;
-
-  private Set<Project> projects = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,16 +81,6 @@ public class Assignment {
 
   public Assignment setClassField(Class classField) {
     this.classField = classField;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "assignment")
-  public Set<Project> getProjects() {
-    return projects;
-  }
-
-  public Assignment setProjects(Set<Project> projects) {
-    this.projects = projects;
     return this;
   }
 }

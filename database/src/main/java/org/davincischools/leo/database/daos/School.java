@@ -7,13 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = School.ENTITY_NAME)
 @Table(name = School.TABLE_NAME, schema = "leo_temp")
@@ -24,9 +19,6 @@ public class School {
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_CITY_NAME = "city";
-  public static final String JOINTABLE_TEACHERS_NAME = "teacher_school";
-  public static final String JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "school_id";
-  public static final String INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME = "teacher_id";
 
   private Integer id;
 
@@ -35,10 +27,6 @@ public class School {
   private String city;
 
   private District district;
-
-  private Set<Class> classFields = new LinkedHashSet<>();
-
-  private Set<Teacher> teachers = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,30 +68,6 @@ public class School {
 
   public School setDistrict(District district) {
     this.district = district;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "school")
-  public Set<Class> getClassFields() {
-    return classFields;
-  }
-
-  public School setClassFields(Set<Class> classFields) {
-    this.classFields = classFields;
-    return this;
-  }
-
-  @ManyToMany
-  @JoinTable(
-      name = JOINTABLE_TEACHERS_NAME,
-      joinColumns = @JoinColumn(name = JOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME),
-      inverseJoinColumns = @JoinColumn(name = INVERSEJOINCOLUMNS_JOINCOLUMN_TEACHERS_NAME))
-  public Set<Teacher> getTeachers() {
-    return teachers;
-  }
-
-  public School setTeachers(Set<Teacher> teachers) {
-    this.teachers = teachers;
     return this;
   }
 }

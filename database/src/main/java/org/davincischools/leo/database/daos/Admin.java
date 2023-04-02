@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity(name = Admin.ENTITY_NAME)
@@ -17,8 +16,6 @@ public class Admin {
   public static final String COLUMN_ID_NAME = "id";
 
   private Integer id;
-
-  private User user;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +29,5 @@ public class Admin {
     return this;
   }
 
-  @OneToOne(mappedBy = "admin")
-  public User getUser() {
-    return user;
-  }
-
-  public Admin setUser(User user) {
-    this.user = user;
-    return this;
-  }
+  // TODO [JPA Buddy] generate columns from DB
 }

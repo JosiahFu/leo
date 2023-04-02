@@ -8,10 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity(name = ProjectPost.ENTITY_NAME)
 @Table(name = ProjectPost.TABLE_NAME, schema = "leo_temp")
@@ -36,10 +33,6 @@ public class ProjectPost {
   private Long postTimeMicrosUtc;
 
   private User user;
-
-  private Set<ProjectPostComment> projectPostComments = new LinkedHashSet<>();
-
-  private Set<PortfolioPost> portfolioPosts = new LinkedHashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,26 +94,6 @@ public class ProjectPost {
 
   public ProjectPost setUser(User user) {
     this.user = user;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "projectPost")
-  public Set<ProjectPostComment> getProjectPostComments() {
-    return projectPostComments;
-  }
-
-  public ProjectPost setProjectPostComments(Set<ProjectPostComment> projectPostComments) {
-    this.projectPostComments = projectPostComments;
-    return this;
-  }
-
-  @OneToMany(mappedBy = "projectPost")
-  public Set<PortfolioPost> getPortfolioPosts() {
-    return portfolioPosts;
-  }
-
-  public ProjectPost setPortfolioPosts(Set<PortfolioPost> portfolioPosts) {
-    this.portfolioPosts = portfolioPosts;
     return this;
   }
 }
