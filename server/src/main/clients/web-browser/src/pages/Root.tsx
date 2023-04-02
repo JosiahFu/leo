@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import * as protos from '../protos';
 import {Coordinate, IkigaiReel} from '../IkigaiReel/IkigaiReel';
-import './Root.scss';
 import {Link} from 'react-router-dom';
 
 export function Root() {
@@ -12,7 +11,7 @@ export function Root() {
   const [ikigaiSize, setIkigaiSize] = useState(0);
 
   function updateIkigaiPosition() {
-    const main = document.getElementsByClassName('main').item(0) as HTMLElement;
+    const main = document.getElementsByTagName('main').item(0) as HTMLElement;
     if (main) {
       setIkigaiCenter({
         x: main.offsetLeft + main.offsetWidth / 2,

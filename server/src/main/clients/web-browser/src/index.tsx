@@ -13,6 +13,7 @@ import {EditUsers} from './pages/EditUsers/EditUsers';
 import Login from './pages/login/Login';
 import {EditDistricts} from './pages/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/EditSchools/EditSchools';
+import Nav from './pages/Nav';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,13 +22,10 @@ const root = ReactDOM.createRoot(
 // We use HashRouter as a temporary fix for a longer-term solution.
 root.render(
   <React.StrictMode>
-    <div className="header">
-      <a href="/">PROJECT LEO</a>
-    </div>
-    <div className="main">
-      <HashRouter>
-        <Routes>
-          <Route path="/" Component={Root} />
+    <HashRouter>
+      <Routes>
+        <Route path="/" Component={Nav}>
+          <Route path="" Component={Root} />
           <Route path="/edit-districts" Component={EditDistricts} />
           <Route path="/edit-schools" Component={EditSchools} />
           <Route path="/edit-users" Component={EditUsers} />
@@ -39,10 +37,9 @@ root.render(
             Component={StudentProjectImplementation}
           />
           <Route path="/student/upload" Component={StudentUpload} />
-        </Routes>
-      </HashRouter>
-    </div>
-    <div className="footer">&nbsp;</div>
+        </Route>
+      </Routes>
+    </HashRouter>
   </React.StrictMode>
 );
 
