@@ -54,6 +54,7 @@ public class ReactResourceController {
     "/index.html",
     "/installHooks.js",
     "/logo*.png",
+    "/logo*.svg",
     "/manifest.json",
     "/robots.txt",
     "/static/**"

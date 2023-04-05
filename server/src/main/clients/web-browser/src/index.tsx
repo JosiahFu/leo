@@ -4,13 +4,14 @@ import ReactDOM from 'react-dom/client';
 import {HashRouter, Route, Routes} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
-import {Root} from './pages/Root';
+import Root from './pages/Root';
 import StudentNav from './pages/student/Nav';
 import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
 import StudentUpload from './pages/student/Upload';
 import {EditUsers} from './pages/EditUsers/EditUsers';
 import Login from './pages/login/Login';
+import Spinner from './pages/Spinner';
 import {EditDistricts} from './pages/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/EditSchools/EditSchools';
 import Nav from './pages/Nav';
@@ -37,6 +38,7 @@ root.render(
             Component={StudentProjectImplementation}
           />
           <Route path="/student/upload" Component={StudentUpload} />
+          <Route path="spinner" Component={Spinner} />
         </Route>
       </Routes>
     </HashRouter>
