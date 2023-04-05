@@ -21,8 +21,10 @@ import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -43,64 +45,74 @@ public class Database {
   public static final int USER_MAX_ENCODED_PASSWORD_UTF8_BLOB_LENGTH = 65535;
 
   @Repository
-  public interface AdminRepository extends CrudRepository<Admin, Integer> {}
+  public interface AdminRepository extends JpaRepository<Admin, Integer> {}
 
   @Repository
-  public interface AssignmentRepository extends CrudRepository<Assignment, Integer> {}
+  public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {}
 
   @Repository
-  public interface ClassRepository extends CrudRepository<Class, Integer> {}
+  public interface ClassRepository extends JpaRepository<Class, Integer> {}
 
   @Repository
-  public interface ClassStudentRepository extends CrudRepository<ClassStudent, Integer> {}
+  public interface ClassStudentRepository extends JpaRepository<ClassStudent, Integer> {}
 
   @Repository
-  public interface ClassTeacherRepository extends CrudRepository<ClassTeacher, Integer> {}
+  public interface ClassTeacherRepository extends JpaRepository<ClassTeacher, Integer> {}
 
   @Repository
-  public interface DistrictRepository extends CrudRepository<District, Integer> {}
+  public interface DistrictRepository extends JpaRepository<District, Integer> {}
 
   @Repository
-  public interface KnowledgeAndSkillRepository extends CrudRepository<KnowledgeAndSkill, Integer> {}
+  public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
 
   @Repository
-  public interface PortfolioRepository extends CrudRepository<Portfolio, Integer> {}
+  public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
 
   @Repository
-  public interface PortfolioPostRepository extends CrudRepository<PortfolioPost, Integer> {}
+  public interface PortfolioPostRepository extends JpaRepository<PortfolioPost, Integer> {}
 
   @Repository
-  public interface ProjectRepository extends CrudRepository<Project, Integer> {}
+  public interface ProjectRepository extends JpaRepository<Project, Integer> {}
 
   @Repository
-  public interface ProjectCycleRepository extends CrudRepository<ProjectCycle, Integer> {}
+  public interface ProjectCycleRepository extends JpaRepository<ProjectCycle, Integer> {}
 
   @Repository
-  public interface ProjectPostRepository extends CrudRepository<ProjectPost, Integer> {}
+  public interface ProjectPostRepository extends JpaRepository<ProjectPost, Integer> {}
 
   @Repository
   public interface ProjectPostCommentRepository
-      extends CrudRepository<ProjectPostComment, Integer> {}
+      extends JpaRepository<ProjectPostComment, Integer> {}
 
   @Repository
-  public interface SchoolRepository extends CrudRepository<School, Integer> {
+  public interface SchoolRepository extends JpaRepository<School, Integer> {
+
     Iterable<School> findAllByDistrictId(Integer district_id);
   }
 
   @Repository
-  public interface StudentRepository extends CrudRepository<Student, Integer> {}
+  public interface StudentRepository extends JpaRepository<Student, Integer> {}
 
   @Repository
-  public interface TeacherRepository extends CrudRepository<Teacher, Integer> {}
+  public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
 
   @Repository
-  public interface TeacherSchoolRepository extends CrudRepository<TeacherSchool, Integer> {}
+  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, Integer> {}
 
   @Repository
-  public interface UserRepository extends CrudRepository<User, Integer> {
+  public interface UserRepository extends JpaRepository<User, Integer> {
+
     Optional<User> findByEmailAddress(String emailAddress);
 
     Iterable<User> findAllByDistrictId(int districtId);
+
+    @Query(
+        "SELECT u FROM User u "
+            + "LEFT JOIN FETCH Admin a "
+            + "LEFT JOIN FETCH Teacher t "
+            + "LEFT JOIN FETCH Student s "
+            + "WHERE u.id = (:user_id)")
+    Optional<User> findByIdWithRoles(@Param("user_id") int user_id);
   }
 
   @Autowired private AdminRepository adminRepository;
