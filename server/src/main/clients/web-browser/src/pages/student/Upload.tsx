@@ -17,7 +17,7 @@ function App() {
   return (
     <main>
       <Webcam ref={webcam} videoConstraints={videoConstraints} />
-      <button onClick={takePicture}></button>
+      <button className="camera-button" onClick={takePicture}></button>
       {image !== null && <img src={image} alt="Project" />}
     </main>
   );

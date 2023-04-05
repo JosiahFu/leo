@@ -61,15 +61,24 @@ export function Root() {
       <Link to="login">Login</Link>
       <br />
       <Link to="student/project-gen">Project Idea Generation Prototype</Link>
-      <IkigaiReel
+      {/* <IkigaiReel
         id="IkigaiReel"
         origin={ikigaiCenter}
         size={ikigaiSize}
         sizeDelta={ikigaiSize / 6}
         distance={ikigaiDistance * 1.1}
         distanceDelta={ikigaiDistance / 6}
-      />
+      /> */}
       {messageOfTheDay}
+      <div>
+        <button>Default</button>
+        <button className="light">Light</button>
+        <button className="primary">Primary</button>
+        <button className="info">Info</button>
+        <button className="delete">Delete</button>
+        <button className="prev">Prev</button>
+        <button className="next">Next</button>
+      </div>
     </>
   );
 }

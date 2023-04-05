@@ -5,6 +5,7 @@ export default function Login() {
   return (
     <>
       <header>
+        <img src="/public/logo-white-orange.svg" />
         <a href="/">PROJECT LEO</a>
       </header>
       <main>
