@@ -140,56 +140,53 @@ body {
 }
 
 button {
-    --button-bg-color: color.$neutral-200;
-    --button-hover-bg-color: color.$neutral-250;
-    --button-fg-color: color.$neutral-750;
     border-radius: 0.5em;
     border: none;
     padding: 0.7em 2.4em 0.7em 2.4em;
-    background-color: var(--button-bg-color);
-    color: var(--button-fg-color);
+    background-color: color.$neutral-200;
+    --hover-bg-color: #{color.$neutral-250};
+    color: color.$neutral-750;
     font-weight: 600;
     box-sizing: border-box;
     cursor: pointer;
 
-    :hover {
-        background-color: var(--button-hover-bg-color);
+    &:hover {
+        background-color: var(--hover-bg-color) !important;
     }
 
-    .light {
-        --button-bg-color: color.$neutral-0;
-        --button-hover-bg-color: color.$neutral-0;
-        --button-fg-color: color.$primary-800;
+    &.light {
+        background-color: color.$neutral-0;
+        color: color.$primary-800;
         border: 1px solid color.$neutral-100;
 
-        :hover {
+        &:hover {
             border: 1px solid color.$neutral-150;
         }
     }
 
-    .primary {
-        --button-bg-color: color.$primary-800;
-        --button-hover-bg-color: color.$primary-700;
-        --button-fg-color: color.$neutral-0;
+    &.primary {
+        background-color: color.$primary-800;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$primary-700};
     }
 
-    .info {
-        --button-bg-color: color.$info;
-        --button-hover-bg-color: color.$info-active;
-        --button-fg-color: color.$neutral-0;
+    &.info {
+        background-color: color.$info;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$info-active};
     }
 
-    .delete {
-        --button-bg-color: color.$destructive;
-        --button-hover-bg-color: color.$destructive-active;
-        --button-fg-color: color.$neutral-0;
+    &.delete {
+        background-color: color.$destructive;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$destructive-active};
     }
 
-    .prev {
+    &.prev {
         /* To be added */
     }
 
-    .next {
+    &.next {
         /* To be added */
     }
 
