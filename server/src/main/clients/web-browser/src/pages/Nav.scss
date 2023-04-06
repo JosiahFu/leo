@@ -1,5 +1,7 @@
+@use '../color';
+
 header {
-    background-color: var(--color-primary-600);
+    background-color: color.$primary-600;
     color: white;
     padding: 1em;
     height: 3em;
@@ -54,7 +56,7 @@ main {
 }
 
 footer {
-    background-color: var(--color-primary-600);
+    background-color: color.$primary-600;
     color: white;
     text-align: center;
 }

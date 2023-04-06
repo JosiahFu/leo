@@ -1,8 +1,10 @@
+@use '../color';
+
 .primary-section {
-  background-color: var(--color-primary-600);
+  background-color: color.$primary-600;
   margin: -1em;
   padding: 1em;
-  color: var(--color-neutral-0);
+  color: color.$neutral-0;
   font-weight: 500;
   font-size: 1.5em;
 }
