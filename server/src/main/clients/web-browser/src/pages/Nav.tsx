@@ -8,7 +8,7 @@ export function Nav() {
       <header>
         <Link
           to="/"
-          className="header-section header-section-left header-title"
+          className="header-section header-section-left header-title nav-link"
         >
           <img src="/logo-white-orange.svg" />
           <div id="site-title">PROJECT LEO</div>

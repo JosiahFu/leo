@@ -33,6 +33,7 @@ export function Root() {
           future careers.
         </p>
         <img />
+        <div className="image-placeholder">[Image here]</div>
       </section>
       <section>
         <h2>Why Project Leo?</h2>
@@ -47,6 +48,7 @@ export function Root() {
           to their professional goals.
         </p>
         {/* <IkigaiReel /> */}
+        <div className="image-placeholder">[Image here]</div>
       </section>
       <section>
         <h2>How does it work?</h2>
@@ -61,7 +63,8 @@ export function Root() {
               and engaging learning experience.
             </p>
           </div>
-          <img />
+          {/* <img /> */}
+          <div className="image-placeholder">[Image here]</div>
           <div>
             <h3>Students post their progress</h3>
             <p>
@@ -72,7 +75,8 @@ export function Root() {
               and engaging learning experience.
             </p>
           </div>
-          <img />
+          {/* <img /> */}
+          <div className="image-placeholder">[Image here]</div>
           <div>
             <h3>Teachers and professionals review and provide feedback</h3>
             <p>
@@ -86,7 +90,8 @@ export function Root() {
               fostering both academic and personal growth.
             </p>
           </div>
-          <img />
+          {/* <img /> */}
+          <div className="image-placeholder">[Image here]</div>
           <div>
             <h3>Project Leo outputs final results</h3>
             <p>
@@ -99,7 +104,8 @@ export function Root() {
               effective learning environment.
             </p>
           </div>
-          <img src="" alt="" />
+          {/* <img src="" alt="" /> */}
+          <div className="image-placeholder">[Image here]</div>
           <div>
             <h3>Move on to the next project</h3>
             <p>
@@ -110,7 +116,8 @@ export function Root() {
               engaged and motivated to continue exploring and learning.
             </p>
           </div>
-          <img src="" alt="" />
+          {/* <img src="" alt="" /> */}
+          <div className="image-placeholder">[Image here]</div>
         </div>
       </section>
       <section>
@@ -124,14 +131,15 @@ export function Root() {
           learning by providing a platform for students to explore their
           passions, build new skills, and prepare for future careers.
         </p>
-        <img />
+        {/* <img /> */}
+        <div className="image-placeholder">[Image here]</div>
       </section>
       <section>
         <h2>Contact Us</h2>
         <p>
           Interested in learning more about Project Leo? Are you experiencing
           any site issues? While you are exploring, please send all feedback and
-          issues to Steven Eno -
+          issues to Steven Eno -{' '}
           <a href="mailto:seno@davincischools.org">seno@davincischools.org</a>.
         </p>
       </section>
