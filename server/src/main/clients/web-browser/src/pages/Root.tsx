@@ -1,3 +1,5 @@
+import './Root.scss';
+
 export default function Root() {
   return (
     <>
