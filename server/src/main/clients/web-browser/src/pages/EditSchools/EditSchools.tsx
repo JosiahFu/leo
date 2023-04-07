@@ -12,6 +12,10 @@ import IDistrict = district_management.IDistrict;
 import SchoolManagementService = school_management.SchoolManagementService;
 import ISchool = school_management.ISchool;
 import ISchoolInformationResponse = school_management.ISchoolInformationResponse;
+import {
+  MultipleDisplay,
+  SelectMultipleFromList,
+} from '../../SelectMultipleFromList/SelectMultipleFromList';
 
 export function SelectSchoolFromList(props: {
   id: string;
@@ -34,7 +38,7 @@ export function SelectSchoolFromList(props: {
     onSelect: props.onSelect,
     renderValue: schoolId => {
       const school = props.schools.get(schoolId);
-      if (school) {
+      if (school != null) {
         return (
           <>
             <span className="school">
@@ -45,6 +49,42 @@ export function SelectSchoolFromList(props: {
         );
       } else {
         return <>{props.defaultText}</>;
+      }
+    },
+  });
+}
+
+export function SelectMultipleSchoolsFromList(props: {
+  id: string;
+  display: MultipleDisplay;
+  schools: Map<number, ISchool>;
+  schoolIds: Set<number>;
+  onSelect: (keys: Set<number>) => void;
+}) {
+  return SelectMultipleFromList<number, ISchool>({
+    id: props.id,
+    display: props.display,
+    values: props.schools,
+    selectedKeys: props.schoolIds,
+    getKey: school => (school != null ? school.id! : -1),
+    stringToKey: Number,
+    compareValues: (a, b) =>
+      (a.name || '').localeCompare(b.name || '') ||
+      (a.city || '').localeCompare(b.city || ''),
+    onSelect: props.onSelect,
+    renderValue: schoolId => {
+      const school = props.schools.get(schoolId);
+      if (school != null) {
+        return (
+          <>
+            <span className="school">
+              <span className="school-name">{school.name}</span>,&nbsp;
+              <span className="school-city">{school.city}</span>
+            </span>
+          </>
+        );
+      } else {
+        return <></>;
       }
     },
   });
@@ -143,7 +183,7 @@ export function EditSchools() {
                 onSelect={schoolId => {
                   setSchoolId(schoolId);
                   const school = schools.get(schoolId);
-                  if (school) {
+                  if (school != null) {
                     setName(school.name!);
                     setCity(school.city!);
                   } else {

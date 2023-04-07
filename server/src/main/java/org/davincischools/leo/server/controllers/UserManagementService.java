@@ -4,22 +4,29 @@ import static org.davincischools.leo.database.utils.EntityUtils.checkRequired;
 import static org.davincischools.leo.database.utils.EntityUtils.checkRequiredMaxLength;
 import static org.davincischools.leo.database.utils.EntityUtils.checkThat;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import javax.security.auth.login.AccountNotFoundException;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
+import org.davincischools.leo.protos.user_management.GetUserDetailsRequest;
+import org.davincischools.leo.protos.user_management.GetUserDetailsResponse;
 import org.davincischools.leo.protos.user_management.GetUsersRequest;
 import org.davincischools.leo.protos.user_management.RemoveUserRequest;
 import org.davincischools.leo.protos.user_management.UpsertUserRequest;
 import org.davincischools.leo.protos.user_management.UserInformationResponse;
 import org.davincischools.leo.protos.user_management.UserInformationResponse.Builder;
+import org.davincischools.leo.server.utils.DataAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,24 +40,46 @@ public class UserManagementService {
 
   @PostMapping(value = "/api/protos/UserManagementService/GetUsers")
   @ResponseBody
-  public UserInformationResponse getUsers(@RequestBody Optional<GetUsersRequest> request) {
-    request = Optional.of(request.orElse(GetUsersRequest.getDefaultInstance()));
-    UserInformationResponse.Builder response = UserInformationResponse.newBuilder();
-    getAllUsers(request.get().getDistrictId(), -1, response);
+  public UserInformationResponse getUsers(@RequestBody Optional<GetUsersRequest> optionalRequest) {
+    var request = optionalRequest.orElse(GetUsersRequest.getDefaultInstance());
+    var response = UserInformationResponse.newBuilder();
+    getAllFullUsers(request.getDistrictId(), -1, response);
     response.setSuccess(true);
+    return response.build();
+  }
+
+  @PostMapping(value = "/api/protos/UserManagementService/GetUserDetails")
+  @ResponseBody
+  public GetUserDetailsResponse getUserDetails(
+      @RequestBody Optional<GetUserDetailsRequest> optionalRequest)
+      throws AccountNotFoundException {
+    var request = optionalRequest.orElse(GetUserDetailsRequest.getDefaultInstance());
+    var response = GetUserDetailsResponse.newBuilder();
+
+    Optional<User> user = db.getUserRepository().findFullUserByUserId(request.getUserId());
+
+    if (user.isPresent()) {
+      response.setUser(DataAccess.convertFullUserToProto(user.get()));
+      response.addAllSchoolIds(
+          Lists.transform(
+              db.getTeacherSchoolRepository().findSchoolsByUserId(request.getUserId()),
+              School::getId));
+    }
+
     return response.build();
   }
 
   @PostMapping(value = "/api/protos/UserManagementService/UpsertUser")
   @ResponseBody
   @Transactional
-  public UserInformationResponse upsertUser(@RequestBody Optional<UpsertUserRequest> requestBody) {
-    UpsertUserRequest request = requestBody.orElse(UpsertUserRequest.getDefaultInstance());
-    UserInformationResponse.Builder response = UserInformationResponse.newBuilder();
+  public UserInformationResponse upsertUser(
+      @RequestBody Optional<UpsertUserRequest> optionalRequest) {
+    var request = optionalRequest.orElse(UpsertUserRequest.getDefaultInstance());
+    var response = UserInformationResponse.newBuilder();
 
     Optional<User> existingUser = Optional.empty();
     if (request.getUser().hasId()) {
-      existingUser = db.getUserRepository().findById(request.getUser().getId());
+      existingUser = db.getUserRepository().findFullUserByUserId(request.getUser().getId());
     }
 
     if (setFieldErrors(request, response, existingUser)) {
@@ -92,6 +121,33 @@ public class UserManagementService {
         user.setTeacher(null);
       }
     }
+    if (user.getTeacher() != null) {
+      // Add any missing schools.
+      ImmutableSet<Integer> schoolIdsToAdd = ImmutableSet.copyOf(request.getSchoolIdsList());
+
+      if (existingUser.isPresent()) {
+        // Remove any extraneous schools.
+        db.getTeacherSchoolRepository()
+            .keepSchoolsByTeacherId(user.getTeacher().getId(), request.getSchoolIdsList());
+
+        // Calculate missing schools.
+        List<Integer> existingSchoolIds =
+            Lists.transform(
+                db.getTeacherSchoolRepository().findSchoolsByUserId(user.getId()), School::getId);
+        schoolIdsToAdd =
+            Sets.difference(
+                    Sets.newHashSet(request.getSchoolIdsList()), Sets.newHashSet(existingSchoolIds))
+                .immutableCopy();
+      }
+
+      // Add missing schools.
+      for (int schoolId : schoolIdsToAdd) {
+        db.getTeacherSchoolRepository()
+            .save(
+                db.getTeacherSchoolRepository()
+                    .createTeacherSchool(user.getTeacher(), new School().setId(schoolId)));
+      }
+    }
 
     if ((user.getStudent() != null) ^ request.getUser().getIsStudent()) {
       if (request.getUser().getIsStudent()) {
@@ -116,16 +172,14 @@ public class UserManagementService {
           }
         });
 
-    getAllUsers(request.getUser().getDistrictId(), user.getId(), response);
+    getAllFullUsers(request.getUser().getDistrictId(), user.getId(), response);
     response.setSuccess(true);
     return response.build();
   }
 
   /** Checks fields for errors. Sets error messages and returns true if there are any errors. */
   private boolean setFieldErrors(
-      UpsertUserRequest request,
-      UserInformationResponse.Builder response,
-      Optional<User> existingUser) {
+      UpsertUserRequest request, Builder response, Optional<User> existingUser) {
     boolean inputValid = true;
 
     inputValid &=
@@ -161,7 +215,23 @@ public class UserManagementService {
             },
             "Passwords do not match.");
 
-    if (!existingUser.isPresent()) {
+    if (existingUser.isPresent()) {
+      if (!request.getUser().getPassword().isEmpty()
+          || !request.getUser().getVerifyPassword().isEmpty()) {
+        inputValid &=
+            checkThat(
+                request.getUser().getPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+                response::setPasswordError,
+                "Password must be at least %s characters long.",
+                Database.USER_MIN_PASSWORD_LENGTH);
+        inputValid &=
+            checkThat(
+                request.getUser().getVerifyPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
+                response::setVerifyPasswordError,
+                "Password must be at least %s characters long.",
+                Database.USER_MIN_PASSWORD_LENGTH);
+      }
+    } else {
       inputValid &=
           checkRequired(request.getUser().getPassword(), "Password", response::setPasswordError);
       inputValid &=
@@ -180,22 +250,6 @@ public class UserManagementService {
               response::setVerifyPasswordError,
               "Password must be at least %s characters long.",
               Database.USER_MIN_PASSWORD_LENGTH);
-    } else {
-      if (!request.getUser().getPassword().isEmpty()
-          || !request.getUser().getVerifyPassword().isEmpty()) {
-        inputValid &=
-            checkThat(
-                request.getUser().getPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
-                response::setPasswordError,
-                "Password must be at least %s characters long.",
-                Database.USER_MIN_PASSWORD_LENGTH);
-        inputValid &=
-            checkThat(
-                request.getUser().getVerifyPassword().length() >= Database.USER_MIN_PASSWORD_LENGTH,
-                response::setVerifyPasswordError,
-                "Password must be at least %s characters long.",
-                Database.USER_MIN_PASSWORD_LENGTH);
-      }
     }
 
     Optional<User> emailUser =
@@ -219,31 +273,14 @@ public class UserManagementService {
     request = Optional.of(request.orElse(RemoveUserRequest.getDefaultInstance()));
     UserInformationResponse.Builder response = UserInformationResponse.newBuilder();
     db.getUserRepository().deleteById(request.get().getUserId());
-    getAllUsers(request.get().getDistrictId(), -1, response);
+    getAllFullUsers(request.get().getDistrictId(), -1, response);
     response.setSuccess(true);
     return response.build();
   }
 
-  private UserInformationResponse.Builder getAllUsers(
-      int districtId, int nextUserId, Builder response) {
+  private void getAllFullUsers(int districtId, int nextUserId, Builder response) {
     response.setDistrictId(districtId);
     response.setNextUserId(nextUserId);
-    response.addAllUsers(
-        StreamSupport.stream(
-                db.getUserRepository().findAllByDistrictId(districtId).spliterator(), false)
-            .map(
-                user ->
-                    org.davincischools.leo.protos.user_management.User.newBuilder()
-                        .setId(user.getId())
-                        .setDistrictId(user.getDistrict().getId())
-                        .setFirstName(user.getFirstName())
-                        .setLastName(user.getLastName())
-                        .setEmailAddress(user.getEmailAddress())
-                        .setIsAdmin(user.getAdmin() != null)
-                        .setIsTeacher(user.getTeacher() != null)
-                        .setIsStudent(user.getStudent() != null)
-                        .build())
-            .collect(Collectors.toList()));
-    return response;
+    response.addAllUsers(DataAccess.getProtoFullUsersByDistrictId(db, districtId));
   }
 }
