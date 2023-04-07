@@ -1,14 +1,13 @@
 package org.davincischools.leo.server.controllers;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.protos.school_management.GetSchoolsRequest;
 import org.davincischools.leo.protos.school_management.RemoveSchoolRequest;
 import org.davincischools.leo.protos.school_management.SchoolInformationResponse;
 import org.davincischools.leo.protos.school_management.UpsertSchoolRequest;
+import org.davincischools.leo.server.utils.DataAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,19 +61,7 @@ public class SchoolManagementService {
     SchoolInformationResponse.Builder response = SchoolInformationResponse.newBuilder();
     response.setDistrictId(districtId);
     response.setNextSchoolId(nextSchoolId);
-    response.addAllSchools(
-        StreamSupport.stream(
-                db.getSchoolRepository().findAllByDistrictId(districtId).spliterator(), false)
-            .map(
-                school ->
-                    org.davincischools.leo.protos.school_management.School.newBuilder()
-                        .setDistrictId(school.getDistrict().getId())
-                        .setId(school.getId())
-                        .setName(school.getName())
-                        .setCity(school.getCity())
-                        .build())
-            .collect(Collectors.toList()));
-
+    response.addAllSchools(DataAccess.getProtoSchoolsByDistrictId(db, districtId));
     return response.build();
   }
 }

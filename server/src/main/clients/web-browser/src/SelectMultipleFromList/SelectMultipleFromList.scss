@@ -1,0 +1,33 @@
+@import '../generic';
+
+select {
+  width: 100%;
+}
+
+.selected {
+  border: 1px solid blue;
+  background-color: lightblue;
+  width: 100%;
+
+  #hover {
+    border: 1px solid black;
+    background-color: lightgrey;
+  }
+}
+
+.not-selected {
+  border: 1px solid black;
+  width: 100%;
+
+  #hover {
+    background-color: lightgrey;
+  }
+}
+
+.checkbox-span {
+  white-space: nowrap;
+}
+
+.checkbox-span input {
+  width: min-content;
+}

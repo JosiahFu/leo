@@ -2,17 +2,22 @@ import './EditUser.scss';
 import {
   createService,
   district_management,
+  school_management,
   user_management,
 } from '../../protos';
 import {useEffect, useState} from 'react';
 import {FieldWithError} from '../../FieldWithError/FieldWithError';
-import UserManagementService = user_management.UserManagementService;
 import {Display, SelectFromList} from '../../SelectFromList/SelectFromList';
+import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
+import {SelectMultipleSchoolsFromList} from '../EditSchools/EditSchools';
+import {MultipleDisplay} from '../../SelectMultipleFromList/SelectMultipleFromList';
+import UserManagementService = user_management.UserManagementService;
 import IUser = user_management.IUser;
 import DistrictManagementService = district_management.DistrictManagementService;
 import IDistrict = district_management.IDistrict;
-import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import IUserInformationResponse = user_management.IUserInformationResponse;
+import ISchool = school_management.ISchool;
+import SchoolManagementService = school_management.SchoolManagementService;
 
 export function SelectUserFromList(props: {
   id: string;
@@ -35,7 +40,7 @@ export function SelectUserFromList(props: {
     onSelect: props.onSelect,
     renderValue: userId => {
       const user = props.users.get(userId);
-      if (user) {
+      if (user != null) {
         return (
           <>
             <span className="user">
@@ -54,6 +59,7 @@ export function SelectUserFromList(props: {
 export function EditUsers() {
   const [districts, setDistricts] = useState(new Map<number, IDistrict>());
   const [districtId, setDistrictId] = useState(-1);
+  const [schools, setSchools] = useState(new Map<number, ISchool>());
 
   const [users, setUsers] = useState(new Map<number, IUser>());
   const [userId, setUserId] = useState(-1);
@@ -66,6 +72,7 @@ export function EditUsers() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isTeacher, setIsTeacher] = useState(false);
   const [isStudent, setIsStudent] = useState(false);
+  const [schoolIds, setSchoolIds] = useState(new Set<number>());
 
   const [firstNameError, setFirstNameError] = useState('');
   const [lastNameError, setLastNameError] = useState('');
@@ -90,8 +97,18 @@ export function EditUsers() {
     'UserManagementService'
   );
 
+  const schoolManagementService = createService(
+    SchoolManagementService,
+    'SchoolManagementService'
+  );
+
   useEffect(() => {
     if (districtId !== -1) {
+      schoolManagementService
+        .getSchools({districtId: districtId})
+        .then(response =>
+          setSchools(new Map(response.schools.map(v => [v.id!, v])))
+        );
       userManagementService
         .getUsers({districtId: districtId})
         .then(processUserInformationResponse);
@@ -113,6 +130,7 @@ export function EditUsers() {
           isTeacher: isTeacher,
           isStudent: isStudent,
         },
+        schoolIds: [...schoolIds],
       })
       .then(processUserInformationResponse);
   }
@@ -132,21 +150,44 @@ export function EditUsers() {
     if (response.success) {
       setDistrictId(response.districtId!);
       setUsers(new Map(response.users!.map(v => [v.id!, v])));
-      setUserId(response.nextUserId!);
+      loadUser(response.nextUserId!);
+    }
+  }
+
+  function loadUser(userId: number) {
+    userManagementService.getUserDetails({userId: userId}).then(response => {
+      if (response.user != null) {
+        setUserId(userId);
+        setFirstName(response.user.firstName!);
+        setLastName(response.user.lastName!);
+        setEmailAddress(response.user.emailAddress!);
+        setIsAdmin(response.user.isAdmin!);
+        setIsTeacher(response.user.isTeacher!);
+        setSchoolIds(
+          response.user.isTeacher!
+            ? new Set<number>(response.schoolIds)
+            : new Set<number>()
+        );
+        setIsStudent(response.user.isStudent!);
+      } else {
+        setUserId(-1);
+        setFirstName('');
+        setLastName('');
+        setEmailAddress('');
+        setIsAdmin(false);
+        setIsTeacher(false);
+        setIsStudent(false);
+        setSchoolIds(new Set<number>());
+      }
+      setPassword('');
+      setVerifyPassword('');
+
       setFirstNameError('');
       setLastNameError('');
       setEmailAddressError('');
       setPasswordError('');
       setVerifyPasswordError('');
-      setPassword('');
-      setVerifyPassword('');
-    } else {
-      setFirstNameError(response.firstNameError || '');
-      setLastNameError(response.lastNameError || '');
-      setEmailAddressError(response.emailAddressError || '');
-      setPasswordError(response.passwordError || '');
-      setVerifyPasswordError(response.verifyPasswordError || '');
-    }
+    });
   }
 
   return (
@@ -175,34 +216,8 @@ export function EditUsers() {
                 display={Display.RADIO_BUTTONS}
                 users={users}
                 userId={userId}
-                onSelect={userId => {
-                  setUserId(userId);
-                  const user = users.get(userId);
-                  if (user) {
-                    setFirstName(user.firstName!);
-                    setLastName(user.lastName!);
-                    setEmailAddress(user.emailAddress!);
-                    setIsAdmin(user.isAdmin!);
-                    setIsTeacher(user.isTeacher!);
-                    setIsStudent(user.isStudent!);
-                  } else {
-                    setFirstName('');
-                    setLastName('');
-                    setEmailAddress('');
-                    setIsAdmin(false);
-                    setIsTeacher(false);
-                    setIsStudent(false);
-                  }
-                  setPassword('');
-                  setVerifyPassword('');
-
-                  setFirstNameError('');
-                  setLastNameError('');
-                  setEmailAddressError('');
-                  setPasswordError('');
-                  setVerifyPasswordError('');
-                }}
-                defaultText="[Create New School]"
+                onSelect={loadUser}
+                defaultText="[Create New User]"
               />
             </td>
           </tr>
@@ -312,6 +327,29 @@ export function EditUsers() {
                 onChange={() => setIsTeacher(!isTeacher)}
                 className="checkbox"
               />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1 || !isTeacher}>
+            <th></th>
+            <td>
+              <table className="form-table" style={{width: '100%'}}>
+                <tbody>
+                  <tr>
+                    <th>
+                      <label htmlFor="is_teacher_schools">Schools:</label>
+                    </th>
+                    <td>
+                      <SelectMultipleSchoolsFromList
+                        id="is_teacher_schools"
+                        display={MultipleDisplay.CHECK_BOXES}
+                        schools={schools}
+                        schoolIds={schoolIds}
+                        onSelect={setSchoolIds}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </td>
           </tr>
           <tr hidden={districtId === -1}>

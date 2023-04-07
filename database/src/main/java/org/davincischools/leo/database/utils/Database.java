@@ -1,5 +1,6 @@
 package org.davincischools.leo.database.utils;
 
+import java.util.List;
 import java.util.Optional;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.Assignment;
@@ -18,10 +19,12 @@ import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.TeacherSchool;
+import org.davincischools.leo.database.daos.TeacherSchoolId;
 import org.davincischools.leo.database.daos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
@@ -97,22 +100,58 @@ public class Database {
   public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
 
   @Repository
-  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, Integer> {}
+  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, Integer> {
+
+    default TeacherSchool createTeacherSchool(Teacher teacher, School school) {
+      return new TeacherSchool()
+          .setId(new TeacherSchoolId().setTeacherId(teacher.getId()).setSchoolId(school.getId()))
+          .setTeacher(teacher)
+          .setSchool(school);
+    }
+
+    @Query(
+        "SELECT s FROM School s "
+            + "INNER JOIN FETCH TeacherSchool ts "
+            + "INNER JOIN FETCH Teacher t "
+            + "INNER JOIN FETCH User u "
+            + "WHERE u.id = (:user_id) "
+            + "AND t.id = u.teacher.id "
+            + "AND ts.teacher.id = t.id "
+            + "AND ts.school.id = s.id ")
+    List<School> findSchoolsByUserId(@Param("user_id") int userId);
+
+    @Modifying
+    @Query(
+        "DELETE TeacherSchool ts "
+            + "WHERE ts.teacher.id = (:teacher_id) "
+            + "AND NOT ts.school.id IN (:school_ids)")
+    void keepSchoolsByTeacherId(
+        @Param("teacher_id") int teacherId, @Param("school_ids") Iterable<Integer> schoolIdsToKeep);
+  }
 
   @Repository
   public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmailAddress(String emailAddress);
 
-    Iterable<User> findAllByDistrictId(int districtId);
-
     @Query(
-        "SELECT u FROM User u "
+        "SELECT u "
+            + "FROM User u "
+            + "JOIN FETCH District d "
             + "LEFT JOIN FETCH Admin a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
-            + "WHERE u.id = (:user_id)")
-    Optional<User> findByIdWithRoles(@Param("user_id") int user_id);
+            + "WHERE d.id = (:district_id) ")
+    List<User> findAllFullUsersByDistrictId(@Param("district_id") int districtId);
+
+    @Query(
+        "SELECT u "
+            + "FROM User u "
+            + "LEFT JOIN FETCH Admin a "
+            + "LEFT JOIN FETCH Teacher t "
+            + "LEFT JOIN FETCH Student s "
+            + "WHERE u.id = (:user_id) ")
+    Optional<User> findFullUserByUserId(@Param("user_id") int userId);
   }
 
   @Autowired private AdminRepository adminRepository;
