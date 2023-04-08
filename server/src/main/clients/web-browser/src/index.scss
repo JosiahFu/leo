@@ -1,6 +1,13 @@
+@use 'color';
+
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;600;700&family=Montserrat:wght@400;700&display=swap');
+
+$heading-font-family: Montserrat;
+$body-font-family: Hind;
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: $body-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
         sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -12,42 +19,175 @@ code {
         monospace;
 }
 
-a {
+.nav-link {
     color: inherit;
     text-decoration: none;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#site-title {
+    font-family: $heading-font-family;
+}
+
 h1 {
-    text-align: center;
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2.25em;
+}
+
+h3 {
+    font-size: 2em;
+}
+
+h4 {
+    font-size: 1.5em;
+}
+
+h5 {
+    font-size: 1.25em;
+}
+
+h6 {
+    font-size: 1.12em;
+}
+
+#root,
+html,
+body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
     margin: 0;
 }
 
-#root, html, body {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
+#root,
+body {
+    display: flex;
+    flex-direction: column;
 }
 
-#root, body {
-  display: flex;
-  flex-direction: column;
+@mixin left {
+    text-align: left;
+    float: left;
 }
 
-.header {
-  background-color: rgb(243, 149, 79);
-  color: white;
-  font-weight: bolder;
-  font-size: xxx-large;
-  text-align: center;
+@mixin center {
+    text-align: center;
+    float: initial;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.main {
-  flex: auto;
+@mixin right {
+    text-align: right;
+    float: right;
 }
 
-.footer {
-  background-color: rgb(243, 149, 79);
-  color: white;
-  text-align: center;
+@mixin top {
+    align-items: initial;
+}
+
+@mixin middle {
+    align-items: center;
+}
+
+@mixin bottom {
+    align-items: flex-end;
+}
+
+.form-table {
+    width: 90%;
+
+    @include center();
+}
+
+.form-table th {
+    width: 0;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: right;
+    vertical-align: top;
+}
+
+.form-table td {
+    width: 100%;
+    text-align: left;
+}
+
+.form-buttons {
+    text-align: right;
+    width: auto !important;
+}
+
+.form-buttons div {
+    border: 1px solid black;
+    background-color: lightgrey;
+    margin-left: 10px;
+    margin-right: 0px;
+    padding: 2px 5px 2px 5px;
+}
+
+.delete-button {
+    border-color: red !important;
+    background-color: lightpink !important;
+}
+
+button {
+    border-radius: 0.5em;
+    border: none;
+    padding: 0.7em 2.4em 0.7em 2.4em;
+    background-color: color.$neutral-200;
+    --hover-bg-color: #{color.$neutral-250};
+    color: color.$neutral-750;
+    font-weight: 600;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--hover-bg-color) !important;
+    }
+
+    &.light {
+        background-color: color.$neutral-0;
+        color: color.$primary-800;
+        border: 1px solid color.$neutral-100;
+
+        &:hover {
+            border: 1px solid color.$neutral-150;
+        }
+    }
+
+    &.primary {
+        background-color: color.$primary-800;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$primary-700};
+    }
+
+    &.info {
+        background-color: color.$info;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$info-active};
+    }
+
+    &.delete {
+        background-color: color.$destructive;
+        color: color.$neutral-0;
+        --hover-bg-color: #{color.$destructive-active};
+    }
+
+    &.prev {
+        /* To be added */
+    }
+
+    &.next {
+        /* To be added */
+    }
+
 }
