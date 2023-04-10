@@ -1,8 +1,8 @@
 import {Link} from 'react-router-dom';
-import './Nav.scss';
+import './LandingPageNav.scss';
 import {Outlet} from 'react-router';
 
-export function Nav() {
+export function LandingPageNav() {
   return (
     <>
       <header>
@@ -10,7 +10,7 @@ export function Nav() {
           to="/"
           className="header-section header-section-left header-title nav-link"
         >
-          <img src="/logo-white-orange.svg" />
+          <img src="/logo-white-on-orange.svg" />
           <div id="site-title">PROJECT LEO</div>
         </Link>
         <div className="header-section header-section-center">

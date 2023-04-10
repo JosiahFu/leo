@@ -1,0 +1,40 @@
+@use '../color';
+
+.ant-layout {
+  background-color: white;
+
+  .ant-layout-content {
+    height: 100%;
+    padding: 0.5em;
+  }
+
+  .ant-layout-header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+
+    background-color: white;
+    padding: 0.5em;
+    height: 4em;
+
+    .logo {
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    div {
+      padding-right: 1em;
+      height: 100%;
+    }
+  }
+
+  .ant-layout-sider {
+    background-color: white;
+  }
+
+  .ant-layout-sider-trigger {
+    color: rgba(0, 0, 0, .88);
+    background-color: white;
+  }
+}
