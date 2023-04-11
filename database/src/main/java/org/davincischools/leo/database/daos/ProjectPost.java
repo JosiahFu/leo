@@ -6,12 +6,19 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity(name = ProjectPost.ENTITY_NAME)
-@Table(name = ProjectPost.TABLE_NAME, schema = "leo_temp")
+@Table(
+    name = ProjectPost.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {
+      @Index(name = "project_id", columnList = "project_id"),
+      @Index(name = "user_id", columnList = "user_id")
+    })
 public class ProjectPost {
 
   public static final String ENTITY_NAME = "ProjectPost";
@@ -33,6 +40,8 @@ public class ProjectPost {
   private Long postTimeMicrosUtc;
 
   private User user;
+
+  private Project project;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,6 +103,17 @@ public class ProjectPost {
 
   public ProjectPost setUser(User user) {
     this.user = user;
+    return this;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "project_id", nullable = false)
+  public Project getProject() {
+    return project;
+  }
+
+  public ProjectPost setProject(Project project) {
+    this.project = project;
     return this;
   }
 }
