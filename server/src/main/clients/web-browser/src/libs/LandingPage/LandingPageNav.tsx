@@ -20,7 +20,7 @@ export function LandingPageNav() {
           <Link to="" className="nav-link">
             Our Mission
           </Link>
-          <Link to="" className="nav-link">
+          <Link to="projects/ikigai-builder" className="nav-link">
             Projects
           </Link>
           <Link to="" className="nav-link">
