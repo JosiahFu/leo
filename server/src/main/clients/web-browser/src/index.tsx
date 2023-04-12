@@ -9,10 +9,10 @@ import StudentNav from './pages/student/Nav';
 import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
 import StudentUpload from './pages/student/Upload';
-import {EditUsers} from './pages/EditUsers/EditUsers';
+import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
 import Login from './pages/login/Login';
-import {EditDistricts} from './pages/EditDistricts/EditDistricts';
-import {EditSchools} from './pages/EditSchools/EditSchools';
+import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
+import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
 import {LandingPageNav} from './pages/LandingPageNav';
 import {DefaultPageNav} from './pages/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
@@ -30,9 +30,9 @@ root.render(
         </Route>
         <Route path="/" Component={LandingPageNav}>
           <Route path="" Component={Root} />
-          <Route path="/edit-districts" Component={EditDistricts} />
-          <Route path="/edit-schools" Component={EditSchools} />
-          <Route path="/edit-users" Component={EditUsers} />
+          <Route path="/profiles/edit-districts" Component={EditDistricts} />
+          <Route path="/profiles/edit-schools" Component={EditSchools} />
+          <Route path="/profiles/edit-users" Component={EditUsers} />
           <Route path="/login" Component={Login} />
           <Route path="/studdent" Component={StudentNav} />
           <Route path="/student/project-gen" Component={StudentProjectGen} />

@@ -4,13 +4,13 @@ import {
   district_management,
   school_management,
   user_management,
-} from '../../protos';
+} from '../../../protos';
 import {useEffect, useState} from 'react';
-import {FieldWithError} from '../../FieldWithError/FieldWithError';
-import {Display, SelectFromList} from '../../SelectFromList/SelectFromList';
+import {FieldWithError} from '../../../FieldWithError/FieldWithError';
+import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import {SelectMultipleSchoolsFromList} from '../EditSchools/EditSchools';
-import {MultipleDisplay} from '../../SelectMultipleFromList/SelectMultipleFromList';
+import {MultipleDisplay} from '../../../SelectMultipleFromList/SelectMultipleFromList';
 import UserManagementService = user_management.UserManagementService;
 import IUser = user_management.IUser;
 import DistrictManagementService = district_management.DistrictManagementService;

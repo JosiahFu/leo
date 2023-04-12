@@ -4,8 +4,8 @@ import {
   createService,
   district_management,
   school_management,
-} from '../../protos';
-import {Display, SelectFromList} from '../../SelectFromList/SelectFromList';
+} from '../../../protos';
+import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import DistrictManagementService = district_management.DistrictManagementService;
 import IDistrict = district_management.IDistrict;
@@ -15,7 +15,7 @@ import ISchoolInformationResponse = school_management.ISchoolInformationResponse
 import {
   MultipleDisplay,
   SelectMultipleFromList,
-} from '../../SelectMultipleFromList/SelectMultipleFromList';
+} from '../../../SelectMultipleFromList/SelectMultipleFromList';
 
 export function SelectSchoolFromList(props: {
   id: string;

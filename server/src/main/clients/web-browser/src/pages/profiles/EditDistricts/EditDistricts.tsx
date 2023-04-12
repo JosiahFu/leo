@@ -1,10 +1,10 @@
 import './EditDistricts.scss';
 import {ChangeEvent, useEffect, useState} from 'react';
-import {createService, district_management} from '../../protos';
+import {createService, district_management} from '../../../protos';
 import DistrictManagementService = district_management.DistrictManagementService;
 import DistrictInformationResponse = district_management.DistrictInformationResponse;
 import IDistrict = district_management.IDistrict;
-import {Display, SelectFromList} from '../../SelectFromList/SelectFromList';
+import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 
 export function SelectDistrictFromList(props: {
   id: string;
