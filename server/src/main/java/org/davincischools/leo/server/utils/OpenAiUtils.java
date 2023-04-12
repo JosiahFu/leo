@@ -31,11 +31,10 @@ public class OpenAiUtils {
   private static final Logger logger = LogManager.getLogger();
 
   public static final String OPENAI_API_KEY_PROP_NAME = "openai.api.key";
+  public static final String OPENAI_API_URL_PROP_NAME = "openai.api.url";
   public static final String OPENAI_API_KEY_ENV_NAME =
       OPENAI_API_KEY_PROP_NAME.toUpperCase().replaceAll("\\.", "_");
   public static final String GPT_3_5_TURBO_MODEL = "gpt-3.5-turbo";
-  public static final URI COMPLETIONS_URI =
-      URI.create("https://api.openai.com/v1/chat/completions");
 
   @Value("${" + OPENAI_API_KEY_PROP_NAME + ":}")
   private String openAiKey;

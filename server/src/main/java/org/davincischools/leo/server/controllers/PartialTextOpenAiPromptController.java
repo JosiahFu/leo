@@ -2,6 +2,7 @@ package org.davincischools.leo.server.controllers;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRe
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsResponse;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /** Handles requests for the DynamicEditableList service in partial_text_openai_prompt.proto. */
 @Controller
 public class PartialTextOpenAiPromptController {
+
   private static final Pattern PROMPT_VARIABLE = Pattern.compile("\\{\\}");
   private static final String ENTRY_GROUP_NAME = "entry";
   private static final Pattern LIST_ENTRY_TITLE =
@@ -41,6 +44,7 @@ public class PartialTextOpenAiPromptController {
           .build();
 
   @Autowired OpenAiUtils openAiUtils;
+  @Autowired Environment environment;
 
   // If the client sends an empty GetSuggestionsRequest then the body of the
   // request will have no bytes. Spring will then send either an optional
@@ -48,7 +52,8 @@ public class PartialTextOpenAiPromptController {
   // So, handlers need to accept this type of input.
   @PostMapping(value = "/api/protos/PartialTextOpenAiPromptService/GetSuggestions")
   @ResponseBody
-  public GetSuggestionsResponse getResource(@RequestBody Optional<GetSuggestionsRequest> request)
+  public GetSuggestionsResponse getResource(
+      @RequestBody Optional<GetSuggestionsRequest> request)
       throws IOException {
     request = Optional.of(request.orElse(GetSuggestionsRequest.getDefaultInstance()));
 
@@ -74,7 +79,9 @@ public class PartialTextOpenAiPromptController {
     CreateCompletionResponse aiResponse =
         openAiUtils
             .sendOpenAiRequest(
-                OpenAiUtils.COMPLETIONS_URI, aiRequest, CreateCompletionResponse.newBuilder())
+                URI.create(environment.getProperty(OpenAiUtils.OPENAI_API_URL_PROP_NAME)),
+                aiRequest,
+                CreateCompletionResponse.newBuilder())
             .build();
 
     List<String> suggestions =
