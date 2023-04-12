@@ -91,58 +91,49 @@ public class TestData {
                     .setCity("El Segundo, CA")
                     .setDistrict(district));
 
-    admin =
-        db.getUserRepository()
-            .findFullUserByEmailAddress("sahendrickson@gmail.com")
-            .or(
-                () -> {
-                  db.getUserRepository()
-                      .save(
-                          setPassword(
-                              new User()
-                                  .setFirstName("Scott " + counter.get())
-                                  .setLastName("Hendrickson")
-                                  .setEmailAddress("sahendrickson@gmail.com")
-                                  .setDistrict(district)
-                                  .setAdmin(db.getAdminRepository().save(new Admin())),
-                              password));
-                  return db.getUserRepository()
-                      .findFullUserByEmailAddress("sahendrickson@gmail.com");
-                })
-            .orElseThrow();
+    admin = createUser(setPassword(
+        new User()
+            .setFirstName("Scott " + counter.get())
+            .setLastName("Hendrickson")
+            .setEmailAddress("sahendrickson@gmail.com")
+            .setDistrict(district),
+        password));
+    if (admin.getAdmin() == null) {
+      admin.setAdmin(db.getAdminRepository().save(new Admin()));
+      db.getUserRepository().save(admin);
+    }
 
-    Teacher teacherEntry;
-    db.getUserRepository()
-        .save(
-            teacher =
-                setPassword(
-                    new User()
-                        .setFirstName("Steven " + counter.get())
-                        .setLastName("Eno")
-                        .setEmailAddress("seno." + counter.get() + "@davincischools.org")
-                        .setDistrict(district)
-                        .setTeacher(db.getTeacherRepository().save(teacherEntry = new Teacher())),
-                    password));
-    db.getTeacherSchoolRepository()
-        .save(
-            new TeacherSchool()
-                .setId(
-                    new TeacherSchoolId()
-                        .setTeacherId(teacherEntry.getId())
-                        .setSchoolId(school.getId()))
-                .setTeacher(teacherEntry)
-                .setSchool(school));
+    teacher = createUser(
+        setPassword(
+            new User()
+                .setFirstName("Steven")
+                .setLastName("Eno")
+                .setEmailAddress("seno@davincischools.org")
+                .setDistrict(district),
+            password));
+    if (teacher.getTeacher() == null) {
+      teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
+      db.getUserRepository().save(teacher);
+    }
 
-    db.getUserRepository()
-        .save(
-            student =
-                setPassword(
-                    new User()
-                        .setFirstName("Steve " + counter.get())
-                        .setLastName("Wallis")
-                        .setEmailAddress("swallis." + counter.get() + "@davincischools.org")
-                        .setDistrict(district)
-                        .setStudent(db.getStudentRepository().save(new Student())),
-                    password));
+    student = createUser(setPassword(
+        new User()
+            .setFirstName("Steve")
+            .setLastName("Wallis")
+            .setEmailAddress("swallis@davincischools.org")
+            .setDistrict(district),
+        password));
+    if (student.getTeacher() == null) {
+      student.setStudent(db.getStudentRepository().save(new Student()));
+      db.getUserRepository().save(student);
+    }
+  }
+
+  private User createUser(User template) {
+    return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress())
+        .or(() -> {
+          db.getUserRepository().save(template);
+          return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
+        }).orElseThrow();
   }
 }
