@@ -5,6 +5,7 @@ import {
   AppstoreOutlined,
   DesktopOutlined,
   RocketOutlined,
+  SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
@@ -17,6 +18,10 @@ enum MenuKeys {
   IKIGAI_BUILDER,
   INTERNSHIPS,
   MY_ACCOUNT,
+  ADMIN,
+  EDIT_DISTRICTS,
+  EDIT_SCHOOLS,
+  EDIT_USERS,
 }
 
 export function DefaultPageNav() {
@@ -47,7 +52,7 @@ export function DefaultPageNav() {
               >
                 <Menu.Item key={MenuKeys.MY_PROJECTS}>My Projects</Menu.Item>
                 <Menu.Item key={MenuKeys.IKIGAI_BUILDER}>
-                  Ikigai Builder
+                  <a href="/projects/ikigai-builder">Ikigai Builder</a>
                 </Menu.Item>
               </Menu.SubMenu>
               <Menu.Item key={MenuKeys.INTERNSHIPS} icon={<DesktopOutlined />}>
@@ -56,6 +61,21 @@ export function DefaultPageNav() {
               <Menu.Item key={MenuKeys.MY_ACCOUNT} icon={<UserOutlined />}>
                 My Account
               </Menu.Item>
+              <Menu.SubMenu
+                key={MenuKeys.ADMIN}
+                icon={<SettingOutlined />}
+                title="Admin"
+              >
+                <Menu.Item key={MenuKeys.EDIT_DISTRICTS}>
+                  <a href="/profiles/edit-districts">Edit Districts</a>
+                </Menu.Item>
+                <Menu.Item key={MenuKeys.EDIT_SCHOOLS}>
+                  <a href="/profiles/edit-schools">Edit Schools</a>
+                </Menu.Item>
+                <Menu.Item key={MenuKeys.EDIT_USERS}>
+                  <a href="/profiles/edit-users">Edit Users</a>
+                </Menu.Item>
+              </Menu.SubMenu>
             </Menu>
           </Sider>
           <Content

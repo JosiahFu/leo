@@ -56,6 +56,7 @@ public class ReactResourceController {
     "/logo*.png",
     "/logo*.svg",
     "/manifest.json",
+    "/profiles/**",
     "/projects/**",
     "/robots.txt",
     "/static/**"

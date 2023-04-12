@@ -16,6 +16,8 @@ import {
   MultipleDisplay,
   SelectMultipleFromList,
 } from '../../../SelectMultipleFromList/SelectMultipleFromList';
+import {Layout} from 'antd';
+const {Content} = Layout;
 
 export function SelectSchoolFromList(props: {
   id: string;
@@ -156,91 +158,96 @@ export function EditSchools() {
 
   return (
     <>
-      <h2>Edit Schools</h2>
-      <table className="form-table">
-        <tbody>
-          <tr>
-            <th>District:</th>
-            <td>
-              <SelectDistrictFromList
-                id="districts"
-                display={Display.DROP_DOWN}
-                districts={districts}
-                districtId={districtId}
-                onSelect={setDistrictId}
-                defaultText="- Select District -"
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>School:</th>
-            <td>
-              <SelectSchoolFromList
-                id="schools"
-                display={Display.RADIO_BUTTONS}
-                schools={schools}
-                schoolId={schoolId}
-                onSelect={schoolId => {
-                  setSchoolId(schoolId);
-                  const school = schools.get(schoolId);
-                  if (school != null) {
-                    setName(school.name!);
-                    setCity(school.city!);
-                  } else {
-                    setName('');
-                    setCity('');
-                  }
-                }}
-                defaultText="[Create New School]"
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>Name:</th>
-            <td>
-              <input
-                type="text"
-                placeholder="New School Name"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setName(e.target.value);
-                }}
-                value={name}
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>City:</th>
-            <td>
-              <input
-                type="text"
-                placeholder="New School City"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setCity(e.target.value);
-                }}
-                value={city}
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th></th>
-            <td className="form-buttons">
-              <div hidden={schoolId !== -1} onClick={upsertSchool}>
-                Add
-              </div>
-              <div hidden={schoolId === -1} onClick={upsertSchool}>
-                Update
-              </div>
-              <div
-                className="delete-button"
-                hidden={schoolId === -1}
-                onClick={removeSchool}
-              >
-                Delete
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Layout style={{height: '100%'}}>
+        <Content style={{borderRight: '#F0781F solid 1px', padding: '0.5em'}}>
+          <div className="subtitle">Edit Schools</div>
+          <div className="brief-instructions">Add and remove schools.</div>
+          <table className="form-table">
+            <tbody>
+              <tr>
+                <th>District:</th>
+                <td>
+                  <SelectDistrictFromList
+                    id="districts"
+                    display={Display.DROP_DOWN}
+                    districts={districts}
+                    districtId={districtId}
+                    onSelect={setDistrictId}
+                    defaultText="- Select District -"
+                  />
+                </td>
+              </tr>
+              <tr hidden={districtId === -1}>
+                <th>School:</th>
+                <td>
+                  <SelectSchoolFromList
+                    id="schools"
+                    display={Display.RADIO_BUTTONS}
+                    schools={schools}
+                    schoolId={schoolId}
+                    onSelect={schoolId => {
+                      setSchoolId(schoolId);
+                      const school = schools.get(schoolId);
+                      if (school != null) {
+                        setName(school.name!);
+                        setCity(school.city!);
+                      } else {
+                        setName('');
+                        setCity('');
+                      }
+                    }}
+                    defaultText="[Create New School]"
+                  />
+                </td>
+              </tr>
+              <tr hidden={districtId === -1}>
+                <th>Name:</th>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="New School Name"
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                      setName(e.target.value);
+                    }}
+                    value={name}
+                  />
+                </td>
+              </tr>
+              <tr hidden={districtId === -1}>
+                <th>City:</th>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="New School City"
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                      setCity(e.target.value);
+                    }}
+                    value={city}
+                  />
+                </td>
+              </tr>
+              <tr hidden={districtId === -1}>
+                <th></th>
+                <td className="form-buttons">
+                  <div hidden={schoolId !== -1} onClick={upsertSchool}>
+                    Add
+                  </div>
+                  <div hidden={schoolId === -1} onClick={upsertSchool}>
+                    Update
+                  </div>
+                  <div
+                    className="delete-button"
+                    hidden={schoolId === -1}
+                    onClick={removeSchool}
+                  >
+                    Delete
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Content>
+      </Layout>
     </>
   );
 }

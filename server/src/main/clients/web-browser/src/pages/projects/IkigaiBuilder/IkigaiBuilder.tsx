@@ -27,6 +27,7 @@ export function IkigaiBuilder() {
 
   const [lovesModalOpen, setLovesModalOpen] = useState(false);
   const [lovesValue, setLovesValue] = useState('');
+  const [oldLovesValue, setOldLovesValue] = useState('');
   const [getRelatedSuggestionsEnabled, setGetRelatedSuggestionsEnabled] =
     useState(true);
   const [lovesSuggestions, setLovesSuggestions] = useState<string[]>([]);
@@ -74,6 +75,12 @@ export function IkigaiBuilder() {
     }
   }, [ikigaiContainerMeasureRef, ikigaiContainerMeasure]);
 
+  useEffect(() => {
+    if (lovesModalOpen) {
+      setOldLovesValue(lovesValue);
+    }
+  }, [lovesModalOpen]);
+
   function onLovesUpdate() {
     console.log(lovesValue);
     setLovesModalOpen(false);
@@ -110,7 +117,7 @@ export function IkigaiBuilder() {
   return (
     <>
       <Layout style={{height: '100%'}}>
-        <Content style={{borderRight: '#F0781F solid 1px'}}>
+        <Content style={{borderRight: '#F0781F solid 1px', padding: '0.5em'}}>
           <div
             style={{width: '100%', height: '100%'}}
             ref={ikigaiContainerMeasureRef}
@@ -125,10 +132,12 @@ export function IkigaiBuilder() {
               lovesResizeAndRotateElement={
                 <>
                   Something you <b>LOVE</b>
-                  {lovesValue.length > 0 ? (
+                  {lovesValue ? (
                     <>
                       <br />
-                      <span style={{fontSize: 'small'}}>{lovesValue}</span>
+                      <span style={{fontSize: 'small', fontStyle: 'italic'}}>
+                        {lovesValue}
+                      </span>
                     </>
                   ) : (
                     ''
@@ -136,7 +145,7 @@ export function IkigaiBuilder() {
                 </>
               }
               onLovesClick={() => setLovesModalOpen(true)}
-              lovesValueIsSet={lovesValue.length > 0 ? 0 : 1}
+              lovesValueIsSet={lovesValue ? 0 : 1}
               worldNeedsResizeAndRotateElement={
                 <>
                   What the world <b>NEEDS</b>
@@ -158,20 +167,24 @@ export function IkigaiBuilder() {
             />
           </div>
         </Content>
-        <Sider reverseArrow>
-          <div>Saved Projects</div>
+        <Sider reverseArrow style={{padding: '0.5em'}}>
+          <div>[TODO: Saved Projects]</div>
         </Sider>
       </Layout>
+
       <Modal
-        title="What you LOVE!"
+        title="Something you LOVE!"
         width="50%"
         open={lovesModalOpen}
         closable={true}
         onOk={onLovesUpdate}
-        onCancel={() => setLovesModalOpen(false)}
+        onCancel={() => {
+          setLovesValue(oldLovesValue);
+          setLovesModalOpen(false);
+        }}
       >
         <Input
-          placeholder="What do you LOVE?"
+          placeholder="What's something you LOVE?"
           maxLength={255}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setLovesValue(e.target.value)
@@ -189,7 +202,7 @@ export function IkigaiBuilder() {
               <LoadingOutlined />
             )
           }
-          disabled={!getRelatedSuggestionsEnabled}
+          disabled={!getRelatedSuggestionsEnabled || !lovesValue}
         >
           Get Related Suggestions
         </Button>

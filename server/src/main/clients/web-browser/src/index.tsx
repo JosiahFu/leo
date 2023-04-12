@@ -25,14 +25,16 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="/profiles" Component={DefaultPageNav}>
+          <Route path="edit-districts" Component={EditDistricts} />
+          <Route path="edit-schools" Component={EditSchools} />
+          <Route path="edit-users" Component={EditUsers} />
+        </Route>
         <Route path="/projects" Component={DefaultPageNav}>
           <Route path="ikigai-builder" Component={IkigaiBuilder} />
         </Route>
         <Route path="/" Component={LandingPageNav}>
           <Route path="" Component={Root} />
-          <Route path="/profiles/edit-districts" Component={EditDistricts} />
-          <Route path="/profiles/edit-schools" Component={EditSchools} />
-          <Route path="/profiles/edit-users" Component={EditUsers} />
           <Route path="/login" Component={Login} />
           <Route path="/studdent" Component={StudentNav} />
           <Route path="/student/project-gen" Component={StudentProjectGen} />
