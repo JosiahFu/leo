@@ -9,6 +9,7 @@ CREATE TABLE knowledge_and_skill
     mastery           VARCHAR(1024) NOT NULL,
 
     class_id          INT           NOT NULL,
+    INDEX (class_id),
     CONSTRAINT knowledge_and_skill_class_id
         FOREIGN KEY (class_id)
             REFERENCES class (id)

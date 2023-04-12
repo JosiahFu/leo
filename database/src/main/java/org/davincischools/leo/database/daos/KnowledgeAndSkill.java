@@ -6,12 +6,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity(name = KnowledgeAndSkill.ENTITY_NAME)
-@Table(name = KnowledgeAndSkill.TABLE_NAME, schema = "leo_temp")
+@Table(name = KnowledgeAndSkill.TABLE_NAME, schema = "leo_temp", indexes = {
+    @Index(name = "class_id", columnList = "class_id")
+})
 public class KnowledgeAndSkill {
 
   public static final String ENTITY_NAME = "KnowledgeAndSkill";
@@ -21,6 +24,7 @@ public class KnowledgeAndSkill {
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_MASTERY_NAME = "mastery";
+
 
   private Integer id;
 
@@ -96,4 +100,5 @@ public class KnowledgeAndSkill {
     this.classField = classField;
     return this;
   }
+
 }
