@@ -9,8 +9,6 @@ import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
-import org.davincischools.leo.database.daos.TeacherSchool;
-import org.davincischools.leo.database.daos.TeacherSchoolId;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,38 +89,43 @@ public class TestData {
                     .setCity("El Segundo, CA")
                     .setDistrict(district));
 
-    admin = createUser(setPassword(
-        new User()
-            .setFirstName("Scott " + counter.get())
-            .setLastName("Hendrickson")
-            .setEmailAddress("sahendrickson@gmail.com")
-            .setDistrict(district),
-        password));
+    admin =
+        createUser(
+            setPassword(
+                new User()
+                    .setFirstName("Scott " + counter.get())
+                    .setLastName("Hendrickson")
+                    .setEmailAddress("sahendrickson@gmail.com")
+                    .setDistrict(district),
+                password));
     if (admin.getAdmin() == null) {
       admin.setAdmin(db.getAdminRepository().save(new Admin()));
       db.getUserRepository().save(admin);
     }
 
-    teacher = createUser(
-        setPassword(
-            new User()
-                .setFirstName("Steven")
-                .setLastName("Eno")
-                .setEmailAddress("seno@davincischools.org")
-                .setDistrict(district),
-            password));
+    teacher =
+        createUser(
+            setPassword(
+                new User()
+                    .setFirstName("Steven")
+                    .setLastName("Eno")
+                    .setEmailAddress("seno@davincischools.org")
+                    .setDistrict(district),
+                password));
     if (teacher.getTeacher() == null) {
       teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
       db.getUserRepository().save(teacher);
     }
 
-    student = createUser(setPassword(
-        new User()
-            .setFirstName("Steve")
-            .setLastName("Wallis")
-            .setEmailAddress("swallis@davincischools.org")
-            .setDistrict(district),
-        password));
+    student =
+        createUser(
+            setPassword(
+                new User()
+                    .setFirstName("Steve")
+                    .setLastName("Wallis")
+                    .setEmailAddress("swallis@davincischools.org")
+                    .setDistrict(district),
+                password));
     if (student.getTeacher() == null) {
       student.setStudent(db.getStudentRepository().save(new Student()));
       db.getUserRepository().save(student);
@@ -130,10 +133,13 @@ public class TestData {
   }
 
   private User createUser(User template) {
-    return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress())
-        .or(() -> {
-          db.getUserRepository().save(template);
-          return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
-        }).orElseThrow();
+    return db.getUserRepository()
+        .findFullUserByEmailAddress(template.getEmailAddress())
+        .or(
+            () -> {
+              db.getUserRepository().save(template);
+              return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
+            })
+        .orElseThrow();
   }
 }
