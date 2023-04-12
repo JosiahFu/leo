@@ -8,6 +8,7 @@ import {createService} from '../../protos';
 import {FieldWithError} from '../../FieldWithError/FieldWithError';
 import ILoginResponse = user_management.ILoginResponse;
 import ILoginRequest = user_management.ILoginRequest;
+import {login} from '../../utils/authentication';
 const {Content} = Layout;
 
 export default function Login() {
@@ -40,7 +41,9 @@ export default function Login() {
   function onLogin(): void {
     userManagementService.login(createLoginRequest()).then(response => {
       if (response.success) {
-        navigate('/');
+        login(response.user!);
+        navigate('/projects/ikigai-builder');
+        window.location.reload();
       } else {
         parseLoginResponse(response);
       }

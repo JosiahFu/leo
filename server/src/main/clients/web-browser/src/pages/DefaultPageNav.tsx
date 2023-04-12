@@ -8,6 +8,8 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import {getCurrentUser, logout, Role} from '../utils/authentication';
+import {Link} from 'react-router-dom';
 
 const {Header, Sider, Content} = Layout;
 
@@ -25,19 +27,41 @@ enum MenuKeys {
 }
 
 export function DefaultPageNav() {
+  const user = getCurrentUser(() => {});
+
   return (
     <>
       <Layout>
         <Header>
           <div>
-            <a href="/">
+            <Link to="/">
               <img
                 src="/logo-orange-on-white.svg"
                 alt="Project Leo Logo | Go Home"
               />
-            </a>
+            </Link>
           </div>
-          <div>[TODO: Breadcrumbs]</div>
+          <div style={{whiteSpace: 'nowrap'}}>[TODO: Breadcrumbs]</div>
+          <div style={{width: '100%', padding: 0, textAlign: 'right'}}>
+            <span
+              style={{
+                display: user != null ? 'inline' : 'none',
+              }}
+              onClick={() => {
+                logout();
+                window.location.reload();
+              }}
+            >
+              <Link to="/login">Logout</Link>
+            </span>
+            <span
+              style={{
+                display: user == null ? 'inline' : 'none',
+              }}
+            >
+              <Link to="/login">Login</Link>
+            </span>
+          </div>
         </Header>
         <Layout>
           <Sider>
@@ -52,7 +76,7 @@ export function DefaultPageNav() {
               >
                 <Menu.Item key={MenuKeys.MY_PROJECTS}>My Projects</Menu.Item>
                 <Menu.Item key={MenuKeys.IKIGAI_BUILDER}>
-                  <a href="/projects/ikigai-builder">Ikigai Builder</a>
+                  <Link to="/projects/ikigai-builder">Ikigai Builder</Link>
                 </Menu.Item>
               </Menu.SubMenu>
               <Menu.Item key={MenuKeys.INTERNSHIPS} icon={<DesktopOutlined />}>
@@ -65,15 +89,21 @@ export function DefaultPageNav() {
                 key={MenuKeys.ADMIN}
                 icon={<SettingOutlined />}
                 title="Admin"
+                style={{
+                  display:
+                    user != null && user.roles.has(Role.ADMIN)
+                      ? 'block'
+                      : 'none',
+                }}
               >
                 <Menu.Item key={MenuKeys.EDIT_DISTRICTS}>
-                  <a href="/profiles/edit-districts">Edit Districts</a>
+                  <Link to="/profiles/edit-districts">Edit Districts</Link>
                 </Menu.Item>
                 <Menu.Item key={MenuKeys.EDIT_SCHOOLS}>
-                  <a href="/profiles/edit-schools">Edit Schools</a>
+                  <Link to="/profiles/edit-schools">Edit Schools</Link>
                 </Menu.Item>
                 <Menu.Item key={MenuKeys.EDIT_USERS}>
-                  <a href="/profiles/edit-users">Edit Users</a>
+                  <Link to="/profiles/edit-users">Edit Users</Link>
                 </Menu.Item>
               </Menu.SubMenu>
             </Menu>

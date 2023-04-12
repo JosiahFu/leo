@@ -71,7 +71,9 @@ message LoginRequest {
 
 message LoginResponse {
   optional bool success = 1;
-  optional bool login_failure = 2;
-  optional string email_address_error = 3;
-  optional string password_error = 4;
+  optional User user = 2;
+
+  optional bool login_failure = 3;
+  optional string email_address_error = 4;
+  optional string password_error = 5;
 }

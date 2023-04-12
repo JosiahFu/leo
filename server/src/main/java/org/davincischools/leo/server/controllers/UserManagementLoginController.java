@@ -41,26 +41,33 @@ public class UserManagementLoginController {
       return;
     }
 
-    try {
-      Optional<User> user =
-          db.getUserRepository().findFullUserByEmailAddress(request.getEmailAddress());
-      if (!user.isPresent() || !UserUtils.checkPassword(user.get(), request.getPassword())) {
-        response.setSuccess(false);
-        response.setLoginFailure(true);
-        return;
-      }
+    Optional<User> user =
+        db.getUserRepository().findFullUserByEmailAddress(request.getEmailAddress());
+    if (!user.isPresent() || !UserUtils.checkPassword(user.get(), request.getPassword())) {
+      response.setSuccess(false);
+      response.setLoginFailure(true);
+      return;
+    }
 
-      user = db.getUserRepository().findFullUserByUserId(user.get().getId());
-      if (!user.isPresent()) {
-        response.setSuccess(false);
-        response.setLoginFailure(true);
-        return;
-      }
-    } catch (Throwable t) {
-      t.printStackTrace();
+    user = db.getUserRepository().findFullUserByUserId(user.get().getId());
+    if (!user.isPresent()) {
+      response.setSuccess(false);
+      response.setLoginFailure(true);
+      return;
     }
 
     response.setSuccess(true);
+    response.setUser(
+        org.davincischools.leo.protos.user_management.User.newBuilder()
+            .setId(user.get().getId())
+            .setDistrictId(user.get().getDistrict().getId())
+            .setFirstName(user.get().getFirstName())
+            .setLastName(user.get().getLastName())
+            .setEmailAddress(user.get().getEmailAddress())
+            .setIsAdmin(user.get().getAdmin() != null)
+            .setIsTeacher(user.get().getTeacher() != null)
+            .setIsStudent(user.get().getStudent() != null)
+            .build());
   }
 
   /** Checks fields for errors. Sets error messages and returns true if there are any errors. */
