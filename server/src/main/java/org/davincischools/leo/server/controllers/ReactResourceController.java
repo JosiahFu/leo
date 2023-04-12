@@ -73,9 +73,7 @@ public class ReactResourceController {
     } else {
       // Get and copy a resource from the classpath.
       getResponseMimeType(uri).map(Object::toString).ifPresent(response::setContentType);
-      try (InputStream in =
-          ClassLoader.getSystemResourceAsStream(
-              "org/davincischools/leo/server/www" + uri.getPath())) {
+      try (InputStream in = getSystemResourceAsStreamOrIndex(uri)) {
         if (in == null) {
           log.atError().log("Resource not found: {}", uri.getPath());
           response.sendError(HttpServletResponse.SC_NOT_FOUND, uri.getPath());
@@ -86,6 +84,15 @@ public class ReactResourceController {
         response.getOutputStream().close();
       }
     }
+  }
+
+  private InputStream getSystemResourceAsStreamOrIndex(URI uri) {
+    InputStream in =
+        ClassLoader.getSystemResourceAsStream("org/davincischools/leo/server/www" + uri.getPath());
+    if (in != null) {
+      return in;
+    }
+    return ClassLoader.getSystemResourceAsStream("org/davincischools/leo/server/www/index.html");
   }
 
   private static URI getUri(HttpServletRequest request) throws IOException {
