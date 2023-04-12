@@ -7,33 +7,33 @@ import java.util.Objects;
 import org.hibernate.Hibernate;
 
 @Embeddable
-public class ClassStudentId implements Serializable {
+public class StudentClassId implements Serializable {
 
-  public static final String COLUMN_CLASSID_NAME = "class_id";
   public static final String COLUMN_STUDENTID_NAME = "student_id";
-  private static final long serialVersionUID = 1159410436055318216L;
-
-  private Integer classId;
+  public static final String COLUMN_CLASSID_NAME = "class_id";
+  private static final long serialVersionUID = -1277370007835971023L;
 
   private Integer studentId;
 
-  @Column(name = COLUMN_CLASSID_NAME, nullable = false)
-  public Integer getClassId() {
-    return classId;
-  }
-
-  public ClassStudentId setClassId(Integer classId) {
-    this.classId = classId;
-    return this;
-  }
+  private Integer classId;
 
   @Column(name = COLUMN_STUDENTID_NAME, nullable = false)
   public Integer getStudentId() {
     return studentId;
   }
 
-  public ClassStudentId setStudentId(Integer studentId) {
+  public StudentClassId setStudentId(Integer studentId) {
     this.studentId = studentId;
+    return this;
+  }
+
+  @Column(name = COLUMN_CLASSID_NAME, nullable = false)
+  public Integer getClassId() {
+    return classId;
+  }
+
+  public StudentClassId setClassId(Integer classId) {
+    this.classId = classId;
     return this;
   }
 
@@ -45,7 +45,7 @@ public class ClassStudentId implements Serializable {
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
       return false;
     }
-    ClassStudentId entity = (ClassStudentId) o;
+    StudentClassId entity = (StudentClassId) o;
     return Objects.equals(this.studentId, entity.studentId)
         && Objects.equals(this.classId, entity.classId);
   }

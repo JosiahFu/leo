@@ -5,8 +5,6 @@ import java.util.Optional;
 import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
-import org.davincischools.leo.database.daos.ClassStudent;
-import org.davincischools.leo.database.daos.ClassTeacher;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Portfolio;
@@ -17,7 +15,11 @@ import org.davincischools.leo.database.daos.ProjectPost;
 import org.davincischools.leo.database.daos.ProjectPostComment;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
+import org.davincischools.leo.database.daos.StudentClass;
+import org.davincischools.leo.database.daos.StudentClassId;
 import org.davincischools.leo.database.daos.Teacher;
+import org.davincischools.leo.database.daos.TeacherClass;
+import org.davincischools.leo.database.daos.TeacherClassId;
 import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.TeacherSchoolId;
 import org.davincischools.leo.database.daos.User;
@@ -57,12 +59,6 @@ public class Database {
   public interface ClassRepository extends JpaRepository<Class, Integer> {}
 
   @Repository
-  public interface ClassStudentRepository extends JpaRepository<ClassStudent, Integer> {}
-
-  @Repository
-  public interface ClassTeacherRepository extends JpaRepository<ClassTeacher, Integer> {}
-
-  @Repository
   public interface DistrictRepository extends JpaRepository<District, Integer> {}
 
   @Repository
@@ -97,7 +93,27 @@ public class Database {
   public interface StudentRepository extends JpaRepository<Student, Integer> {}
 
   @Repository
+  public interface StudentClassRepository extends JpaRepository<StudentClass, Integer> {
+    default StudentClass createStudentClass(Student student, Class classField) {
+      return new StudentClass()
+          .setId(new StudentClassId().setStudentId(student.getId()).setClassId(classField.getId()))
+          .setStudent(student)
+          .setClassField(classField);
+    }
+  }
+
+  @Repository
   public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
+
+  @Repository
+  public interface TeacherClassRepository extends JpaRepository<TeacherClass, Integer> {
+    default TeacherClass createTeacherClass(Teacher teacher, Class classField) {
+      return new TeacherClass()
+          .setId(new TeacherClassId().setTeacherId(teacher.getId()).setClassId(classField.getId()))
+          .setTeacher(teacher)
+          .setClassField(classField);
+    }
+  }
 
   @Repository
   public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, Integer> {
@@ -157,8 +173,6 @@ public class Database {
   @Autowired private AdminRepository adminRepository;
   @Autowired private AssignmentRepository assignmentRepository;
   @Autowired private ClassRepository classRepository;
-  @Autowired private ClassStudentRepository classStudentRepository;
-  @Autowired private ClassTeacherRepository classTeacherRepository;
   @Autowired private DistrictRepository districtRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private PortfolioRepository portfolioRepository;
@@ -169,7 +183,9 @@ public class Database {
   @Autowired private ProjectPostCommentRepository projectPostCommentRepository;
   @Autowired private SchoolRepository schoolRepository;
   @Autowired private StudentRepository studentRepository;
+  @Autowired private StudentClassRepository studentClassRepository;
   @Autowired private TeacherRepository teacherRepository;
+  @Autowired private TeacherClassRepository teacherClassRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
   @Autowired private UserRepository userRepository;
 
@@ -185,14 +201,6 @@ public class Database {
 
   public ClassRepository getClassRepository() {
     return classRepository;
-  }
-
-  public ClassStudentRepository getClassStudentRepository() {
-    return classStudentRepository;
-  }
-
-  public ClassTeacherRepository getClassTeacherRepository() {
-    return classTeacherRepository;
   }
 
   public DistrictRepository getDistrictRepository() {
@@ -235,8 +243,16 @@ public class Database {
     return studentRepository;
   }
 
+  public StudentClassRepository getStudentClassRepository() {
+    return studentClassRepository;
+  }
+
   public TeacherRepository getTeacherRepository() {
     return teacherRepository;
+  }
+
+  public TeacherClassRepository getTeacherClassRepository() {
+    return teacherClassRepository;
   }
 
   public TeacherSchoolRepository getTeacherSchoolRepository() {
