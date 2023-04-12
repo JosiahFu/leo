@@ -17,6 +17,7 @@ export function IkigaiCategory(props: {
   textRadians?: number;
   distance: number;
   resizeAndRotateElementIds: string[];
+  onClick: () => void;
   // From 0 (gray with only colored border) to 1 (colored with border).
   highlightBackground: number;
 }) {
@@ -91,8 +92,6 @@ export function IkigaiCategory(props: {
       props.resizeAndRotateElementIds[i]
     );
     if (resizeAndRotateElement) {
-      // resizeAndRotateElement.style.rotate =
-      //   (props.radians - initialTextRadians).toString() + 'rad';
       resizeAndRotateElement.style.position = 'absolute';
       resizeAndRotateElement.style.left =
         (x + (props.diameter / 2 - edgeAt45Deg)).toString() + 'px';
@@ -139,6 +138,7 @@ export function IkigaiCategory(props: {
           ${props.color.b},
           ${props.alpha * 2})`,
         }}
+        onClick={props.onClick}
       />
     </>
   );

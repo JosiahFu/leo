@@ -36,7 +36,7 @@ public class PartialTextOpenAiPromptController {
       new ImmutableMap.Builder<Prompt, String>()
           .put(
               Prompt.SUGGEST_THINGS_YOU_LOVE,
-              "Give me a list of 10 activity names starting with {}. Don't include descriptions.")
+              "Give me a list of 10 activity names related to {}. Do not include descriptions.")
           .build();
 
   @Autowired OpenAiUtils openAiUtils;

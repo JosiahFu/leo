@@ -17,15 +17,19 @@ export function Ikigai(props: {
 
   lovesResizeAndRotateElement: ReactNode;
   lovesValueIsSet?: number;
+  onLovesClick: () => void;
 
   worldNeedsResizeAndRotateElement: ReactNode;
   worldNeedsValueIsSet?: number;
+  onWorldNeedsClick: () => void;
 
   paidForResizeAndRotateElement: ReactNode;
   paidForValueIsSet?: number;
+  onPaidForClick: () => void;
 
   goodAtResizeAndRotateElement: ReactNode;
   goodAtValueIsSet?: number;
+  onGoodAtClick: () => void;
 }) {
   const visibleAlpha = 0.2;
   const showHideDurationMs = 750;
@@ -100,7 +104,7 @@ export function Ikigai(props: {
   return (
     <>
       <div style={{visibility: centerPosition ? 'visible' : 'hidden'}}>
-        <div id={props.id + '.lovesPanel'}>
+        <div id={props.id + '.lovesPanel'} onClick={props.onLovesClick}>
           <div>{props.lovesResizeAndRotateElement}</div>
         </div>
         <IkigaiCategory
@@ -112,11 +116,15 @@ export function Ikigai(props: {
           radians={radians + 1.5 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.lovesPanel']}
+          onClick={props.onLovesClick}
           highlightBackground={
             props.lovesValueIsSet != null ? props.lovesValueIsSet : 1
           }
         />
-        <div id={props.id + '.worldNeedsPanel'}>
+        <div
+          id={props.id + '.worldNeedsPanel'}
+          onClick={props.onWorldNeedsClick}
+        >
           <div>{props.worldNeedsResizeAndRotateElement}</div>
         </div>
         <IkigaiCategory
@@ -128,11 +136,12 @@ export function Ikigai(props: {
           radians={radians + 0 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.worldNeedsPanel']}
+          onClick={props.onWorldNeedsClick}
           highlightBackground={
             props.worldNeedsValueIsSet != null ? props.worldNeedsValueIsSet : 1
           }
         />
-        <div id={props.id + '.paidForPanel'}>
+        <div id={props.id + '.paidForPanel'} onClick={props.onPaidForClick}>
           <div>{props.paidForResizeAndRotateElement}</div>
         </div>
         <IkigaiCategory
@@ -144,11 +153,12 @@ export function Ikigai(props: {
           radians={radians + 0.5 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.paidForPanel']}
+          onClick={props.onPaidForClick}
           highlightBackground={
             props.paidForValueIsSet != null ? props.paidForValueIsSet : 1
           }
         />
-        <div id={props.id + '.goodAtPanel'}>
+        <div id={props.id + '.goodAtPanel'} onClick={props.onGoodAtClick}>
           <div>{props.goodAtResizeAndRotateElement}</div>
         </div>
         <IkigaiCategory
@@ -160,6 +170,7 @@ export function Ikigai(props: {
           radians={radians + Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.goodAtPanel']}
+          onClick={props.onGoodAtClick}
           highlightBackground={
             props.goodAtValueIsSet != null ? props.goodAtValueIsSet : 1
           }

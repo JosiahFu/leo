@@ -204,6 +204,7 @@ export function IkigaiReel(props: {
           alpha={alpha}
           radians={radians - 0.5 * Math.PI}
           distance={distance + lovesHighlight * distanceDelta}
+          onClick={() => {}}
           resizeAndRotateElementIds={[
             props.id + '.lovesPanel',
             props.id + '.lovesValue',
@@ -219,6 +220,7 @@ export function IkigaiReel(props: {
           radians={radians - Math.PI}
           textRadians={radians - 0.5 * Math.PI}
           distance={distance + goodAtHighlight * distanceDelta}
+          onClick={() => {}}
           resizeAndRotateElementIds={[
             props.id + '.goodAtPanel',
             props.id + '.goodAtValue',
@@ -234,6 +236,7 @@ export function IkigaiReel(props: {
           radians={radians - 1.5 * Math.PI}
           textRadians={radians - 0.5 * Math.PI}
           distance={distance + paidForHighlight * distanceDelta}
+          onClick={() => {}}
           resizeAndRotateElementIds={[
             props.id + '.paidForPanel',
             props.id + '.paidForValue',
@@ -249,6 +252,7 @@ export function IkigaiReel(props: {
           radians={radians}
           textRadians={radians - 0.5 * Math.PI}
           distance={distance + worldNeedsHighlight * distanceDelta}
+          onClick={() => {}}
           resizeAndRotateElementIds={[
             props.id + '.worldNeedsPanel',
             props.id + '.worldNeedsValue',
