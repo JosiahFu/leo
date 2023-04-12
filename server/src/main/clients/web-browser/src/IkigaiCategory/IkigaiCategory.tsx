@@ -1,46 +1,110 @@
 import './IkigaiCategory.scss';
-import {useState} from 'react';
+
+enum Orientation {
+  TOP,
+  LEFT,
+  BOTTOM,
+  RIGHT,
+}
 
 export function IkigaiCategory(props: {
   id: string;
-  origin: {x: number; y: number};
-  size: number;
+  center: {x: number; y: number};
+  diameter: number;
   color: {r: number; g: number; b: number};
   alpha: number;
   radians: number;
   textRadians?: number;
   distance: number;
   resizeAndRotateElementIds: string[];
-  // From 0 (gray with only colored border) to 1 (colored background no border).
+  // From 0 (gray with only colored border) to 1 (colored with border).
   highlightBackground: number;
 }) {
   const x =
-    props.origin.x + Math.cos(props.radians) * props.distance - props.size / 2;
+    props.center.x +
+    Math.cos(props.radians) * props.distance -
+    props.diameter / 2;
   const y =
-    props.origin.y + Math.sin(props.radians) * props.distance - props.size / 2;
-  const edgeAt45Deg = (props.size / 2) * Math.cos(0.25 * Math.PI);
+    props.center.y +
+    Math.sin(props.radians) * props.distance -
+    props.diameter / 2;
+  const edgeAt45Deg = (props.diameter / 2) * Math.cos(0.25 * Math.PI);
   const grayRgb = 192;
 
-  const [initialTextRadians] = useState(props.textRadians || props.radians);
+  function getOrientationStyle(style: CSSStyleDeclaration) {
+    const normalizedRadians =
+      ((props.radians % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+    const orientation =
+      normalizedRadians < Math.PI / 4
+        ? Orientation.RIGHT
+        : normalizedRadians < (3 * Math.PI) / 4
+        ? Orientation.BOTTOM
+        : normalizedRadians < Math.PI + Math.PI / 4
+        ? Orientation.LEFT
+        : normalizedRadians < Math.PI + (3 * Math.PI) / 4
+        ? Orientation.TOP
+        : Orientation.RIGHT;
+
+    switch (orientation) {
+      case Orientation.LEFT:
+        Object.assign(style, {
+          display: 'flex',
+          textAlign: 'left',
+          float: 'left',
+          alignItems: 'center',
+        });
+        break;
+      case Orientation.RIGHT:
+        Object.assign(style, {
+          display: 'flex',
+          textAlign: 'right',
+          float: 'right',
+          alignItems: 'center',
+        });
+        break;
+      case Orientation.TOP:
+        Object.assign(style, {
+          display: 'flex',
+          textAlign: 'center',
+          float: 'initial',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          alignItems: 'initial',
+        });
+        break;
+      case Orientation.BOTTOM:
+        Object.assign(style, {
+          display: 'flex',
+          textAlign: 'center',
+          float: 'flex-end',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          alignItems: 'flex-end',
+        });
+        break;
+    }
+  }
 
   for (let i = 0; i < props.resizeAndRotateElementIds.length; ++i) {
     const resizeAndRotateElement = document.getElementById(
       props.resizeAndRotateElementIds[i]
     );
     if (resizeAndRotateElement) {
-      resizeAndRotateElement.style.rotate =
-        (props.radians - initialTextRadians).toString() + 'rad';
+      // resizeAndRotateElement.style.rotate =
+      //   (props.radians - initialTextRadians).toString() + 'rad';
       resizeAndRotateElement.style.position = 'absolute';
       resizeAndRotateElement.style.left =
-        (x + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
+        (x + (props.diameter / 2 - edgeAt45Deg)).toString() + 'px';
       resizeAndRotateElement.style.top =
-        (y + (props.size / 2 - edgeAt45Deg)).toString() + 'px';
+        (y + (props.diameter / 2 - edgeAt45Deg)).toString() + 'px';
       resizeAndRotateElement.style.width = (2 * edgeAt45Deg).toString() + 'px';
       resizeAndRotateElement.style.height = (2 * edgeAt45Deg).toString() + 'px';
       resizeAndRotateElement.style.fontSize =
-        (props.size / 12).toString() + 'px';
+        (props.diameter / 12).toString() + 'px';
       // Initially, these are set to hidden so that they don't appear before they are positioned.
       resizeAndRotateElement.style.visibility = 'visible';
+      getOrientationStyle(resizeAndRotateElement.style);
     }
   }
 
@@ -52,9 +116,9 @@ export function IkigaiCategory(props: {
         className="ikigai-category"
         style={{
           left: x,
-          width: props.size,
+          width: props.diameter,
           top: y,
-          height: props.size,
+          height: props.diameter,
           backgroundColor: `rgba(
           ${
             props.highlightBackground * props.color.r +
@@ -69,11 +133,11 @@ export function IkigaiCategory(props: {
             (1 - props.highlightBackground) * grayRgb
           },
           ${props.alpha})`,
-          border: `2px solid rgba(
+          border: `2px solid rgb(
           ${props.color.r},
           ${props.color.g},
           ${props.color.b},
-          ${(1 - props.highlightBackground) * props.alpha})`,
+          ${props.alpha * 2})`,
         }}
       />
     </>

@@ -128,8 +128,6 @@ export function IkigaiReel(props: {
         break;
     }
 
-    console.log('' + position + ': ' + radians + ' => ' + newRadians);
-
     doTransition(
       firstTime ? showHideDurationMs / 4 : rotateDurationMs,
       {
@@ -200,8 +198,8 @@ export function IkigaiReel(props: {
       <div style={{visibility: origin ? 'visible' : 'hidden'}}>
         <IkigaiCategory
           id={props.id + '.lovesCategory'}
-          origin={origin || {x: 0, y: 0}}
-          size={size + lovesHighlight * sizeDelta}
+          center={origin || {x: 0, y: 0}}
+          diameter={size + lovesHighlight * sizeDelta}
           color={{r: 249, g: 209, b: 98}}
           alpha={alpha}
           radians={radians - 0.5 * Math.PI}
@@ -214,8 +212,8 @@ export function IkigaiReel(props: {
         />
         <IkigaiCategory
           id={props.id + '.goodAtCategory'}
-          origin={origin || {x: 0, y: 0}}
-          size={size + goodAtHighlight * sizeDelta}
+          center={origin || {x: 0, y: 0}}
+          diameter={size + goodAtHighlight * sizeDelta}
           color={{r: 10, g: 86, b: 136}}
           alpha={alpha}
           radians={radians - Math.PI}
@@ -229,8 +227,8 @@ export function IkigaiReel(props: {
         />
         <IkigaiCategory
           id={props.id + '.paidForCategory'}
-          origin={origin || {x: 0, y: 0}}
-          size={size + paidForHighlight * sizeDelta}
+          center={origin || {x: 0, y: 0}}
+          diameter={size + paidForHighlight * sizeDelta}
           color={{r: 107, g: 198, b: 165}}
           alpha={alpha}
           radians={radians - 1.5 * Math.PI}
@@ -244,8 +242,8 @@ export function IkigaiReel(props: {
         />
         <IkigaiCategory
           id={props.id + '.worldNeedsCategory'}
-          origin={origin || {x: 0, y: 0}}
-          size={size + worldNeedsHighlight * sizeDelta}
+          center={origin || {x: 0, y: 0}}
+          diameter={size + worldNeedsHighlight * sizeDelta}
           color={{r: 243, g: 149, b: 79}}
           alpha={alpha}
           radians={radians}
