@@ -33,9 +33,11 @@ root.render(
         <Route path="/projects" Component={DefaultPageNav}>
           <Route path="ikigai-builder" Component={IkigaiBuilder} />
         </Route>
+        <Route path="/login" Component={DefaultPageNav}>
+          <Route path="" Component={Login} />
+        </Route>
         <Route path="/" Component={LandingPageNav}>
           <Route path="" Component={Root} />
-          <Route path="/login" Component={Login} />
           <Route path="/studdent" Component={StudentNav} />
           <Route path="/student/project-gen" Component={StudentProjectGen} />
           <Route

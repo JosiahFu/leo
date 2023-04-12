@@ -53,6 +53,7 @@ public class ReactResourceController {
     "/favicon.ico",
     "/index.html",
     "/installHooks.js",
+    "/login",
     "/logo*.png",
     "/logo*.svg",
     "/manifest.json",

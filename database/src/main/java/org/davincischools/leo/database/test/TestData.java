@@ -91,17 +91,25 @@ public class TestData {
                     .setCity("El Segundo, CA")
                     .setDistrict(district));
 
-    db.getUserRepository()
-        .save(
-            admin =
-                setPassword(
-                    new User()
-                        .setFirstName("Scott " + counter.get())
-                        .setLastName("Hendrickson")
-                        .setEmailAddress("sahendrickson." + counter.get() + "@davincischools.org")
-                        .setDistrict(district)
-                        .setAdmin(db.getAdminRepository().save(new Admin())),
-                    password));
+    admin =
+        db.getUserRepository()
+            .findFullUserByEmailAddress("sahendrickson@gmail.com")
+            .or(
+                () -> {
+                  db.getUserRepository()
+                      .save(
+                          setPassword(
+                              new User()
+                                  .setFirstName("Scott " + counter.get())
+                                  .setLastName("Hendrickson")
+                                  .setEmailAddress("sahendrickson@gmail.com")
+                                  .setDistrict(district)
+                                  .setAdmin(db.getAdminRepository().save(new Admin())),
+                              password));
+                  return db.getUserRepository()
+                      .findFullUserByEmailAddress("sahendrickson@gmail.com");
+                })
+            .orElseThrow();
 
     Teacher teacherEntry;
     db.getUserRepository()

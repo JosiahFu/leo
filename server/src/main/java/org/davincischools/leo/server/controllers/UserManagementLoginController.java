@@ -26,11 +26,11 @@ public class UserManagementLoginController {
   // So, handlers need to accept this type of input.
   @PostMapping(value = "/api/protos/UserManagementService/Login")
   @ResponseBody
-  public LoginResponse getResource(@RequestBody Optional<LoginRequest> request) {
-    request = Optional.of(request.orElse(LoginRequest.getDefaultInstance()));
-    LoginResponse.Builder response = LoginResponse.newBuilder();
+  public LoginResponse getResource(@RequestBody Optional<LoginRequest> optionalRequest) {
+    var request = optionalRequest.orElse(LoginRequest.getDefaultInstance());
+    var response = LoginResponse.newBuilder();
 
-    checkLogin(request.get(), response);
+    checkLogin(request, response);
 
     return response.build();
   }
@@ -41,14 +41,26 @@ public class UserManagementLoginController {
       return;
     }
 
-    Optional<User> user = db.getUserRepository().findByEmailAddress(request.getEmailAddress());
-    if (user.isPresent() && UserUtils.checkPassword(user.get(), request.getPassword())) {
-      response.setSuccess(true);
-      return;
+    try {
+      Optional<User> user =
+          db.getUserRepository().findFullUserByEmailAddress(request.getEmailAddress());
+      if (!user.isPresent() || !UserUtils.checkPassword(user.get(), request.getPassword())) {
+        response.setSuccess(false);
+        response.setLoginFailure(true);
+        return;
+      }
+
+      user = db.getUserRepository().findFullUserByUserId(user.get().getId());
+      if (!user.isPresent()) {
+        response.setSuccess(false);
+        response.setLoginFailure(true);
+        return;
+      }
+    } catch (Throwable t) {
+      t.printStackTrace();
     }
 
-    response.setSuccess(false);
-    response.setLoginFailure(true);
+    response.setSuccess(true);
   }
 
   /** Checks fields for errors. Sets error messages and returns true if there are any errors. */

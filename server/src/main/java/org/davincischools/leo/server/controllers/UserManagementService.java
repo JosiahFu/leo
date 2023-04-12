@@ -253,7 +253,7 @@ public class UserManagementService {
     }
 
     Optional<User> emailUser =
-        db.getUserRepository().findByEmailAddress(request.getUser().getEmailAddress());
+        db.getUserRepository().findFullUserByEmailAddress(request.getUser().getEmailAddress());
     if (emailUser.isPresent()) {
       inputValid &=
           checkThat(

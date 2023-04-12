@@ -94,6 +94,7 @@ public class Database {
 
   @Repository
   public interface StudentClassRepository extends JpaRepository<StudentClass, Integer> {
+
     default StudentClass createStudentClass(Student student, Class classField) {
       return new StudentClass()
           .setId(new StudentClassId().setStudentId(student.getId()).setClassId(classField.getId()))
@@ -107,6 +108,7 @@ public class Database {
 
   @Repository
   public interface TeacherClassRepository extends JpaRepository<TeacherClass, Integer> {
+
     default TeacherClass createTeacherClass(Teacher teacher, Class classField) {
       return new TeacherClass()
           .setId(new TeacherClassId().setTeacherId(teacher.getId()).setClassId(classField.getId()))
@@ -148,7 +150,14 @@ public class Database {
   @Repository
   public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByEmailAddress(String emailAddress);
+    @Query(
+        "SELECT u "
+            + "FROM User u "
+            + "LEFT JOIN FETCH Admin a "
+            + "LEFT JOIN FETCH Teacher t "
+            + "LEFT JOIN FETCH Student s "
+            + "WHERE u.emailAddress = (:email_address) ")
+    Optional<User> findFullUserByEmailAddress(@Param("email_address") String emailAddress);
 
     @Query(
         "SELECT u "
