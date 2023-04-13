@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS project_post_comment;
 DROP TABLE IF EXISTS portfolio;
 DROP TABLE IF EXISTS project_post;
+DROP TABLE IF EXISTS knowledge_and_skill_assignment;
 DROP TABLE IF EXISTS project_cycle;
 DROP TABLE IF EXISTS knowledge_and_skill;
 DROP TABLE IF EXISTS project;
