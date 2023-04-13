@@ -1,7 +1,6 @@
 CREATE TABLE teacher_class
 (
     teacher_id INT NOT NULL,
-    INDEX (teacher_id),
     CONSTRAINT teacher_class_teacher_id
         FOREIGN KEY (teacher_id)
             REFERENCES teacher (id)
@@ -9,7 +8,6 @@ CREATE TABLE teacher_class
             ON UPDATE RESTRICT,
 
     class_id   INT NOT NULL,
-    INDEX (class_id),
     CONSTRAINT teacher_class_class_id
         FOREIGN KEY (class_id)
             REFERENCES class (id)

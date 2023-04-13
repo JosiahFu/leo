@@ -9,7 +9,6 @@ CREATE TABLE project_post
     post_time_micros_utc BIGINT       NOT NULL,
 
     user_id              INT          NOT NULL,
-    INDEX (user_id),
     CONSTRAINT project_post_user_id
         FOREIGN KEY (user_id)
             REFERENCES user (id)
@@ -17,7 +16,6 @@ CREATE TABLE project_post
             ON UPDATE RESTRICT,
 
     project_id           INT          NOT NULL,
-    INDEX (project_id),
     CONSTRAINT project_post_project_id
         FOREIGN KEY (project_id)
             REFERENCES project (id)

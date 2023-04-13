@@ -14,7 +14,6 @@ CREATE TABLE project_post_comment
             ON UPDATE RESTRICT,
 
     project_post_id INT      NOT NULL,
-    INDEX (project_post_id),
     CONSTRAINT project_post_comment_project_post_id
         FOREIGN KEY (project_post_id)
             REFERENCES project_post (id)

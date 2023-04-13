@@ -6,16 +6,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity(name = ProjectPostComment.ENTITY_NAME)
-@Table(
-    name = ProjectPostComment.TABLE_NAME,
-    schema = "leo_temp",
-    indexes = {@Index(name = "project_post_id", columnList = "project_post_id")})
+@Table(name = ProjectPostComment.TABLE_NAME, schema = "leo_temp")
 public class ProjectPostComment {
 
   public static final String ENTITY_NAME = "ProjectPostComment";

@@ -9,7 +9,6 @@ CREATE TABLE portfolio_post
     order_index       INT          NOT NULL,
 
     portfolio_id      INT          NOT NULL,
-    INDEX (portfolio_id),
     CONSTRAINT portfolio_post_portfolio_id
         FOREIGN KEY (portfolio_id)
             REFERENCES portfolio (id)
@@ -17,7 +16,6 @@ CREATE TABLE portfolio_post
             ON UPDATE RESTRICT,
 
     project_post_id   INT          NOT NULL,
-    INDEX (project_post_id),
     CONSTRAINT portfolio_post_project_post_id
         FOREIGN KEY (project_post_id)
             REFERENCES project_post (id)

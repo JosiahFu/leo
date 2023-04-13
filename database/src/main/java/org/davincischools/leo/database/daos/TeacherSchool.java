@@ -3,20 +3,13 @@ package org.davincischools.leo.database.daos;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity(name = TeacherSchool.ENTITY_NAME)
-@Table(
-    name = TeacherSchool.TABLE_NAME,
-    schema = "leo_temp",
-    indexes = {
-      @Index(name = "school_id", columnList = "school_id"),
-      @Index(name = "teacher_id", columnList = "teacher_id")
-    })
+@Table(name = TeacherSchool.TABLE_NAME, schema = "leo_temp")
 public class TeacherSchool {
 
   public static final String ENTITY_NAME = "TeacherSchool";
