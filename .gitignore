@@ -1,6 +1,9 @@
 /.attach_pid*
 /.metadata/
 
+### General ###
+*.bak
+
 ### Maven ###
 /target/
 **/target/
