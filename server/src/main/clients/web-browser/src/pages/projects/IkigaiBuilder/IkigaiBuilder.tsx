@@ -41,8 +41,10 @@ export function IkigaiBuilder() {
   const [lovesModalOpen, setLovesModalOpen] = useState(false);
   const [lovesValue, setLovesValue] = useState('');
   const [modalLovesValue, setModalLovesValue] = useState('');
-  const [getRelatedSuggestionsEnabled, setGetRelatedSuggestionsEnabled] =
-    useState(true);
+  const [
+    lovesGetRelatedSuggestionsEnabled,
+    setLovesGetRelatedSuggestionsEnabled,
+  ] = useState(true);
   const [lovesSuggestions, setLovesSuggestions] = useState<string[]>([]);
 
   const [worldNeedsModalOpen, setWorldNeedsModalOpen] = useState(false);
@@ -53,7 +55,15 @@ export function IkigaiBuilder() {
   >();
 
   const [paidForModalOpen, setPaidForModalOpen] = useState(false);
+
   const [goodAtModalOpen, setGoodAtModalOpen] = useState(false);
+  const [goodAtValue, setGoodAtValue] = useState('');
+  const [modalGoodAtValue, setModalGoodAtValue] = useState('');
+  const [
+    goodAtGetRelatedSuggestionsEnabled,
+    setGoodAtGetRelatedSuggestionsEnabled,
+  ] = useState(true);
+  const [goodAtSuggestions, setGoodAtSuggestions] = useState<string[]>([]);
 
   // Resize and reposition the Ikigai diagram to be consistent with the window.
   function updateIkigaiPosition() {
@@ -114,7 +124,7 @@ export function IkigaiBuilder() {
       PartialTextOpenAiPromptService,
       'PartialTextOpenAiPromptService'
     );
-    setGetRelatedSuggestionsEnabled(false);
+    setLovesGetRelatedSuggestionsEnabled(false);
     partialTextOpenAiPromptService
       .getSuggestions({
         partialText: modalLovesValue,
@@ -122,7 +132,7 @@ export function IkigaiBuilder() {
       })
       .then(response => setLovesSuggestions(response.suggestions))
       .catch(() => setLovesSuggestions([]))
-      .finally(() => setGetRelatedSuggestionsEnabled(true));
+      .finally(() => setLovesGetRelatedSuggestionsEnabled(true));
   }
 
   function onWorldNeedsUpdate() {
@@ -135,7 +145,24 @@ export function IkigaiBuilder() {
   }
 
   function onGoodAtUpdate() {
+    setGoodAtValue(modalGoodAtValue);
     setGoodAtModalOpen(false);
+  }
+
+  function getGoodAtRelatedSuggestions() {
+    const partialTextOpenAiPromptService = createService(
+      PartialTextOpenAiPromptService,
+      'PartialTextOpenAiPromptService'
+    );
+    setGoodAtGetRelatedSuggestionsEnabled(false);
+    partialTextOpenAiPromptService
+      .getSuggestions({
+        partialText: modalGoodAtValue,
+        prompt: Prompt.SUGGEST_THINGS_YOU_ARE_GOOD_AT,
+      })
+      .then(response => setGoodAtSuggestions(response.suggestions))
+      .catch(() => setGoodAtSuggestions([]))
+      .finally(() => setGoodAtGetRelatedSuggestionsEnabled(true));
   }
 
   return (
@@ -210,9 +237,23 @@ export function IkigaiBuilder() {
               goodAtResizeAndRotateElement={
                 <>
                   What you are <b>GOOD&nbsp;AT</b>
+                  {goodAtValue ? (
+                    <>
+                      <br />
+                      <span style={{fontSize: 'smaller', fontStyle: 'italic'}}>
+                        {goodAtValue}
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </>
               }
-              onGoodAtClick={() => setGoodAtModalOpen(true)}
+              onGoodAtClick={() => {
+                setModalGoodAtValue(goodAtValue);
+                setGoodAtModalOpen(true);
+              }}
+              goodAtValueIsSet={goodAtValue ? 0 : 1}
             />
           </div>
         </Content>
@@ -243,13 +284,13 @@ export function IkigaiBuilder() {
           style={{width: '100%'}}
           onClick={getLovesRelatedSuggestions}
           icon={
-            getRelatedSuggestionsEnabled ? (
+            lovesGetRelatedSuggestionsEnabled ? (
               <BarsOutlined />
             ) : (
               <LoadingOutlined />
             )
           }
-          disabled={!getRelatedSuggestionsEnabled || !modalLovesValue}
+          disabled={!lovesGetRelatedSuggestionsEnabled || !modalLovesValue}
         >
           Get Related Suggestions
         </Button>
@@ -316,14 +357,47 @@ export function IkigaiBuilder() {
         TODO: Leave blank for now.
       </Modal>
       <Modal
-        title="What you are GOOD AT!"
+        title="Something you are GOOD AT!"
         width="50%"
         open={goodAtModalOpen}
         closable={true}
-        onCancel={() => setGoodAtModalOpen(false)}
         onOk={onGoodAtUpdate}
+        onCancel={() => {
+          setGoodAtModalOpen(false);
+        }}
       >
-        TODO: Leave blank for now.
+        <Input
+          placeholder="What's something you are GOOD AT?"
+          maxLength={255}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setModalGoodAtValue(e.target.value)
+          }
+          value={modalGoodAtValue}
+        />
+        <Button
+          style={{width: '100%'}}
+          onClick={getGoodAtRelatedSuggestions}
+          icon={
+            goodAtGetRelatedSuggestionsEnabled ? (
+              <BarsOutlined />
+            ) : (
+              <LoadingOutlined />
+            )
+          }
+          disabled={!goodAtGetRelatedSuggestionsEnabled || !modalGoodAtValue}
+        >
+          Get Related Suggestions
+        </Button>
+        <List
+          dataSource={goodAtSuggestions}
+          renderItem={suggestion => (
+            <List.Item itemID={suggestion}>
+              <div onClick={() => setModalGoodAtValue(suggestion)}>
+                {suggestion}
+              </div>
+            </List.Item>
+          )}
+        />
       </Modal>
     </>
   );

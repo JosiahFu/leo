@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ClassManagementService {
 
-  @Autowired
-  Database db;
+  @Autowired Database db;
 
   @PostMapping(value = "/api/protos/ClassManagementService/GetStudentAssignments")
   @ResponseBody
@@ -25,8 +24,8 @@ public class ClassManagementService {
     var request = optionalRequest.orElse(GetStudentAssignmentsRequest.getDefaultInstance());
     var response = GetStudentAssignmentsResponse.newBuilder();
 
-    for (StudentAssignment assignment : db.getStudentRepository()
-        .findAllAssignmentsByStudentUserId(request.getUserId())) {
+    for (StudentAssignment assignment :
+        db.getStudentRepository().findAllAssignmentsByStudentUserId(request.getUserId())) {
       response.addAssignments(
           DataAccess.convertAssignmentToProto(assignment.classField(), assignment.assignment()));
     }

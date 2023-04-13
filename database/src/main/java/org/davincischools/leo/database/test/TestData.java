@@ -149,7 +149,10 @@ public class TestData {
 
     chemistry_eks_1 =
         createKnowledgeAndSkill(
-            db, chemistry_clazz, "Periodic Table", "I can recognize the basic elements on a periodic table.");
+            db,
+            chemistry_clazz,
+            "Periodic Table",
+            "I can recognize the basic elements on a periodic table.");
     chemistry_eks_2 =
         createKnowledgeAndSkill(
             db,
@@ -163,7 +166,8 @@ public class TestData {
             chemistry_clazz,
             "Valence Electrons",
             "Show that you understand valence electrons.",
-            chemistry_eks_1, chemistry_eks_2);
+            chemistry_eks_1,
+            chemistry_eks_2);
 
     programming_clazz = createClass(db, school, "Computer Science I", "Intro to Programming.");
     addTeachersToClass(db.getTeacherClassRepository(), programming_clazz, teacher);
@@ -171,13 +175,13 @@ public class TestData {
 
     programming_eks_1 =
         createKnowledgeAndSkill(
-            db, programming_clazz, "Sort Functions", "I understand and can implement different sort functions.");
-    programming_eks_2 =
-        createKnowledgeAndSkill(
             db,
             programming_clazz,
-            "Collections",
-            "I can use Lists, Sets, and Maps.");
+            "Sort Functions",
+            "I understand and can implement different sort functions.");
+    programming_eks_2 =
+        createKnowledgeAndSkill(
+            db, programming_clazz, "Collections", "I can use Lists, Sets, and Maps.");
 
     programming_assignment =
         createAssignment(
@@ -186,7 +190,7 @@ public class TestData {
             "Sort Algorithms",
             "Show that you can implement sort algorithms.",
             chemistry_eks_1);
- }
+  }
 
   public static User createUser(Database db, User template) {
     return db.getUserRepository()
@@ -228,22 +232,21 @@ public class TestData {
 
   public static void addTeachersToSchool(
       TeacherSchoolRepository repo, School school, User... teachers) {
-    Arrays.asList(teachers).forEach(teacher -> repo.save(repo.createTeacherSchool(teacher.getTeacher(), school)));
+    Arrays.asList(teachers)
+        .forEach(teacher -> repo.save(repo.createTeacherSchool(teacher.getTeacher(), school)));
   }
 
   public void addTeachersToClass(TeacherClassRepository repo, Class clazz, User... teachers) {
-    Arrays.asList(teachers).forEach(teacher -> repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz)));
+    Arrays.asList(teachers)
+        .forEach(teacher -> repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz)));
   }
 
   public void addStudentsToClass(StudentClassRepository repo, Class clazz, User... students) {
-    Arrays.asList(students).forEach(student -> repo.save(repo.createStudentClass(student.getStudent(), clazz)));
+    Arrays.asList(students)
+        .forEach(student -> repo.save(repo.createStudentClass(student.getStudent(), clazz)));
   }
 
-  private Class createClass(
-      Database db,
-      School school,
-      String name,
-      String descr) {
+  private Class createClass(Database db, School school, String name, String descr) {
     Class clazz =
         db.getClassRepository()
             .save(
@@ -271,7 +274,8 @@ public class TestData {
                     .setLongDescr(descr));
 
     var ksaRepo = db.getKnowledgeAndSkillAssignmentRepository();
-    Arrays.asList(knowledgeAndSkills).forEach(ks -> ksaRepo.save(ksaRepo.createKnowledgeAndSkillAssignment(ks, assignment)));
+    Arrays.asList(knowledgeAndSkills)
+        .forEach(ks -> ksaRepo.save(ksaRepo.createKnowledgeAndSkillAssignment(ks, assignment)));
     return assignment;
   }
 

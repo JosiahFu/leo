@@ -41,6 +41,10 @@ public class PartialTextOpenAiPromptController {
               Prompt.SUGGEST_THINGS_YOU_LOVE,
               "Give me a diverse list of 10 activity names related to {}. Do not include"
                   + " descriptions.")
+          .put(
+              Prompt.SUGGEST_THINGS_YOU_ARE_GOOD_AT,
+              "Give me a diverse list of 10 abilities related to {}. Do not include"
+                  + " descriptions.")
           .build();
 
   @Autowired OpenAiUtils openAiUtils;
