@@ -5,12 +5,19 @@ import static org.davincischools.leo.database.utils.UserUtils.setPassword;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.davincischools.leo.database.daos.Admin;
+import org.davincischools.leo.database.daos.Assignment;
+import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.KnowledgeAndSkill;
+import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.database.utils.Database.KnowledgeAndSkillAssignmentRepository;
+import org.davincischools.leo.database.utils.Database.StudentClassRepository;
+import org.davincischools.leo.database.utils.Database.TeacherClassRepository;
 import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +33,9 @@ public class TestData {
   public final User teacher;
   public final User student;
   public final User admin;
+  public final Class clazz;
+  public final KnowledgeAndSkill knowledgeAndSkill1, knowledgeAndSkill2;
+  public final Assignment assignment;
   public final String password = "password";
 
   public TestData(@Autowired Database db) {
@@ -114,7 +124,7 @@ public class TestData {
                 password));
     addAdminPermission(db, teacher);
     addTeacherPermission(db, teacher);
-    addTecherToSchool(db.getTeacherSchoolRepository(), teacher.getTeacher(), school);
+    addTeacherToSchool(db.getTeacherSchoolRepository(), teacher.getTeacher(), school);
 
     student =
         createUser(
@@ -127,6 +137,80 @@ public class TestData {
                     .setDistrict(district),
                 password));
     addStudentPermissions(db, student);
+
+    clazz =
+        db.getClassRepository()
+            .save(
+                new Class()
+                    .setName("AP Chemistry AB")
+                    .setShortDescr("Intro to general chemistry.")
+                    .setLongDescr("A general chemistry class.")
+                    .setSchool(school));
+    addTeacherToClass(db.getTeacherClassRepository(), teacher, clazz);
+    addStudentToClass(db.getStudentClassRepository(), student, clazz);
+    knowledgeAndSkill1 =
+        addKnowledgeAndSkill(
+            db, clazz, "Periodic Table", "I can recognize the basic elements on a periodic table.");
+    knowledgeAndSkill2 =
+        addKnowledgeAndSkill(
+            db,
+            clazz,
+            "Valence Electrons",
+            "I can determine the number of valence electrons for each element.");
+    assignment =
+        createAssignment(
+            db,
+            clazz,
+            "Valence Electrons",
+            "Show that you understand valence electrons.",
+            knowledgeAndSkill1);
+  }
+
+  private Assignment createAssignment(
+      Database db,
+      Class clazz,
+      String name,
+      String descr,
+      KnowledgeAndSkill... knowledgeAndSkills) {
+    Assignment assignment =
+        db.getAssignmentRepository()
+            .save(
+                new Assignment()
+                    .setClassField(clazz)
+                    .setName(name)
+                    .setShortDescr(descr)
+                    .setLongDescr(descr));
+    for (var knowledgeAndSkill : knowledgeAndSkills) {
+      addKnowledgeAndSkillToAssignment(
+          db.getKnowledgeAndSkillAssignmentRepository(), knowledgeAndSkill, assignment);
+    }
+    return assignment;
+  }
+
+  public KnowledgeAndSkillAssignment addKnowledgeAndSkillToAssignment(
+      KnowledgeAndSkillAssignmentRepository repo,
+      KnowledgeAndSkill knowledgeAndSkill,
+      Assignment assignment) {
+    return repo.save(repo.createKnowledgeAndSkillAssignment(knowledgeAndSkill, assignment));
+  }
+
+  public KnowledgeAndSkill addKnowledgeAndSkill(
+      Database db, Class clazz, String name, String descr) {
+    return db.getKnowledgeAndSkillRepository()
+        .save(
+            new KnowledgeAndSkill()
+                .setClassField(clazz)
+                .setName(name)
+                .setShortDescr(descr)
+                .setLongDescr(descr));
+  }
+
+  public void addTeacherToClass(TeacherClassRepository repo, User teacher, Class clazz) {
+    repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz));
+  }
+
+  public void addStudentToClass(StudentClassRepository repo, User student, Class clazz) {
+    repo.save(repo.createStudentClass(student.getStudent(), clazz));
   }
 
   public static User createUser(Database db, User template) {
@@ -154,7 +238,7 @@ public class TestData {
     }
   }
 
-  public static void addTecherToSchool(
+  public static void addTeacherToSchool(
       TeacherSchoolRepository repo, Teacher teacher, School school) {
     if (repo.findById(repo.createTeacherSchoolId(teacher, school)).isEmpty()) {
       repo.save(repo.createTeacherSchool(teacher, school));

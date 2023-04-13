@@ -7,6 +7,8 @@ import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
+import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
+import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
 import org.davincischools.leo.database.daos.Portfolio;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
@@ -62,6 +64,25 @@ public class Database {
 
   @Repository
   public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
+
+  @Repository
+  public interface KnowledgeAndSkillAssignmentRepository
+      extends JpaRepository<KnowledgeAndSkillAssignment, KnowledgeAndSkillAssignmentId> {
+    default KnowledgeAndSkillAssignmentId createKnowledgeAndSkillAssignmentId(
+        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
+      return new KnowledgeAndSkillAssignmentId()
+          .setKnowledgeAndSkillId(knowledgeAndSkill.getId())
+          .setAssignmentId(assignment.getId());
+    }
+
+    default KnowledgeAndSkillAssignment createKnowledgeAndSkillAssignment(
+        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
+      return new KnowledgeAndSkillAssignment()
+          .setId(createKnowledgeAndSkillAssignmentId(knowledgeAndSkill, assignment))
+          .setKnowledgeAndSkill(knowledgeAndSkill)
+          .setAssignment(assignment);
+    }
+  }
 
   @Repository
   public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
@@ -184,6 +205,7 @@ public class Database {
   @Autowired private ClassRepository classRepository;
   @Autowired private DistrictRepository districtRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
+  @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
   @Autowired private PortfolioRepository portfolioRepository;
   @Autowired private ProjectRepository projectRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
@@ -217,6 +239,10 @@ public class Database {
 
   public KnowledgeAndSkillRepository getKnowledgeAndSkillRepository() {
     return knowledgeAndSkillRepository;
+  }
+
+  public KnowledgeAndSkillAssignmentRepository getKnowledgeAndSkillAssignmentRepository() {
+    return knowledgeAndSkillAssignmentRepository;
   }
 
   public PortfolioRepository getPortfolioRepository() {
