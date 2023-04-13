@@ -1,14 +1,14 @@
 CREATE TABLE knowledge_and_skill
 (
-    id                INT PRIMARY KEY AUTO_INCREMENT,
+    id                    INT PRIMARY KEY AUTO_INCREMENT,
 
-    name              VARCHAR(255)  NOT NULL,
-    short_descr_quill BLOB          NOT NULL,
-    long_descr_quill  LONGBLOB      NOT NULL,
-    -- JSON array of strings: ["mastery_1", "mastery_2", ...]
-    mastery           VARCHAR(1024) NOT NULL,
+    name                  VARCHAR(255)  NOT NULL,
+    short_descr           VARCHAR(2048) NOT NULL,
+    short_descr_quill_zip BLOB,
+    long_descr            TEXT          NOT NULL,
+    long_descr_quill_zip  BLOB,
 
-    class_id          INT           NOT NULL,
+    class_id              INT           NOT NULL,
     CONSTRAINT knowledge_and_skill_class_id
         FOREIGN KEY (class_id)
             REFERENCES class (id)

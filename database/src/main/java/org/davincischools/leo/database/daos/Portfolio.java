@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity(name = Portfolio.ENTITY_NAME)
@@ -15,16 +16,22 @@ public class Portfolio {
   public static final String TABLE_NAME = "portfolio";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_NAME_NAME = "name";
-  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
-  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
+  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
+  public static final String COLUMN_LONGDESCR_NAME = "long_descr";
+  public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
 
   private Integer id;
 
   private String name;
 
-  private byte[] shortDescrQuill;
+  private String shortDescr;
 
-  private byte[] longDescrQuill;
+  private byte[] shortDescrQuillZip;
+
+  private String longDescr;
+
+  private byte[] longDescrQuillZip;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,23 +55,44 @@ public class Portfolio {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
-  public byte[] getShortDescrQuill() {
-    return shortDescrQuill;
+  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false, length = 2048)
+  public String getShortDescr() {
+    return shortDescr;
   }
 
-  public Portfolio setShortDescrQuill(byte[] shortDescrQuill) {
-    this.shortDescrQuill = shortDescrQuill;
+  public Portfolio setShortDescr(String shortDescr) {
+    this.shortDescr = shortDescr;
     return this;
   }
 
-  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
-  public byte[] getLongDescrQuill() {
-    return longDescrQuill;
+  @Column(name = COLUMN_SHORTDESCRQUILLZIP_NAME)
+  public byte[] getShortDescrQuillZip() {
+    return shortDescrQuillZip;
   }
 
-  public Portfolio setLongDescrQuill(byte[] longDescrQuill) {
-    this.longDescrQuill = longDescrQuill;
+  public Portfolio setShortDescrQuillZip(byte[] shortDescrQuillZip) {
+    this.shortDescrQuillZip = shortDescrQuillZip;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_LONGDESCR_NAME, nullable = false)
+  public String getLongDescr() {
+    return longDescr;
+  }
+
+  public Portfolio setLongDescr(String longDescr) {
+    this.longDescr = longDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_LONGDESCRQUILLZIP_NAME)
+  public byte[] getLongDescrQuillZip() {
+    return longDescrQuillZip;
+  }
+
+  public Portfolio setLongDescrQuillZip(byte[] longDescrQuillZip) {
+    this.longDescrQuillZip = longDescrQuillZip;
     return this;
   }
 }

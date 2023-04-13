@@ -1,25 +1,30 @@
 CREATE TABLE project
 (
-    id                    INT PRIMARY KEY AUTO_INCREMENT,
+    id                          INT PRIMARY KEY AUTO_INCREMENT,
 
-    name                  VARCHAR(255) NOT NULL,
-    short_descr_quill     BLOB         NOT NULL,
-    long_descr_quill      LONGBLOB     NOT NULL,
+    name                        VARCHAR(255)  NOT NULL,
+    short_descr                 VARCHAR(2048) NOT NULL,
+    short_descr_quill_zip       BLOB,
+    long_descr                  TEXT          NOT NULL,
+    long_descr_quill_zip        BLOB,
 
-    love                  VARCHAR(255) NOT NULL,
-    need                  VARCHAR(255) NOT NULL,
-    paid                  VARCHAR(255) NOT NULL,
+    love_descr                  TEXT          NOT NULL,
+    love_descr_quill_zip        BLOB,
+    world_needs_descr           TEXT          NOT NULL,
+    world_needs_descr_quill_zip BLOB,
+    paid_for_descr              TEXT          NOT NULL,
+    paid_for_descr_quill_zip    BLOB,
+    good_at_descr               TEXT          NOT NULL,
+    good_at_descr_quill_zip     BLOB,
 
-    start_time_micros_utc BIGINT       NOT NULL,
-
-    assignment_id         INT          NOT NULL,
+    assignment_id               INT           NOT NULL,
     CONSTRAINT project_assignment_id
         FOREIGN KEY (assignment_id)
             REFERENCES assignment (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    student_id            INT          NOT NULL,
+    student_id                  INT           NOT NULL,
     CONSTRAINT project_student_id
         FOREIGN KEY (student_id)
             REFERENCES student (id)

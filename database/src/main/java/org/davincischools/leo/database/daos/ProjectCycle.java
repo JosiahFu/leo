@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,19 +19,22 @@ public class ProjectCycle {
   public static final String TABLE_NAME = "project_cycle";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_NAME_NAME = "name";
-  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
-  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  public static final String COLUMN_STARTTIMEMICROSUTC_NAME = "start_time_micros_utc";
+  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
+  public static final String COLUMN_LONGDESCR_NAME = "long_descr";
+  public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
 
   private Integer id;
 
   private String name;
 
-  private byte[] shortDescrQuill;
+  private String shortDescr;
 
-  private byte[] longDescrQuill;
+  private byte[] shortDescrQuillZip;
 
-  private Long startTimeMicrosUtc;
+  private String longDescr;
+
+  private byte[] longDescrQuillZip;
 
   private Project project;
 
@@ -56,33 +60,44 @@ public class ProjectCycle {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
-  public byte[] getShortDescrQuill() {
-    return shortDescrQuill;
+  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false, length = 2048)
+  public String getShortDescr() {
+    return shortDescr;
   }
 
-  public ProjectCycle setShortDescrQuill(byte[] shortDescrQuill) {
-    this.shortDescrQuill = shortDescrQuill;
+  public ProjectCycle setShortDescr(String shortDescr) {
+    this.shortDescr = shortDescr;
     return this;
   }
 
-  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
-  public byte[] getLongDescrQuill() {
-    return longDescrQuill;
+  @Column(name = COLUMN_SHORTDESCRQUILLZIP_NAME)
+  public byte[] getShortDescrQuillZip() {
+    return shortDescrQuillZip;
   }
 
-  public ProjectCycle setLongDescrQuill(byte[] longDescrQuill) {
-    this.longDescrQuill = longDescrQuill;
+  public ProjectCycle setShortDescrQuillZip(byte[] shortDescrQuillZip) {
+    this.shortDescrQuillZip = shortDescrQuillZip;
     return this;
   }
 
-  @Column(name = COLUMN_STARTTIMEMICROSUTC_NAME, nullable = false)
-  public Long getStartTimeMicrosUtc() {
-    return startTimeMicrosUtc;
+  @Lob
+  @Column(name = COLUMN_LONGDESCR_NAME, nullable = false)
+  public String getLongDescr() {
+    return longDescr;
   }
 
-  public ProjectCycle setStartTimeMicrosUtc(Long startTimeMicrosUtc) {
-    this.startTimeMicrosUtc = startTimeMicrosUtc;
+  public ProjectCycle setLongDescr(String longDescr) {
+    this.longDescr = longDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_LONGDESCRQUILLZIP_NAME)
+  public byte[] getLongDescrQuillZip() {
+    return longDescrQuillZip;
+  }
+
+  public ProjectCycle setLongDescrQuillZip(byte[] longDescrQuillZip) {
+    this.longDescrQuillZip = longDescrQuillZip;
     return this;
   }
 

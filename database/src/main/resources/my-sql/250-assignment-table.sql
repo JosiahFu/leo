@@ -1,12 +1,14 @@
 CREATE TABLE assignment
 (
-    id                INT PRIMARY KEY AUTO_INCREMENT,
+    id                    INT PRIMARY KEY AUTO_INCREMENT,
 
-    name              VARCHAR(255) NOT NULL,
-    short_descr_quill BLOB         NOT NULL,
-    long_descr_quill  LONGBLOB     NOT NULL,
+    name                  VARCHAR(255)  NOT NULL,
+    short_descr           VARCHAR(2048) NOT NULL,
+    short_descr_quill_zip BLOB,
+    long_descr            TEXT          NOT NULL,
+    long_descr_quill_zip  BLOB,
 
-    class_id          INT          NOT NULL,
+    class_id              INT           NOT NULL,
     CONSTRAINT assignment_class_id
         FOREIGN KEY (class_id)
             REFERENCES class (id)

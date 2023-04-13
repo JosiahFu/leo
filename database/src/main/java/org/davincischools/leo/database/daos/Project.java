@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,28 +19,46 @@ public class Project {
   public static final String TABLE_NAME = "project";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_NAME_NAME = "name";
-  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
-  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  public static final String COLUMN_LOVE_NAME = "love";
-  public static final String COLUMN_NEED_NAME = "need";
-  public static final String COLUMN_PAID_NAME = "paid";
-  public static final String COLUMN_STARTTIMEMICROSUTC_NAME = "start_time_micros_utc";
+  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
+  public static final String COLUMN_LONGDESCR_NAME = "long_descr";
+  public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
+  public static final String COLUMN_LOVEDESCR_NAME = "love_descr";
+  public static final String COLUMN_LOVEDESCRQUILLZIP_NAME = "love_descr_quill_zip";
+  public static final String COLUMN_WORLDNEEDSDESCR_NAME = "world_needs_descr";
+  public static final String COLUMN_WORLDNEEDSDESCRQUILLZIP_NAME = "world_needs_descr_quill_zip";
+  public static final String COLUMN_PAIDFORDESCR_NAME = "paid_for_descr";
+  public static final String COLUMN_PAIDFORDESCRQUILLZIP_NAME = "paid_for_descr_quill_zip";
+  public static final String COLUMN_GOODATDESCR_NAME = "good_at_descr";
+  public static final String COLUMN_GOODATDESCRQUILLZIP_NAME = "good_at_descr_quill_zip";
 
   private Integer id;
 
   private String name;
 
-  private byte[] shortDescrQuill;
+  private String shortDescr;
 
-  private byte[] longDescrQuill;
+  private byte[] shortDescrQuillZip;
 
-  private String love;
+  private String longDescr;
 
-  private String need;
+  private byte[] longDescrQuillZip;
 
-  private String paid;
+  private String loveDescr;
 
-  private Long startTimeMicrosUtc;
+  private byte[] loveDescrQuillZip;
+
+  private String worldNeedsDescr;
+
+  private byte[] worldNeedsDescrQuillZip;
+
+  private String paidForDescr;
+
+  private byte[] paidForDescrQuillZip;
+
+  private String goodAtDescr;
+
+  private byte[] goodAtDescrQuillZip;
 
   private Assignment assignment;
 
@@ -67,63 +86,128 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
-  public byte[] getShortDescrQuill() {
-    return shortDescrQuill;
+  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false, length = 2048)
+  public String getShortDescr() {
+    return shortDescr;
   }
 
-  public Project setShortDescrQuill(byte[] shortDescrQuill) {
-    this.shortDescrQuill = shortDescrQuill;
+  public Project setShortDescr(String shortDescr) {
+    this.shortDescr = shortDescr;
     return this;
   }
 
-  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
-  public byte[] getLongDescrQuill() {
-    return longDescrQuill;
+  @Column(name = COLUMN_SHORTDESCRQUILLZIP_NAME)
+  public byte[] getShortDescrQuillZip() {
+    return shortDescrQuillZip;
   }
 
-  public Project setLongDescrQuill(byte[] longDescrQuill) {
-    this.longDescrQuill = longDescrQuill;
+  public Project setShortDescrQuillZip(byte[] shortDescrQuillZip) {
+    this.shortDescrQuillZip = shortDescrQuillZip;
     return this;
   }
 
-  @Column(name = COLUMN_LOVE_NAME, nullable = false)
-  public String getLove() {
-    return love;
+  @Lob
+  @Column(name = COLUMN_LONGDESCR_NAME, nullable = false)
+  public String getLongDescr() {
+    return longDescr;
   }
 
-  public Project setLove(String love) {
-    this.love = love;
+  public Project setLongDescr(String longDescr) {
+    this.longDescr = longDescr;
     return this;
   }
 
-  @Column(name = COLUMN_NEED_NAME, nullable = false)
-  public String getNeed() {
-    return need;
+  @Column(name = COLUMN_LONGDESCRQUILLZIP_NAME)
+  public byte[] getLongDescrQuillZip() {
+    return longDescrQuillZip;
   }
 
-  public Project setNeed(String need) {
-    this.need = need;
+  public Project setLongDescrQuillZip(byte[] longDescrQuillZip) {
+    this.longDescrQuillZip = longDescrQuillZip;
     return this;
   }
 
-  @Column(name = COLUMN_PAID_NAME, nullable = false)
-  public String getPaid() {
-    return paid;
+  @Lob
+  @Column(name = COLUMN_LOVEDESCR_NAME, nullable = false)
+  public String getLoveDescr() {
+    return loveDescr;
   }
 
-  public Project setPaid(String paid) {
-    this.paid = paid;
+  public Project setLoveDescr(String loveDescr) {
+    this.loveDescr = loveDescr;
     return this;
   }
 
-  @Column(name = COLUMN_STARTTIMEMICROSUTC_NAME, nullable = false)
-  public Long getStartTimeMicrosUtc() {
-    return startTimeMicrosUtc;
+  @Column(name = COLUMN_LOVEDESCRQUILLZIP_NAME)
+  public byte[] getLoveDescrQuillZip() {
+    return loveDescrQuillZip;
   }
 
-  public Project setStartTimeMicrosUtc(Long startTimeMicrosUtc) {
-    this.startTimeMicrosUtc = startTimeMicrosUtc;
+  public Project setLoveDescrQuillZip(byte[] loveDescrQuillZip) {
+    this.loveDescrQuillZip = loveDescrQuillZip;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_WORLDNEEDSDESCR_NAME, nullable = false)
+  public String getWorldNeedsDescr() {
+    return worldNeedsDescr;
+  }
+
+  public Project setWorldNeedsDescr(String worldNeedsDescr) {
+    this.worldNeedsDescr = worldNeedsDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_WORLDNEEDSDESCRQUILLZIP_NAME)
+  public byte[] getWorldNeedsDescrQuillZip() {
+    return worldNeedsDescrQuillZip;
+  }
+
+  public Project setWorldNeedsDescrQuillZip(byte[] worldNeedsDescrQuillZip) {
+    this.worldNeedsDescrQuillZip = worldNeedsDescrQuillZip;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_PAIDFORDESCR_NAME, nullable = false)
+  public String getPaidForDescr() {
+    return paidForDescr;
+  }
+
+  public Project setPaidForDescr(String paidForDescr) {
+    this.paidForDescr = paidForDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_PAIDFORDESCRQUILLZIP_NAME)
+  public byte[] getPaidForDescrQuillZip() {
+    return paidForDescrQuillZip;
+  }
+
+  public Project setPaidForDescrQuillZip(byte[] paidForDescrQuillZip) {
+    this.paidForDescrQuillZip = paidForDescrQuillZip;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_GOODATDESCR_NAME, nullable = false)
+  public String getGoodAtDescr() {
+    return goodAtDescr;
+  }
+
+  public Project setGoodAtDescr(String goodAtDescr) {
+    this.goodAtDescr = goodAtDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_GOODATDESCRQUILLZIP_NAME)
+  public byte[] getGoodAtDescrQuillZip() {
+    return goodAtDescrQuillZip;
+  }
+
+  public Project setGoodAtDescrQuillZip(byte[] goodAtDescrQuillZip) {
+    this.goodAtDescrQuillZip = goodAtDescrQuillZip;
     return this;
   }
 

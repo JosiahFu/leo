@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -17,20 +18,26 @@ public class ProjectPost {
   public static final String ENTITY_NAME = "ProjectPost";
   public static final String TABLE_NAME = "project_post";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_NAME_NAME = "name";
-  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
-  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_POSTTIMEMICROSUTC_NAME = "post_time_micros_utc";
+  public static final String COLUMN_NAME_NAME = "name";
+  public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
+  public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
+  public static final String COLUMN_LONGDESCR_NAME = "long_descr";
+  public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
 
   private Integer id;
 
+  private Long postTimeMicrosUtc;
+
   private String name;
 
-  private byte[] shortDescrQuill;
+  private String shortDescr;
 
-  private byte[] longDescrQuill;
+  private byte[] shortDescrQuillZip;
 
-  private Long postTimeMicrosUtc;
+  private String longDescr;
+
+  private byte[] longDescrQuillZip;
 
   private User user;
 
@@ -48,6 +55,16 @@ public class ProjectPost {
     return this;
   }
 
+  @Column(name = COLUMN_POSTTIMEMICROSUTC_NAME, nullable = false)
+  public Long getPostTimeMicrosUtc() {
+    return postTimeMicrosUtc;
+  }
+
+  public ProjectPost setPostTimeMicrosUtc(Long postTimeMicrosUtc) {
+    this.postTimeMicrosUtc = postTimeMicrosUtc;
+    return this;
+  }
+
   @Column(name = COLUMN_NAME_NAME, nullable = false)
   public String getName() {
     return name;
@@ -58,33 +75,44 @@ public class ProjectPost {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
-  public byte[] getShortDescrQuill() {
-    return shortDescrQuill;
+  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false, length = 2048)
+  public String getShortDescr() {
+    return shortDescr;
   }
 
-  public ProjectPost setShortDescrQuill(byte[] shortDescrQuill) {
-    this.shortDescrQuill = shortDescrQuill;
+  public ProjectPost setShortDescr(String shortDescr) {
+    this.shortDescr = shortDescr;
     return this;
   }
 
-  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
-  public byte[] getLongDescrQuill() {
-    return longDescrQuill;
+  @Column(name = COLUMN_SHORTDESCRQUILLZIP_NAME)
+  public byte[] getShortDescrQuillZip() {
+    return shortDescrQuillZip;
   }
 
-  public ProjectPost setLongDescrQuill(byte[] longDescrQuill) {
-    this.longDescrQuill = longDescrQuill;
+  public ProjectPost setShortDescrQuillZip(byte[] shortDescrQuillZip) {
+    this.shortDescrQuillZip = shortDescrQuillZip;
     return this;
   }
 
-  @Column(name = COLUMN_POSTTIMEMICROSUTC_NAME, nullable = false)
-  public Long getPostTimeMicrosUtc() {
-    return postTimeMicrosUtc;
+  @Lob
+  @Column(name = COLUMN_LONGDESCR_NAME, nullable = false)
+  public String getLongDescr() {
+    return longDescr;
   }
 
-  public ProjectPost setPostTimeMicrosUtc(Long postTimeMicrosUtc) {
-    this.postTimeMicrosUtc = postTimeMicrosUtc;
+  public ProjectPost setLongDescr(String longDescr) {
+    this.longDescr = longDescr;
+    return this;
+  }
+
+  @Column(name = COLUMN_LONGDESCRQUILLZIP_NAME)
+  public byte[] getLongDescrQuillZip() {
+    return longDescrQuillZip;
+  }
+
+  public ProjectPost setLongDescrQuillZip(byte[] longDescrQuillZip) {
+    this.longDescrQuillZip = longDescrQuillZip;
     return this;
   }
 

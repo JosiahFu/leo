@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -17,14 +18,17 @@ public class ProjectPostComment {
   public static final String ENTITY_NAME = "ProjectPostComment";
   public static final String TABLE_NAME = "project_post_comment";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_COMMENTQUILL_NAME = "comment_quill";
-  public static final String COLUMN_ORDERINDEX_NAME = "order_index";
+  public static final String COLUMN_POSTTIMEMICROSUTC_NAME = "post_time_micros_utc";
+  public static final String COLUMN_COMMENT_NAME = "comment";
+  public static final String COLUMN_COMMENTQUILLZIP_NAME = "comment_quill_zip";
 
   private Integer id;
 
-  private byte[] commentQuill;
+  private Long postTimeMicrosUtc;
 
-  private Integer orderIndex;
+  private String comment;
+
+  private byte[] commentQuillZip;
 
   private User user;
 
@@ -42,23 +46,34 @@ public class ProjectPostComment {
     return this;
   }
 
-  @Column(name = COLUMN_COMMENTQUILL_NAME, nullable = false)
-  public byte[] getCommentQuill() {
-    return commentQuill;
+  @Column(name = COLUMN_POSTTIMEMICROSUTC_NAME, nullable = false)
+  public Long getPostTimeMicrosUtc() {
+    return postTimeMicrosUtc;
   }
 
-  public ProjectPostComment setCommentQuill(byte[] commentQuill) {
-    this.commentQuill = commentQuill;
+  public ProjectPostComment setPostTimeMicrosUtc(Long postTimeMicrosUtc) {
+    this.postTimeMicrosUtc = postTimeMicrosUtc;
     return this;
   }
 
-  @Column(name = COLUMN_ORDERINDEX_NAME, nullable = false)
-  public Integer getOrderIndex() {
-    return orderIndex;
+  @Lob
+  @Column(name = COLUMN_COMMENT_NAME, nullable = false)
+  public String getComment() {
+    return comment;
   }
 
-  public ProjectPostComment setOrderIndex(Integer orderIndex) {
-    this.orderIndex = orderIndex;
+  public ProjectPostComment setComment(String comment) {
+    this.comment = comment;
+    return this;
+  }
+
+  @Column(name = COLUMN_COMMENTQUILLZIP_NAME)
+  public byte[] getCommentQuillZip() {
+    return commentQuillZip;
+  }
+
+  public ProjectPostComment setCommentQuillZip(byte[] commentQuillZip) {
+    this.commentQuillZip = commentQuillZip;
     return this;
   }
 

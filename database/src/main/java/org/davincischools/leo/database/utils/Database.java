@@ -8,7 +8,6 @@ import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Portfolio;
-import org.davincischools.leo.database.daos.PortfolioPost;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
 import org.davincischools.leo.database.daos.ProjectPost;
@@ -66,9 +65,6 @@ public class Database {
 
   @Repository
   public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
-
-  @Repository
-  public interface PortfolioPostRepository extends JpaRepository<PortfolioPost, Integer> {}
 
   @Repository
   public interface ProjectRepository extends JpaRepository<Project, Integer> {}
@@ -189,7 +185,6 @@ public class Database {
   @Autowired private DistrictRepository districtRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private PortfolioRepository portfolioRepository;
-  @Autowired private PortfolioPostRepository portfolioPostRepository;
   @Autowired private ProjectRepository projectRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
   @Autowired private ProjectPostRepository projectPostRepository;
@@ -226,10 +221,6 @@ public class Database {
 
   public PortfolioRepository getPortfolioRepository() {
     return portfolioRepository;
-  }
-
-  public PortfolioPostRepository getPortfolioPostRepository() {
-    return portfolioPostRepository;
   }
 
   public ProjectRepository getProjectRepository() {

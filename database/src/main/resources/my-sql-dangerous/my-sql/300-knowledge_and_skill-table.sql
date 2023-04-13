@@ -3,10 +3,10 @@ CREATE TABLE knowledge_and_skill
     id                INT PRIMARY KEY AUTO_INCREMENT,
 
     title             VARCHAR(255)  NOT NULL,
-    short_descr_quill BLOB          NOT NULL,
-    long_descr_quill  LONGBLOB      NOT NULL,
-    -- JSON array of strings: ["mastery_1", "mastery_2", ...]
-    mastery           VARCHAR(1024) NOT NULL,
+    short_desc            VARCHAR(2048)  NOT NULL,
+    short_descr_quill_zip BLOB,
+    long_desc             VARCHAR(16384) NOT NULL,
+    long_descr_quill_zip  BLOB,
 
     class_id          INT           NOT NULL,
     CONSTRAINT knowledge_and_skill_class_id

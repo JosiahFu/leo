@@ -19,7 +19,6 @@
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/325-project_post-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-portfolio-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/350-project_post_comment-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/375-portfolio_post-table.sql" dialect="GenericSQL" />
     <file url="PROJECT" dialect="GenericSQL" />
   </component>
 </project>
