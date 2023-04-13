@@ -1,5 +1,6 @@
 package org.davincischools.leo.database.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.davincischools.leo.database.daos.Admin;
@@ -68,6 +69,7 @@ public class Database {
   @Repository
   public interface KnowledgeAndSkillAssignmentRepository
       extends JpaRepository<KnowledgeAndSkillAssignment, KnowledgeAndSkillAssignmentId> {
+
     default KnowledgeAndSkillAssignmentId createKnowledgeAndSkillAssignmentId(
         KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
       return new KnowledgeAndSkillAssignmentId()
@@ -107,7 +109,34 @@ public class Database {
   }
 
   @Repository
-  public interface StudentRepository extends JpaRepository<Student, Integer> {}
+  public interface StudentRepository extends JpaRepository<Student, Integer> {
+
+    @Query(
+        "SELECT u, s, c, a FROM User u "
+            + "INNER JOIN FETCH Student s "
+            + "INNER JOIN FETCH StudentClass sc "
+            + "INNER JOIN FETCH Class c "
+            + "INNER JOIN FETCH Assignment a "
+            + "WHERE u.id = (:user_id) "
+            + "AND u.student.id = s.id "
+            + "AND s.id = sc.student.id "
+            + "AND sc.classField.id = c.id "
+            + "AND c.id = a.classField.id")
+    public List<Object[]> _internal_findAllAssignmentsByStudentUserId(@Param("user_id") int userId);
+
+    public record StudentAssignment(
+        User user, Student student, Class classField, Assignment assignment) {}
+
+    default List<StudentAssignment> findAllAssignmentsByStudentUserId(int user_id) {
+      List<StudentAssignment> studentAssignments = new ArrayList<>();
+      for (var result : _internal_findAllAssignmentsByStudentUserId(user_id)) {
+        studentAssignments.add(
+            new StudentAssignment(
+                (User) result[0], (Student) result[1], (Class) result[2], (Assignment) result[3]));
+      }
+      return studentAssignments;
+    }
+  }
 
   @Repository
   public interface StudentClassRepository extends JpaRepository<StudentClass, StudentClassId> {

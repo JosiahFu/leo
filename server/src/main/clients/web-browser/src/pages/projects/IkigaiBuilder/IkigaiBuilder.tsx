@@ -4,14 +4,27 @@ import {Button, Input, Layout, List, Modal} from 'antd';
 import {Coordinate, Ikigai} from '../../../Ikigai/Ikigai';
 import {useMeasure} from '@react-hookz/web';
 import {ChangeEvent, useEffect, useState} from 'react';
-import {createService, partial_text_openai_prompt} from '../../../protos';
+import {
+  class_management,
+  createService,
+  partial_text_openai_prompt,
+} from '../../../protos';
 import {BarsOutlined, LoadingOutlined} from '@ant-design/icons';
 import PartialTextOpenAiPromptService = partial_text_openai_prompt.PartialTextOpenAiPromptService;
 import Prompt = partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
+import IAssignment = class_management.IAssignment;
+import ClassManagementService = class_management.ClassManagementService;
+import {getCurrentUser} from '../../../utils/authentication';
 
 const {Sider, Content} = Layout;
 
 export function IkigaiBuilder() {
+  const [user] = useState(
+    getCurrentUser(() => {
+      window.open('/login');
+    })
+  );
+
   const [ikigaiCenterPosition, setIkigaiCenterPosition] =
     useState<Coordinate | null>(null);
   const [ikigaiDistanceToCategoryCenter, setIkigaiDistanceToCategoryCenter] =
@@ -27,12 +40,18 @@ export function IkigaiBuilder() {
 
   const [lovesModalOpen, setLovesModalOpen] = useState(false);
   const [lovesValue, setLovesValue] = useState('');
-  const [oldLovesValue, setOldLovesValue] = useState('');
+  const [modalLovesValue, setModalLovesValue] = useState('');
   const [getRelatedSuggestionsEnabled, setGetRelatedSuggestionsEnabled] =
     useState(true);
   const [lovesSuggestions, setLovesSuggestions] = useState<string[]>([]);
 
   const [worldNeedsModalOpen, setWorldNeedsModalOpen] = useState(false);
+  const [assignments, setAssignments] = useState<IAssignment[]>([]);
+  const [assignment, setAssignment] = useState<IAssignment | undefined>();
+  const [modalAssignment, setModalAssignment] = useState<
+    IAssignment | undefined
+  >();
+
   const [paidForModalOpen, setPaidForModalOpen] = useState(false);
   const [goodAtModalOpen, setGoodAtModalOpen] = useState(false);
 
@@ -64,6 +83,16 @@ export function IkigaiBuilder() {
   }
 
   useEffect(() => {
+    const classManagementService = createService(
+      ClassManagementService,
+      'ClassManagementService'
+    );
+    classManagementService
+      .getStudentAssignments({userId: user!.userId!})
+      .then(response => setAssignments(response.assignments));
+  }, []);
+
+  useEffect(() => {
     // TODO: This is a terrible solution. Revisit.
     if (useIkigaiResizeTimeout) {
       if (ikigaiResizeTimeoutId != null) {
@@ -75,14 +104,8 @@ export function IkigaiBuilder() {
     }
   }, [ikigaiContainerMeasureRef, ikigaiContainerMeasure]);
 
-  useEffect(() => {
-    if (lovesModalOpen) {
-      setOldLovesValue(lovesValue);
-    }
-  }, [lovesModalOpen]);
-
   function onLovesUpdate() {
-    console.log(lovesValue);
+    setLovesValue(modalLovesValue);
     setLovesModalOpen(false);
   }
 
@@ -94,7 +117,7 @@ export function IkigaiBuilder() {
     setGetRelatedSuggestionsEnabled(false);
     partialTextOpenAiPromptService
       .getSuggestions({
-        partialText: lovesValue,
+        partialText: modalLovesValue,
         prompt: Prompt.SUGGEST_THINGS_YOU_LOVE,
       })
       .then(response => setLovesSuggestions(response.suggestions))
@@ -103,6 +126,7 @@ export function IkigaiBuilder() {
   }
 
   function onWorldNeedsUpdate() {
+    setAssignment(modalAssignment);
     setWorldNeedsModalOpen(false);
   }
 
@@ -129,6 +153,7 @@ export function IkigaiBuilder() {
               centerPosition={ikigaiCenterPosition}
               categoryDiameter={ikigaiCategoryDiameter}
               distanceToCategoryCenter={ikigaiDistanceToCategoryCenter}
+              // LOVES Category.
               lovesResizeAndRotateElement={
                 <>
                   Something you <b>LOVE</b>
@@ -140,24 +165,44 @@ export function IkigaiBuilder() {
                       </span>
                     </>
                   ) : (
-                    ''
+                    <></>
                   )}
                 </>
               }
-              onLovesClick={() => setLovesModalOpen(true)}
+              onLovesClick={() => {
+                setModalLovesValue(lovesValue);
+                setLovesModalOpen(true);
+              }}
               lovesValueIsSet={lovesValue ? 0 : 1}
+              // WORLD NEEDS category
               worldNeedsResizeAndRotateElement={
                 <>
                   What the world <b>NEEDS</b>
+                  {assignment ? (
+                    <>
+                      <br />
+                      <span style={{fontSize: 'small', fontStyle: 'italic'}}>
+                        {assignment?.name}
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </>
               }
-              onWorldNeedsClick={() => setWorldNeedsModalOpen(true)}
+              onWorldNeedsClick={() => {
+                setModalAssignment(assignment);
+                setWorldNeedsModalOpen(true);
+              }}
+              worldNeedsValueIsSet={assignment ? 0 : 1}
+              // PAID FOR Category.
               paidForResizeAndRotateElement={
                 <>
                   What you can be <b>PAID&nbsp;FOR</b>
                 </>
               }
               onPaidForClick={() => setPaidForModalOpen(true)}
+              // GOOD AT Category.
               goodAtResizeAndRotateElement={
                 <>
                   What you are <b>GOOD&nbsp;AT</b>
@@ -179,7 +224,6 @@ export function IkigaiBuilder() {
         closable={true}
         onOk={onLovesUpdate}
         onCancel={() => {
-          setLovesValue(oldLovesValue);
           setLovesModalOpen(false);
         }}
       >
@@ -187,10 +231,9 @@ export function IkigaiBuilder() {
           placeholder="What's something you LOVE?"
           maxLength={255}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setLovesValue(e.target.value)
+            setModalLovesValue(e.target.value)
           }
-          value={lovesValue}
-          onPressEnter={onLovesUpdate}
+          value={modalLovesValue}
         />
         <Button
           style={{width: '100%'}}
@@ -202,7 +245,7 @@ export function IkigaiBuilder() {
               <LoadingOutlined />
             )
           }
-          disabled={!getRelatedSuggestionsEnabled || !lovesValue}
+          disabled={!getRelatedSuggestionsEnabled || !modalLovesValue}
         >
           Get Related Suggestions
         </Button>
@@ -210,7 +253,9 @@ export function IkigaiBuilder() {
           dataSource={lovesSuggestions}
           renderItem={suggestion => (
             <List.Item itemID={suggestion}>
-              <div onClick={() => setLovesValue(suggestion)}>{suggestion}</div>
+              <div onClick={() => setModalLovesValue(suggestion)}>
+                {suggestion}
+              </div>
             </List.Item>
           )}
         />
@@ -222,7 +267,39 @@ export function IkigaiBuilder() {
         closable={true}
         onCancel={() => setWorldNeedsModalOpen(false)}
         onOk={onWorldNeedsUpdate}
-      ></Modal>
+      >
+        Select an assignment:
+        <List
+          dataSource={assignments}
+          renderItem={assignment => (
+            <List.Item itemID={assignment.id?.toString()}>
+              <div
+                onClick={() => setModalAssignment(assignment)}
+                style={{
+                  border:
+                    modalAssignment?.id === assignment.id
+                      ? '1px #f0781f solid'
+                      : 'unset',
+                  backgroundColor:
+                    modalAssignment?.id === assignment.id ? '#f4a062' : 'unset',
+                  color:
+                    modalAssignment?.id === assignment.id ? 'white' : 'unset',
+                  padding: '0.5em',
+                }}
+              >
+                <span style={{fontWeight: 'bold'}}>
+                  Class: {assignment.class?.name}
+                </span>
+                <br />
+                <span style={{fontStyle: 'italic'}}>
+                  <span style={{fontWeight: 'bold'}}>Assignment:</span>{' '}
+                  {assignment.name}
+                </span>
+              </div>
+            </List.Item>
+          )}
+        />
+      </Modal>
       <Modal
         title="What you can be PAID FOR!"
         width="50%"

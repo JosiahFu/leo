@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.davincischools.leo.protos.class_management";
+
+package class_management;
+
+service ClassManagementService {
+  rpc GetStudentAssignments (GetStudentAssignmentsRequest) returns (GetStudentAssignmentsResponse) {}
+}
+
+message KnowledgeAndSkill {
+  optional int32 id = 1;
+  optional string name = 3;
+  optional string short_descr = 4;
+  optional string long_descr = 5;
+}
+
+message Class {
+  optional int32 id = 1;
+  optional string name = 2;
+  optional string short_descr = 3;
+  optional string long_descr = 4;
+}
+
+message Assignment {
+  optional int32 id = 1;
+  optional string name = 3;
+  optional string short_descr = 4;
+  optional string long_descr = 5;
+
+  optional Class class = 2;
+}
+
+message GetStudentAssignmentsRequest {
+  optional int32 user_id = 1;
+}
+
+message GetStudentAssignmentsResponse {
+  repeated Assignment assignments = 1;
+}
