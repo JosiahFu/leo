@@ -167,7 +167,7 @@ export function IkigaiCategory(props: {
             (1 - props.highlightBackground) * grayRgb
           },
           ${props.alpha})`,
-          border: `2px solid rgb(
+          border: `1.5px solid rgb(
           ${props.color.r},
           ${props.color.g},
           ${props.color.b},

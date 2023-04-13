@@ -1,7 +1,8 @@
 import './Ikigai.scss';
-import {ReactNode, useEffect, useState} from 'react';
+import {createRef, ReactNode, useEffect, useState} from 'react';
 import {IkigaiCategory} from '../IkigaiCategory/IkigaiCategory';
-import {doTransition} from '../utils/transitions';
+import {doTransition, overshootTransition} from '../utils/transitions';
+import {SpinButton, SpinButtonFunctions} from './SpinButton/SpinButton';
 
 export type Coordinate = {
   x: number;
@@ -14,6 +15,9 @@ export function Ikigai(props: {
   centerPosition: Coordinate | null;
   categoryDiameter: number;
   distanceToCategoryCenter: number;
+  radians?: number;
+  enabled?: boolean;
+  processing?: boolean;
 
   lovesResizeAndRotateElement: ReactNode;
   lovesValueIsSet?: number;
@@ -30,21 +34,34 @@ export function Ikigai(props: {
   goodAtResizeAndRotateElement: ReactNode;
   goodAtValueIsSet?: number;
   onGoodAtClick: () => void;
+
+  showSpinButton: boolean;
+  onSpinClick: () => void;
 }) {
   const visibleAlpha = 0.2;
   const showHideDurationMs = 750;
+  const processingStepDurationMs = 400;
+  const processingStepDelayMs = 125;
+  const processingStepIncrement = Math.PI / 4;
 
   const [centerPosition, setCenterPosition] = useState<Coordinate | null>(null);
   const [categoryDiameter, setCategoryDiameter] = useState(0);
   const [distanceToCategoryCenter, setDistanceToCategoryCenter] = useState(0);
 
-  const [radians, setRadians] = useState(0);
+  const [radians, setRadians] = useState(props.radians || 0);
   const [alpha, setAlpha] = useState(0);
+
+  const spinButton = createRef<SpinButtonFunctions>();
+  const [spinButtonEnabled, setSpinButtonEnabled] = useState(false);
 
   function show(durationMs: number): Promise<void> {
     const promise = doTransition(
       durationMs,
-      {setFn: setRadians, begin: radians + 4 * Math.PI, end: 0},
+      {
+        setFn: setRadians,
+        begin: (props.radians || 0) - 4 * Math.PI,
+        end: props.radians || 0,
+      },
       {
         setFn: setDistanceToCategoryCenter,
         begin: 0,
@@ -68,7 +85,7 @@ export function Ikigai(props: {
   function hide(durationMs: number): Promise<void> {
     const promise = doTransition(
       durationMs,
-      {setFn: setRadians, begin: radians + 4 * Math.PI, end: 0},
+      {setFn: setRadians, begin: radians - 4 * Math.PI, end: 0},
       {
         setFn: setDistanceToCategoryCenter,
         begin: props.distanceToCategoryCenter,
@@ -80,6 +97,41 @@ export function Ikigai(props: {
 
     return promise as Promise<void>;
   }
+
+  useEffect(() => {
+    if (props.showSpinButton) {
+      spinButton.current
+        ?.show(showHideDurationMs)
+        .finally(() => setSpinButtonEnabled(true));
+    } else {
+      spinButton.current
+        ?.hide(showHideDurationMs)
+        .finally(() => setSpinButtonEnabled(false));
+    }
+  }, [props.showSpinButton]);
+
+  function doProcessingStep(startRadians: number) {
+    if (props.processing !== true) {
+      return;
+    }
+
+    doTransition(processingStepDurationMs, {
+      setFn: setRadians,
+      begin: startRadians - processingStepIncrement,
+      end: startRadians,
+      fractionFn: overshootTransition(-0.25, 0.7),
+    }).finally(() => {
+      setTimeout(() => {
+        doProcessingStep(startRadians + processingStepIncrement);
+      }, processingStepDelayMs);
+    });
+  }
+
+  useEffect(() => {
+    if (props.processing !== false) {
+      doProcessingStep(Math.PI / 4 - 0.00001);
+    }
+  }, [props.processing]);
 
   // Reposition and show the diagram when its properties are set/changed.
   useEffect(() => {
@@ -116,7 +168,7 @@ export function Ikigai(props: {
           radians={radians + 1.5 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.lovesPanel']}
-          onClick={props.onLovesClick}
+          onClick={props.enabled !== false ? props.onLovesClick : () => {}}
           highlightBackground={
             props.lovesValueIsSet != null ? props.lovesValueIsSet : 1
           }
@@ -136,7 +188,7 @@ export function Ikigai(props: {
           radians={radians + 0 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.worldNeedsPanel']}
-          onClick={props.onWorldNeedsClick}
+          onClick={props.enabled !== false ? props.onWorldNeedsClick : () => {}}
           highlightBackground={
             props.worldNeedsValueIsSet != null ? props.worldNeedsValueIsSet : 1
           }
@@ -153,7 +205,7 @@ export function Ikigai(props: {
           radians={radians + 0.5 * Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.paidForPanel']}
-          onClick={props.onPaidForClick}
+          onClick={props.enabled !== false ? props.onPaidForClick : () => {}}
           highlightBackground={
             props.paidForValueIsSet != null ? props.paidForValueIsSet : 1
           }
@@ -170,10 +222,18 @@ export function Ikigai(props: {
           radians={radians + Math.PI}
           distance={distanceToCategoryCenter}
           resizeAndRotateElementIds={[props.id + '.goodAtPanel']}
-          onClick={props.onGoodAtClick}
+          onClick={props.enabled !== false ? props.onGoodAtClick : () => {}}
           highlightBackground={
             props.goodAtValueIsSet != null ? props.goodAtValueIsSet : 1
           }
+        />
+        <SpinButton
+          id={props.id + '.spinButton'}
+          origin={centerPosition || {x: 0, y: 0}}
+          diameter={categoryDiameter / 3}
+          enabled={props.enabled !== false && spinButtonEnabled}
+          onClick={props.onSpinClick}
+          ref={spinButton}
         />
       </div>
     </>

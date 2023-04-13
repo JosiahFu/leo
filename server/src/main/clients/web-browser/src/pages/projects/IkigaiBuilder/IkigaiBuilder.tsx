@@ -38,6 +38,8 @@ export function IkigaiBuilder() {
     NodeJS.Timeout | undefined
   >(undefined);
 
+  const [processing, setProcessing] = useState(false);
+
   const [lovesModalOpen, setLovesModalOpen] = useState(false);
   const [lovesValue, setLovesValue] = useState('');
   const [modalLovesValue, setModalLovesValue] = useState('');
@@ -165,6 +167,12 @@ export function IkigaiBuilder() {
       .finally(() => setGoodAtGetRelatedSuggestionsEnabled(true));
   }
 
+  function onSpinClick() {
+    setProcessing(true);
+
+    // TODO: Generate the projects.
+  }
+
   return (
     <>
       <Layout style={{height: '100%'}}>
@@ -180,6 +188,9 @@ export function IkigaiBuilder() {
               centerPosition={ikigaiCenterPosition}
               categoryDiameter={ikigaiCategoryDiameter}
               distanceToCategoryCenter={ikigaiDistanceToCategoryCenter}
+              radians={0}
+              enabled={!processing}
+              processing={processing}
               // LOVES Category.
               lovesResizeAndRotateElement={
                 <>
@@ -233,6 +244,9 @@ export function IkigaiBuilder() {
                 </>
               }
               onPaidForClick={() => setPaidForModalOpen(true)}
+              paidForValueIsSet={
+                !!lovesValue && !!assignment && !!goodAtValue ? 0 : 1
+              }
               // GOOD AT Category.
               goodAtResizeAndRotateElement={
                 <>
@@ -254,6 +268,10 @@ export function IkigaiBuilder() {
                 setGoodAtModalOpen(true);
               }}
               goodAtValueIsSet={goodAtValue ? 0 : 1}
+              showSpinButton={
+                !!lovesValue && !!assignment && !!goodAtValue && !processing
+              }
+              onSpinClick={onSpinClick}
             />
           </div>
         </Content>
@@ -398,6 +416,22 @@ export function IkigaiBuilder() {
             </List.Item>
           )}
         />
+      </Modal>
+      <Modal
+        centered
+        width="50%"
+        open={processing}
+        closable={false}
+        footer={null}
+      >
+        <div
+          style={{
+            textAlign: 'center',
+            width: '100%',
+          }}
+        >
+          Finding great projects! ...
+        </div>
       </Modal>
     </>
   );
