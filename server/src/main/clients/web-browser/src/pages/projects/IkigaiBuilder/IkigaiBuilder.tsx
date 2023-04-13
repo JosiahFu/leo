@@ -160,7 +160,7 @@ export function IkigaiBuilder() {
                   {lovesValue ? (
                     <>
                       <br />
-                      <span style={{fontSize: 'small', fontStyle: 'italic'}}>
+                      <span style={{fontSize: 'smaller', fontStyle: 'italic'}}>
                         {lovesValue}
                       </span>
                     </>
@@ -181,8 +181,10 @@ export function IkigaiBuilder() {
                   {assignment ? (
                     <>
                       <br />
-                      <span style={{fontSize: 'small', fontStyle: 'italic'}}>
+                      <span style={{fontSize: 'smaller', fontStyle: 'italic'}}>
                         {assignment?.name}
+                        <br />
+                        (Eventually show EKS not assignment title?)
                       </span>
                     </>
                   ) : (
