@@ -93,7 +93,7 @@ public class Database {
   public interface StudentRepository extends JpaRepository<Student, Integer> {}
 
   @Repository
-  public interface StudentClassRepository extends JpaRepository<StudentClass, Integer> {
+  public interface StudentClassRepository extends JpaRepository<StudentClass, StudentClassId> {
 
     default StudentClass createStudentClass(Student student, Class classField) {
       return new StudentClass()
@@ -107,7 +107,7 @@ public class Database {
   public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
 
   @Repository
-  public interface TeacherClassRepository extends JpaRepository<TeacherClass, Integer> {
+  public interface TeacherClassRepository extends JpaRepository<TeacherClass, TeacherClassId> {
 
     default TeacherClass createTeacherClass(Teacher teacher, Class classField) {
       return new TeacherClass()
@@ -118,11 +118,15 @@ public class Database {
   }
 
   @Repository
-  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, Integer> {
+  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, TeacherSchoolId> {
+
+    default TeacherSchoolId createTeacherSchoolId(Teacher teacher, School school) {
+      return new TeacherSchoolId().setTeacherId(teacher.getId()).setSchoolId(school.getId());
+    }
 
     default TeacherSchool createTeacherSchool(Teacher teacher, School school) {
       return new TeacherSchool()
-          .setId(new TeacherSchoolId().setTeacherId(teacher.getId()).setSchoolId(school.getId()))
+          .setId(createTeacherSchoolId(teacher, school))
           .setTeacher(teacher)
           .setSchool(school);
     }

@@ -52,8 +52,7 @@ public class PartialTextOpenAiPromptController {
   // So, handlers need to accept this type of input.
   @PostMapping(value = "/api/protos/PartialTextOpenAiPromptService/GetSuggestions")
   @ResponseBody
-  public GetSuggestionsResponse getResource(
-      @RequestBody Optional<GetSuggestionsRequest> request)
+  public GetSuggestionsResponse getResource(@RequestBody Optional<GetSuggestionsRequest> request)
       throws IOException {
     request = Optional.of(request.orElse(GetSuggestionsRequest.getDefaultInstance()));
 

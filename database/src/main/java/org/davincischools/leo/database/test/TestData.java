@@ -11,6 +11,7 @@ import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -91,20 +92,19 @@ public class TestData {
 
     admin =
         createUser(
+            db,
             setPassword(
                 new User()
-                    .setFirstName("Scott " + counter.get())
+                    .setFirstName("Scott")
                     .setLastName("Hendrickson")
                     .setEmailAddress("sahendrickson@gmail.com")
                     .setDistrict(district),
                 password));
-    if (admin.getAdmin() == null) {
-      admin.setAdmin(db.getAdminRepository().save(new Admin()));
-      db.getUserRepository().save(admin);
-    }
+    addAdminPermission(db, admin);
 
     teacher =
         createUser(
+            db,
             setPassword(
                 new User()
                     .setFirstName("Steven")
@@ -112,13 +112,13 @@ public class TestData {
                     .setEmailAddress("seno@davincischools.org")
                     .setDistrict(district),
                 password));
-    if (teacher.getTeacher() == null) {
-      teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
-      db.getUserRepository().save(teacher);
-    }
+    addAdminPermission(db, teacher);
+    addTeacherPermission(db, teacher);
+    addTecherToSchool(db.getTeacherSchoolRepository(), teacher.getTeacher(), school);
 
     student =
         createUser(
+            db,
             setPassword(
                 new User()
                     .setFirstName("Steve")
@@ -126,13 +126,10 @@ public class TestData {
                     .setEmailAddress("swallis@davincischools.org")
                     .setDistrict(district),
                 password));
-    if (student.getTeacher() == null) {
-      student.setStudent(db.getStudentRepository().save(new Student()));
-      db.getUserRepository().save(student);
-    }
+    addStudentPermissions(db, student);
   }
 
-  private User createUser(User template) {
+  public static User createUser(Database db, User template) {
     return db.getUserRepository()
         .findFullUserByEmailAddress(template.getEmailAddress())
         .or(
@@ -141,5 +138,33 @@ public class TestData {
               return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
             })
         .orElseThrow();
+  }
+
+  public static void addAdminPermission(Database db, User user) {
+    if (user.getAdmin() == null) {
+      user.setAdmin(db.getAdminRepository().save(new Admin()));
+      db.getUserRepository().save(user);
+    }
+  }
+
+  public static void addTeacherPermission(Database db, User teacher) {
+    if (teacher.getTeacher() == null) {
+      teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
+      db.getUserRepository().save(teacher);
+    }
+  }
+
+  public static void addTecherToSchool(
+      TeacherSchoolRepository repo, Teacher teacher, School school) {
+    if (repo.findById(repo.createTeacherSchoolId(teacher, school)).isEmpty()) {
+      repo.save(repo.createTeacherSchool(teacher, school));
+    }
+  }
+
+  public static void addStudentPermissions(Database db, User student) {
+    if (student.getTeacher() == null) {
+      student.setStudent(db.getStudentRepository().save(new Student()));
+      db.getUserRepository().save(student);
+    }
   }
 }
