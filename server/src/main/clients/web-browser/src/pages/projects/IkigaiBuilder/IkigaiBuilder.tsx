@@ -184,7 +184,9 @@ export function IkigaiBuilder() {
                       <span style={{fontSize: 'smaller', fontStyle: 'italic'}}>
                         {assignment?.name}
                         <br />
-                        (Eventually show EKS not assignment title?)
+                        <span style={{fontSize: 'smaller'}}>
+                          (Eventually show EKS not assignment title)
+                        </span>
                       </span>
                     </>
                   ) : (
@@ -287,6 +289,7 @@ export function IkigaiBuilder() {
                   color:
                     modalAssignment?.id === assignment.id ? 'white' : 'unset',
                   padding: '0.5em',
+                  width: '100%',
                 }}
               >
                 <span style={{fontWeight: 'bold'}}>
@@ -310,7 +313,7 @@ export function IkigaiBuilder() {
         onCancel={() => setPaidForModalOpen(false)}
         onOk={onPaidForUpdate}
       >
-        Hello
+        TODO: Leave blank for now.
       </Modal>
       <Modal
         title="What you are GOOD AT!"
@@ -320,7 +323,7 @@ export function IkigaiBuilder() {
         onCancel={() => setGoodAtModalOpen(false)}
         onOk={onGoodAtUpdate}
       >
-        Hello
+        TODO: Leave blank for now.
       </Modal>
     </>
   );

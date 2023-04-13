@@ -2,6 +2,7 @@ package org.davincischools.leo.database.test;
 
 import static org.davincischools.leo.database.utils.UserUtils.setPassword;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.davincischools.leo.database.daos.Admin;
@@ -9,13 +10,11 @@ import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
-import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
-import org.davincischools.leo.database.utils.Database.KnowledgeAndSkillAssignmentRepository;
 import org.davincischools.leo.database.utils.Database.StudentClassRepository;
 import org.davincischools.leo.database.utils.Database.TeacherClassRepository;
 import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
@@ -33,9 +32,15 @@ public class TestData {
   public final User teacher;
   public final User student;
   public final User admin;
-  public final Class clazz;
-  public final KnowledgeAndSkill knowledgeAndSkill1, knowledgeAndSkill2;
-  public final Assignment assignment;
+
+  public final Class chemistry_clazz;
+  public final KnowledgeAndSkill chemistry_eks_1, chemistry_eks_2;
+  public final Assignment chemistry_assignment;
+
+  public final Class programming_clazz;
+  public final KnowledgeAndSkill programming_eks_1, programming_eks_2;
+  public final Assignment programming_assignment;
+
   public final String password = "password";
 
   public TestData(@Autowired Database db) {
@@ -110,7 +115,6 @@ public class TestData {
                     .setEmailAddress("sahendrickson@gmail.com")
                     .setDistrict(district),
                 password));
-    addAdminPermission(db, admin);
 
     teacher =
         createUser(
@@ -122,9 +126,6 @@ public class TestData {
                     .setEmailAddress("seno@davincischools.org")
                     .setDistrict(district),
                 password));
-    addAdminPermission(db, teacher);
-    addTeacherPermission(db, teacher);
-    addTeacherToSchool(db.getTeacherSchoolRepository(), teacher.getTeacher(), school);
 
     student =
         createUser(
@@ -136,34 +137,122 @@ public class TestData {
                     .setEmailAddress("swallis@davincischools.org")
                     .setDistrict(district),
                 password));
-    addStudentPermissions(db, student);
 
-    clazz =
+    addAdminPermission(db, admin);
+    addTeacherPermission(db, teacher);
+    addStudentPermission(db, admin, teacher, student);
+    addTeachersToSchool(db.getTeacherSchoolRepository(), school, teacher);
+
+    chemistry_clazz = createClass(db, school, "Chemistry I", "Intro to general chemistry.");
+    addTeachersToClass(db.getTeacherClassRepository(), chemistry_clazz, teacher);
+    addStudentsToClass(db.getStudentClassRepository(), chemistry_clazz, admin, teacher, student);
+
+    chemistry_eks_1 =
+        createKnowledgeAndSkill(
+            db, chemistry_clazz, "Periodic Table", "I can recognize the basic elements on a periodic table.");
+    chemistry_eks_2 =
+        createKnowledgeAndSkill(
+            db,
+            chemistry_clazz,
+            "Valence Electrons",
+            "I can determine the number of valence electrons for each element.");
+
+    chemistry_assignment =
+        createAssignment(
+            db,
+            chemistry_clazz,
+            "Valence Electrons",
+            "Show that you understand valence electrons.",
+            chemistry_eks_1, chemistry_eks_2);
+
+    programming_clazz = createClass(db, school, "Computer Science I", "Intro to Programming.");
+    addTeachersToClass(db.getTeacherClassRepository(), programming_clazz, teacher);
+    addStudentsToClass(db.getStudentClassRepository(), programming_clazz, admin, teacher, student);
+
+    programming_eks_1 =
+        createKnowledgeAndSkill(
+            db, programming_clazz, "Sort Functions", "I understand and can implement different sort functions.");
+    programming_eks_2 =
+        createKnowledgeAndSkill(
+            db,
+            programming_clazz,
+            "Collections",
+            "I can use Lists, Sets, and Maps.");
+
+    programming_assignment =
+        createAssignment(
+            db,
+            programming_clazz,
+            "Sort Algorithms",
+            "Show that you can implement sort algorithms.",
+            chemistry_eks_1);
+ }
+
+  public static User createUser(Database db, User template) {
+    return db.getUserRepository()
+        .findFullUserByEmailAddress(template.getEmailAddress())
+        .or(
+            () -> {
+              db.getUserRepository().save(template);
+              return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
+            })
+        .orElseThrow();
+  }
+
+  public static void addAdminPermission(Database db, User... users) {
+    for (var user : users) {
+      if (user.getAdmin() == null) {
+        user.setAdmin(db.getAdminRepository().save(new Admin()));
+        db.getUserRepository().save(user);
+      }
+    }
+  }
+
+  public static void addTeacherPermission(Database db, User... teachers) {
+    for (var teacher : teachers) {
+      if (teacher.getTeacher() == null) {
+        teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
+        db.getUserRepository().save(teacher);
+      }
+    }
+  }
+
+  public static void addStudentPermission(Database db, User... students) {
+    for (var student : students) {
+      if (student.getStudent() == null) {
+        student.setStudent(db.getStudentRepository().save(new Student()));
+        db.getUserRepository().save(student);
+      }
+    }
+  }
+
+  public static void addTeachersToSchool(
+      TeacherSchoolRepository repo, School school, User... teachers) {
+    Arrays.asList(teachers).forEach(teacher -> repo.save(repo.createTeacherSchool(teacher.getTeacher(), school)));
+  }
+
+  public void addTeachersToClass(TeacherClassRepository repo, Class clazz, User... teachers) {
+    Arrays.asList(teachers).forEach(teacher -> repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz)));
+  }
+
+  public void addStudentsToClass(StudentClassRepository repo, Class clazz, User... students) {
+    Arrays.asList(students).forEach(student -> repo.save(repo.createStudentClass(student.getStudent(), clazz)));
+  }
+
+  private Class createClass(
+      Database db,
+      School school,
+      String name,
+      String descr) {
+    Class clazz =
         db.getClassRepository()
             .save(
                 new Class()
-                    .setName("AP Chemistry AB")
-                    .setShortDescr("Intro to general chemistry.")
-                    .setLongDescr("A general chemistry class.")
-                    .setSchool(school));
-    addTeacherToClass(db.getTeacherClassRepository(), teacher, clazz);
-    addStudentToClass(db.getStudentClassRepository(), student, clazz);
-    knowledgeAndSkill1 =
-        addKnowledgeAndSkill(
-            db, clazz, "Periodic Table", "I can recognize the basic elements on a periodic table.");
-    knowledgeAndSkill2 =
-        addKnowledgeAndSkill(
-            db,
-            clazz,
-            "Valence Electrons",
-            "I can determine the number of valence electrons for each element.");
-    assignment =
-        createAssignment(
-            db,
-            clazz,
-            "Valence Electrons",
-            "Show that you understand valence electrons.",
-            knowledgeAndSkill1);
+                    .setSchool(school)
+                    .setName(name)
+                    .setShortDescr(descr)
+                    .setLongDescr(descr));
+    return clazz;
   }
 
   private Assignment createAssignment(
@@ -180,21 +269,13 @@ public class TestData {
                     .setName(name)
                     .setShortDescr(descr)
                     .setLongDescr(descr));
-    for (var knowledgeAndSkill : knowledgeAndSkills) {
-      addKnowledgeAndSkillToAssignment(
-          db.getKnowledgeAndSkillAssignmentRepository(), knowledgeAndSkill, assignment);
-    }
+
+    var ksaRepo = db.getKnowledgeAndSkillAssignmentRepository();
+    Arrays.asList(knowledgeAndSkills).forEach(ks -> ksaRepo.save(ksaRepo.createKnowledgeAndSkillAssignment(ks, assignment)));
     return assignment;
   }
 
-  public KnowledgeAndSkillAssignment addKnowledgeAndSkillToAssignment(
-      KnowledgeAndSkillAssignmentRepository repo,
-      KnowledgeAndSkill knowledgeAndSkill,
-      Assignment assignment) {
-    return repo.save(repo.createKnowledgeAndSkillAssignment(knowledgeAndSkill, assignment));
-  }
-
-  public KnowledgeAndSkill addKnowledgeAndSkill(
+  public KnowledgeAndSkill createKnowledgeAndSkill(
       Database db, Class clazz, String name, String descr) {
     return db.getKnowledgeAndSkillRepository()
         .save(
@@ -203,52 +284,5 @@ public class TestData {
                 .setName(name)
                 .setShortDescr(descr)
                 .setLongDescr(descr));
-  }
-
-  public void addTeacherToClass(TeacherClassRepository repo, User teacher, Class clazz) {
-    repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz));
-  }
-
-  public void addStudentToClass(StudentClassRepository repo, User student, Class clazz) {
-    repo.save(repo.createStudentClass(student.getStudent(), clazz));
-  }
-
-  public static User createUser(Database db, User template) {
-    return db.getUserRepository()
-        .findFullUserByEmailAddress(template.getEmailAddress())
-        .or(
-            () -> {
-              db.getUserRepository().save(template);
-              return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
-            })
-        .orElseThrow();
-  }
-
-  public static void addAdminPermission(Database db, User user) {
-    if (user.getAdmin() == null) {
-      user.setAdmin(db.getAdminRepository().save(new Admin()));
-      db.getUserRepository().save(user);
-    }
-  }
-
-  public static void addTeacherPermission(Database db, User teacher) {
-    if (teacher.getTeacher() == null) {
-      teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
-      db.getUserRepository().save(teacher);
-    }
-  }
-
-  public static void addTeacherToSchool(
-      TeacherSchoolRepository repo, Teacher teacher, School school) {
-    if (repo.findById(repo.createTeacherSchoolId(teacher, school)).isEmpty()) {
-      repo.save(repo.createTeacherSchool(teacher, school));
-    }
-  }
-
-  public static void addStudentPermissions(Database db, User student) {
-    if (student.getTeacher() == null) {
-      student.setStudent(db.getStudentRepository().save(new Student()));
-      db.getUserRepository().save(student);
-    }
   }
 }
