@@ -1,10 +1,14 @@
 import './IkigaiCategory.scss';
 
 enum Orientation {
-  TOP,
-  LEFT,
-  BOTTOM,
-  RIGHT,
+  NORTH,
+  NORTHWEST,
+  WEST,
+  SOUTHWEST,
+  SOUTH,
+  SOUTHEAST,
+  EAST,
+  NORTHEAST,
 }
 
 export function IkigaiCategory(props: {
@@ -33,55 +37,86 @@ export function IkigaiCategory(props: {
   const grayRgb = 192;
 
   function getOrientationStyle(style: CSSStyleDeclaration) {
+    // Force the angle to be between 0 and 2 * Math.PI.
     const normalizedRadians =
       ((props.radians % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
-    const orientation =
-      normalizedRadians < Math.PI / 4
-        ? Orientation.RIGHT
-        : normalizedRadians < (3 * Math.PI) / 4
-        ? Orientation.BOTTOM
-        : normalizedRadians < Math.PI + Math.PI / 4
-        ? Orientation.LEFT
-        : normalizedRadians < Math.PI + (3 * Math.PI) / 4
-        ? Orientation.TOP
-        : Orientation.RIGHT;
+    // Split the angle into 16 position, 4 per quadrant.
+    const segment = (normalizedRadians * 16) / (2 * Math.PI);
 
+    // Identify the origin for each segment.
+    const orientation =
+      segment < 1
+        ? Orientation.EAST
+        : segment < 3
+        ? Orientation.SOUTHEAST
+        : segment < 5
+        ? Orientation.SOUTH
+        : segment < 7
+        ? Orientation.SOUTHWEST
+        : segment < 9
+        ? Orientation.WEST
+        : segment < 11
+        ? Orientation.NORTHWEST
+        : segment < 13
+        ? Orientation.NORTH
+        : segment < 15
+        ? Orientation.NORTHEAST
+        : Orientation.EAST;
+
+    Object.assign(style, {
+      display: 'flex',
+    });
+
+    // Position vertically.
     switch (orientation) {
-      case Orientation.LEFT:
+      case Orientation.NORTHEAST:
+      case Orientation.NORTH:
+      case Orientation.NORTHWEST:
         Object.assign(style, {
-          display: 'flex',
-          textAlign: 'left',
-          float: 'left',
-          alignItems: 'center',
-        });
-        break;
-      case Orientation.RIGHT:
-        Object.assign(style, {
-          display: 'flex',
-          textAlign: 'right',
-          float: 'right',
-          alignItems: 'center',
-        });
-        break;
-      case Orientation.TOP:
-        Object.assign(style, {
-          display: 'flex',
-          textAlign: 'center',
-          float: 'initial',
-          marginLeft: 'auto',
-          marginRight: 'auto',
           alignItems: 'initial',
         });
         break;
-      case Orientation.BOTTOM:
+      case Orientation.SOUTHEAST:
+      case Orientation.SOUTH:
+      case Orientation.SOUTHWEST:
         Object.assign(style, {
-          display: 'flex',
+          alignItems: 'flex-end',
+        });
+        break;
+      case Orientation.EAST:
+      case Orientation.WEST:
+        Object.assign(style, {
+          alignItems: 'center',
+        });
+        break;
+    }
+
+    // Position horizontally.
+    switch (orientation) {
+      case Orientation.NORTHEAST:
+      case Orientation.EAST:
+      case Orientation.SOUTHEAST:
+        Object.assign(style, {
+          textAlign: 'right',
+          float: 'right',
+        });
+        break;
+      case Orientation.SOUTHWEST:
+      case Orientation.WEST:
+      case Orientation.NORTHWEST:
+        Object.assign(style, {
+          textAlign: 'left',
+          float: 'left',
+        });
+        break;
+      case Orientation.NORTH:
+      case Orientation.SOUTH:
+        Object.assign(style, {
           textAlign: 'center',
-          float: 'flex-end',
           marginLeft: 'auto',
           marginRight: 'auto',
-          alignItems: 'flex-end',
+          float: 'center',
         });
         break;
     }
