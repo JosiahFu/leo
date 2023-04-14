@@ -25,14 +25,6 @@ public class Project {
   public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
   public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
-  public static final String COLUMN_LOVEDESCR_NAME = "love_descr";
-  public static final String COLUMN_LOVEDESCRQUILLZIP_NAME = "love_descr_quill_zip";
-  public static final String COLUMN_WORLDNEEDSDESCR_NAME = "world_needs_descr";
-  public static final String COLUMN_WORLDNEEDSDESCRQUILLZIP_NAME = "world_needs_descr_quill_zip";
-  public static final String COLUMN_PAIDFORDESCR_NAME = "paid_for_descr";
-  public static final String COLUMN_PAIDFORDESCRQUILLZIP_NAME = "paid_for_descr_quill_zip";
-  public static final String COLUMN_GOODATDESCR_NAME = "good_at_descr";
-  public static final String COLUMN_GOODATDESCRQUILLZIP_NAME = "good_at_descr_quill_zip";
 
   private Integer id;
 
@@ -48,25 +40,7 @@ public class Project {
 
   private byte[] longDescrQuillZip;
 
-  private String loveDescr;
-
-  private byte[] loveDescrQuillZip;
-
-  private String worldNeedsDescr;
-
-  private byte[] worldNeedsDescrQuillZip;
-
-  private String paidForDescr;
-
-  private byte[] paidForDescrQuillZip;
-
-  private String goodAtDescr;
-
-  private byte[] goodAtDescrQuillZip;
-
-  private Assignment assignment;
-
-  private Student student;
+  private IkigaiInput ikigaiInput;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -141,109 +115,14 @@ public class Project {
     return this;
   }
 
-  @Lob
-  @Column(name = COLUMN_LOVEDESCR_NAME, nullable = false)
-  public String getLoveDescr() {
-    return loveDescr;
-  }
-
-  public Project setLoveDescr(String loveDescr) {
-    this.loveDescr = loveDescr;
-    return this;
-  }
-
-  @Column(name = COLUMN_LOVEDESCRQUILLZIP_NAME)
-  public byte[] getLoveDescrQuillZip() {
-    return loveDescrQuillZip;
-  }
-
-  public Project setLoveDescrQuillZip(byte[] loveDescrQuillZip) {
-    this.loveDescrQuillZip = loveDescrQuillZip;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_WORLDNEEDSDESCR_NAME, nullable = false)
-  public String getWorldNeedsDescr() {
-    return worldNeedsDescr;
-  }
-
-  public Project setWorldNeedsDescr(String worldNeedsDescr) {
-    this.worldNeedsDescr = worldNeedsDescr;
-    return this;
-  }
-
-  @Column(name = COLUMN_WORLDNEEDSDESCRQUILLZIP_NAME)
-  public byte[] getWorldNeedsDescrQuillZip() {
-    return worldNeedsDescrQuillZip;
-  }
-
-  public Project setWorldNeedsDescrQuillZip(byte[] worldNeedsDescrQuillZip) {
-    this.worldNeedsDescrQuillZip = worldNeedsDescrQuillZip;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_PAIDFORDESCR_NAME, nullable = false)
-  public String getPaidForDescr() {
-    return paidForDescr;
-  }
-
-  public Project setPaidForDescr(String paidForDescr) {
-    this.paidForDescr = paidForDescr;
-    return this;
-  }
-
-  @Column(name = COLUMN_PAIDFORDESCRQUILLZIP_NAME)
-  public byte[] getPaidForDescrQuillZip() {
-    return paidForDescrQuillZip;
-  }
-
-  public Project setPaidForDescrQuillZip(byte[] paidForDescrQuillZip) {
-    this.paidForDescrQuillZip = paidForDescrQuillZip;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_GOODATDESCR_NAME, nullable = false)
-  public String getGoodAtDescr() {
-    return goodAtDescr;
-  }
-
-  public Project setGoodAtDescr(String goodAtDescr) {
-    this.goodAtDescr = goodAtDescr;
-    return this;
-  }
-
-  @Column(name = COLUMN_GOODATDESCRQUILLZIP_NAME)
-  public byte[] getGoodAtDescrQuillZip() {
-    return goodAtDescrQuillZip;
-  }
-
-  public Project setGoodAtDescrQuillZip(byte[] goodAtDescrQuillZip) {
-    this.goodAtDescrQuillZip = goodAtDescrQuillZip;
-    return this;
-  }
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "assignment_id", nullable = false)
-  public Assignment getAssignment() {
-    return assignment;
+  @JoinColumn(name = "ikigai_input_id", nullable = false)
+  public IkigaiInput getIkigaiInput() {
+    return ikigaiInput;
   }
 
-  public Project setAssignment(Assignment assignment) {
-    this.assignment = assignment;
-    return this;
-  }
-
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "student_id", nullable = false)
-  public Student getStudent() {
-    return student;
-  }
-
-  public Project setStudent(Student student) {
-    this.student = student;
+  public Project setIkigaiInput(IkigaiInput ikigaiInput) {
+    this.ikigaiInput = ikigaiInput;
     return this;
   }
 }

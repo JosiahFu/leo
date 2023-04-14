@@ -27,7 +27,6 @@ public class Log {
   public static final String COLUMN_RESPONSE_NAME = "response";
   public static final String COLUMN_STATUS_NAME = "status";
 
-
   private Integer id;
 
   private Instant creationTime;
@@ -143,5 +142,4 @@ public class Log {
     this.user = user;
     return this;
   }
-
 }
