@@ -2,7 +2,6 @@ package org.davincischools.leo.server.controllers;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +18,6 @@ import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRe
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsResponse;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +46,6 @@ public class PartialTextOpenAiPromptController {
           .build();
 
   @Autowired OpenAiUtils openAiUtils;
-  @Autowired Environment environment;
 
   // If the client sends an empty GetSuggestionsRequest then the body of the
   // request will have no bytes. Spring will then send either an optional
@@ -82,9 +79,7 @@ public class PartialTextOpenAiPromptController {
     OpenAiResponse aiResponse =
         openAiUtils
             .sendOpenAiRequest(
-                URI.create(environment.getProperty(OpenAiUtils.OPENAI_API_URL_PROP_NAME)),
-                aiRequest,
-                OpenAiResponse.newBuilder())
+                aiRequest, OpenAiResponse.newBuilder(), Optional.of(request.get().getUserId()))
             .build();
 
     List<String> suggestions =

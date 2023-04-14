@@ -10,7 +10,8 @@ service PartialTextOpenAiPromptService {
 }
 
 message GetSuggestionsRequest {
-  optional string partial_text = 1;
+  optional int32 user_id = 1;
+  optional string partial_text = 2;
 
   // The reason we have a limited number of prompts is that it prevents someone
   // from hacking into the website and creating custom queries using our OpenAI
@@ -20,7 +21,7 @@ message GetSuggestionsRequest {
     SUGGEST_THINGS_YOU_LOVE = 1;
     SUGGEST_THINGS_YOU_ARE_GOOD_AT = 2;
   }
-  optional Prompt prompt = 2;
+  optional Prompt prompt = 3;
 }
 
 message GetSuggestionsResponse {

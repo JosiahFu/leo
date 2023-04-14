@@ -131,6 +131,7 @@ export function IkigaiBuilder() {
       .getSuggestions({
         partialText: modalLovesValue,
         prompt: Prompt.SUGGEST_THINGS_YOU_LOVE,
+        userId: user!.userId!,
       })
       .then(response => setLovesSuggestions(response.suggestions))
       .catch(() => setLovesSuggestions([]))
@@ -161,6 +162,7 @@ export function IkigaiBuilder() {
       .getSuggestions({
         partialText: modalGoodAtValue,
         prompt: Prompt.SUGGEST_THINGS_YOU_ARE_GOOD_AT,
+        userId: user!.userId!,
       })
       .then(response => setGoodAtSuggestions(response.suggestions))
       .catch(() => setGoodAtSuggestions([]))
