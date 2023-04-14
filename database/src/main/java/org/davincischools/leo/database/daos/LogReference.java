@@ -2,9 +2,12 @@ package org.davincischools.leo.database.daos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
@@ -16,19 +19,16 @@ public class LogReference {
   public static final String TABLE_NAME = "log_reference";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
-  public static final String COLUMN_LOGID_NAME = "log_id";
-  public static final String COLUMN_IKIGAIINPUTID_NAME = "ikigai_input_id";
-  public static final String COLUMN_PROJECTID_NAME = "project_id";
 
   private Integer id;
 
   private Instant creationTime;
 
-  private Integer logId;
+  private Log log;
 
-  private Integer ikigaiInputId;
+  private IkigaiInput ikigaiInput;
 
-  private Integer projectId;
+  private Project project;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,33 +52,36 @@ public class LogReference {
     return this;
   }
 
-  @Column(name = COLUMN_LOGID_NAME, nullable = false)
-  public Integer getLogId() {
-    return logId;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "log_id", nullable = false)
+  public Log getLog() {
+    return log;
   }
 
-  public LogReference setLogId(Integer logId) {
-    this.logId = logId;
+  public LogReference setLog(Log log) {
+    this.log = log;
     return this;
   }
 
-  @Column(name = COLUMN_IKIGAIINPUTID_NAME)
-  public Integer getIkigaiInputId() {
-    return ikigaiInputId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ikigai_input_id")
+  public IkigaiInput getIkigaiInput() {
+    return ikigaiInput;
   }
 
-  public LogReference setIkigaiInputId(Integer ikigaiInputId) {
-    this.ikigaiInputId = ikigaiInputId;
+  public LogReference setIkigaiInput(IkigaiInput ikigaiInput) {
+    this.ikigaiInput = ikigaiInput;
     return this;
   }
 
-  @Column(name = COLUMN_PROJECTID_NAME)
-  public Integer getProjectId() {
-    return projectId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "project_id")
+  public Project getProject() {
+    return project;
   }
 
-  public LogReference setProjectId(Integer projectId) {
-    this.projectId = projectId;
+  public LogReference setProject(Project project) {
+    this.project = project;
     return this;
   }
 }
