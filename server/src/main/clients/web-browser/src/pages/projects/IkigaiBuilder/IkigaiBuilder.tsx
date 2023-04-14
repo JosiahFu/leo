@@ -15,6 +15,7 @@ import Prompt = partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
 import IAssignment = class_management.IAssignment;
 import ClassManagementService = class_management.ClassManagementService;
 import {getCurrentUser} from '../../../utils/authentication';
+import {useNavigate} from 'react-router';
 
 const {Sider, Content} = Layout;
 
@@ -24,6 +25,7 @@ export function IkigaiBuilder() {
       window.open('/login');
     })
   );
+  const navigate = useNavigate();
 
   const [ikigaiCenterPosition, setIkigaiCenterPosition] =
     useState<Coordinate | null>(null);
@@ -172,7 +174,18 @@ export function IkigaiBuilder() {
   function onSpinClick() {
     setProcessing(true);
 
-    // TODO: Generate the projects.
+    const classManagementService = createService(
+      ClassManagementService,
+      'ClassManagementService'
+    );
+    classManagementService
+      .generateAssignmentProjects({
+        userId: user!.userId,
+        somethingYouLove: lovesValue,
+        whatYouAreGoodAt: goodAtValue,
+        assignmentId: assignment!.id!,
+      })
+      .finally(() => navigate('/projects/my-projects'));
   }
 
   return (
@@ -432,7 +445,7 @@ export function IkigaiBuilder() {
             width: '100%',
           }}
         >
-          Finding great projects! ...
+          Finding great projects! Please wait. This can take up to a minute.
         </div>
       </Modal>
     </>

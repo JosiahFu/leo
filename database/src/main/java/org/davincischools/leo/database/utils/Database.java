@@ -58,7 +58,17 @@ public class Database {
   public interface AdminRepository extends JpaRepository<Admin, Integer> {}
 
   @Repository
-  public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {}
+  public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
+    @Query(
+        "SELECT ks FROM Assignment a "
+            + "INNER JOIN FETCH KnowledgeAndSkillAssignment ksa "
+            + "INNER JOIN FETCH KnowledgeAndSkill ks "
+            + "WHERE a.id = (:assignment_id) "
+            + "AND a.id = ksa.assignment.id "
+            + "AND ksa.knowledgeAndSkill.id = ks.id")
+    public List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(
+        @Param("assignment_id") int assignment_id);
+  }
 
   @Repository
   public interface ClassRepository extends JpaRepository<Class, Integer> {}
