@@ -12,6 +12,7 @@ import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
+import org.davincischools.leo.database.daos.Log;
 import org.davincischools.leo.database.daos.Portfolio;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
@@ -91,6 +92,9 @@ public class Database {
           .setAssignment(assignment);
     }
   }
+
+  @Repository
+  public interface LogRepository extends JpaRepository<Log, Integer> {}
 
   @Repository
   public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
@@ -246,6 +250,7 @@ public class Database {
   @Autowired private IkigaiInputRepository ikigaiInputRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
+  @Autowired private LogRepository logRepository;
   @Autowired private PortfolioRepository portfolioRepository;
   @Autowired private ProjectRepository projectRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
@@ -287,6 +292,10 @@ public class Database {
 
   public KnowledgeAndSkillAssignmentRepository getKnowledgeAndSkillAssignmentRepository() {
     return knowledgeAndSkillAssignmentRepository;
+  }
+
+  public LogRepository getLogRepository() {
+    return logRepository;
   }
 
   public PortfolioRepository getPortfolioRepository() {

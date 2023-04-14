@@ -23,7 +23,10 @@ public class Log {
   public static final String COLUMN_SOURCE_NAME = "source";
   public static final String COLUMN_NOTES_NAME = "notes";
   public static final String COLUMN_REQUEST_NAME = "request";
+  public static final String COLUMN_UNPROCESSEDRESPONSE_NAME = "unprocessed_response";
   public static final String COLUMN_RESPONSE_NAME = "response";
+  public static final String COLUMN_STATUS_NAME = "status";
+
 
   private Integer id;
 
@@ -35,7 +38,11 @@ public class Log {
 
   private String request;
 
+  private String unprocessedResponse;
+
   private String response;
+
+  private String status;
 
   private User user;
 
@@ -72,7 +79,7 @@ public class Log {
   }
 
   @Lob
-  @Column(name = COLUMN_NOTES_NAME, nullable = false)
+  @Column(name = COLUMN_NOTES_NAME)
   public String getNotes() {
     return notes;
   }
@@ -94,7 +101,18 @@ public class Log {
   }
 
   @Lob
-  @Column(name = COLUMN_RESPONSE_NAME, nullable = false)
+  @Column(name = COLUMN_UNPROCESSEDRESPONSE_NAME)
+  public String getUnprocessedResponse() {
+    return unprocessedResponse;
+  }
+
+  public Log setUnprocessedResponse(String unprocessedResponse) {
+    this.unprocessedResponse = unprocessedResponse;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_RESPONSE_NAME)
   public String getResponse() {
     return response;
   }
@@ -104,8 +122,19 @@ public class Log {
     return this;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
+  @Lob
+  @Column(name = COLUMN_STATUS_NAME)
+  public String getStatus() {
+    return status;
+  }
+
+  public Log setStatus(String status) {
+    this.status = status;
+    return this;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
   public User getUser() {
     return user;
   }
@@ -114,4 +143,5 @@ public class Log {
     this.user = user;
     return this;
   }
+
 }
