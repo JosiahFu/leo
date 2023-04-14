@@ -40,8 +40,8 @@ export function Ikigai(props: {
 }) {
   const visibleAlpha = 0.2;
   const showHideDurationMs = 750;
-  const processingStepDurationMs = 400;
-  const processingStepDelayMs = 125;
+  const processingStepDurationMs = 750;
+  const processingStepDelayMs = 250;
   const processingStepIncrement = Math.PI / 4;
 
   const [centerPosition, setCenterPosition] = useState<Coordinate | null>(null);

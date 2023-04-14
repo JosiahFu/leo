@@ -41,9 +41,10 @@ public class ClassManagementService {
 
   private static final Joiner COMMA_AND_JOINER = Joiner.on(", and ");
 
-  private static final Pattern AI_PROJECT_NAME = Pattern.compile("[^:]:\\s*[\"“]?([^\"“]+)[\"“]?");
-  private static final Pattern AI_PROJECT_SHORT_DESCR = Pattern.compile("[^:]:\\s*(.+)");
-  private static final Pattern AI_PROJECT_LONG_DESCR = Pattern.compile("[^:]:\\s*(.+)");
+  private static final Pattern AI_PROJECT_NAME =
+      Pattern.compile("^[^:]+:\\s*[\"“]?([^\"“]+)[\"“]?");
+  private static final Pattern AI_PROJECT_SHORT_DESCR = Pattern.compile("^[^:]+:\\s*(.+)");
+  private static final Pattern AI_PROJECT_LONG_DESCR = Pattern.compile("^[^:]+:\\s*(.+)");
 
   @Autowired Database db;
   @Autowired OpenAiUtils openAiUtils;
@@ -125,7 +126,7 @@ public class ClassManagementService {
             .build();
 
     // Parse the result into separate lines.
-    List<String> lines = new ArrayList();
+    List<String> lines = new ArrayList<>();
     BufferedReader reader =
         new BufferedReader(new StringReader(aiResponse.getChoices(0).getMessage().getContent()));
     String line;
@@ -157,8 +158,8 @@ public class ClassManagementService {
 
   @PostMapping(value = "/api/protos/ClassManagementService/GetProjects")
   @ResponseBody
-  public GetProjectsResponse getProjects(
-      @RequestBody Optional<GetProjectsRequest> optionalRequest) throws IOException {
+  public GetProjectsResponse getProjects(@RequestBody Optional<GetProjectsRequest> optionalRequest)
+      throws IOException {
     var request = optionalRequest.orElse(GetProjectsRequest.getDefaultInstance());
     var response = GetProjectsResponse.newBuilder();
 

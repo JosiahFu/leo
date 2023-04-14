@@ -204,7 +204,7 @@ public class TestData {
             programming_clazz,
             "Sort Algorithms",
             "Show that you can implement sort algorithms.",
-            chemistry_eks_1);
+            programming_eks_1);
   }
 
   public static User createUser(Database db, User template) {
