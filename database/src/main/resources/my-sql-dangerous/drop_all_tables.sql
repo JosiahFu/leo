@@ -1,4 +1,6 @@
 # All tables created in my-sql in reverse file order.
+DROP TABLE IF EXISTS log_reference;
+DROP TABLE IF EXISTS log;
 DROP TABLE IF EXISTS project_post_comment;
 DROP TABLE IF EXISTS portfolio;
 DROP TABLE IF EXISTS project_post;
@@ -9,7 +11,6 @@ DROP TABLE IF EXISTS project;
 DROP TABLE IF EXISTS teacher_class;
 DROP TABLE IF EXISTS ikigai_input;
 DROP TABLE IF EXISTS student_class;
-DROP TABLE IF EXISTS log;
 DROP TABLE IF EXISTS assignment;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS teacher_school;
