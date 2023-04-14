@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS project_cycle;
 DROP TABLE IF EXISTS knowledge_and_skill;
 DROP TABLE IF EXISTS project;
 DROP TABLE IF EXISTS teacher_class;
+DROP TABLE IF EXISTS ikigai_input;
 DROP TABLE IF EXISTS student_class;
 DROP TABLE IF EXISTS log;
 DROP TABLE IF EXISTS assignment;
