@@ -1,8 +1,7 @@
 CREATE TABLE ikigai_input
 (
     id                   INT PRIMARY KEY AUTO_INCREMENT,
-
-    timestamp_micros_utc BIGINT       NOT NULL,
+    creation_time        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     something_you_love   VARCHAR(255) NOT NULL,
     what_you_are_good_at VARCHAR(255) NOT NULL,

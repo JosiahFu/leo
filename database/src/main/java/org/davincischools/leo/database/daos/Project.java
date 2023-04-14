@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = Project.ENTITY_NAME)
 @Table(name = Project.TABLE_NAME, schema = "leo_temp")
@@ -18,6 +19,7 @@ public class Project {
   public static final String ENTITY_NAME = "Project";
   public static final String TABLE_NAME = "project";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
@@ -33,6 +35,8 @@ public class Project {
   public static final String COLUMN_GOODATDESCRQUILLZIP_NAME = "good_at_descr_quill_zip";
 
   private Integer id;
+
+  private Instant creationTime;
 
   private String name;
 
@@ -73,6 +77,16 @@ public class Project {
 
   public Project setId(Integer id) {
     this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public Project setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

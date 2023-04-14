@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import javax.security.auth.login.AccountNotFoundException;
@@ -89,7 +90,11 @@ public class UserManagementService {
 
     User user =
         new User()
-            .setDistrict(new District().setId(request.getUser().getDistrictId()))
+            .setCreationTime(Instant.now())
+            .setDistrict(
+                new District()
+                    .setCreationTime(Instant.now())
+                    .setId(request.getUser().getDistrictId()))
             .setFirstName(request.getUser().getFirstName())
             .setLastName(request.getUser().getLastName())
             .setEmailAddress(request.getUser().getEmailAddress());
@@ -108,7 +113,7 @@ public class UserManagementService {
 
     if ((user.getAdmin() != null) ^ request.getUser().getIsAdmin()) {
       if (request.getUser().getIsAdmin()) {
-        user.setAdmin(db.getAdminRepository().save(new Admin()));
+        user.setAdmin(db.getAdminRepository().save(new Admin().setCreationTime(Instant.now())));
       } else {
         user.setAdmin(null);
       }
@@ -116,7 +121,8 @@ public class UserManagementService {
 
     if ((user.getTeacher() != null) ^ request.getUser().getIsTeacher()) {
       if (request.getUser().getIsTeacher()) {
-        user.setTeacher(db.getTeacherRepository().save(new Teacher()));
+        user.setTeacher(
+            db.getTeacherRepository().save(new Teacher().setCreationTime(Instant.now())));
       } else {
         user.setTeacher(null);
       }
@@ -145,13 +151,16 @@ public class UserManagementService {
         db.getTeacherSchoolRepository()
             .save(
                 db.getTeacherSchoolRepository()
-                    .createTeacherSchool(user.getTeacher(), new School().setId(schoolId)));
+                    .createTeacherSchool(
+                        user.getTeacher(),
+                        new School().setCreationTime(Instant.now()).setId(schoolId)));
       }
     }
 
     if ((user.getStudent() != null) ^ request.getUser().getIsStudent()) {
       if (request.getUser().getIsStudent()) {
-        user.setStudent(db.getStudentRepository().save(new Student()));
+        user.setStudent(
+            db.getStudentRepository().save(new Student().setCreationTime(Instant.now())));
       } else {
         user.setStudent(null);
       }

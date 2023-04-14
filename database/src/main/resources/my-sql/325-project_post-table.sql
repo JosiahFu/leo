@@ -1,7 +1,7 @@
 CREATE TABLE project_post
 (
     id                    INT PRIMARY KEY AUTO_INCREMENT,
-    post_time_micros_utc  BIGINT        NOT NULL,
+    creation_time         DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name                  VARCHAR(255)  NOT NULL,
     short_descr           VARCHAR(2048) NOT NULL,

@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = KnowledgeAndSkill.ENTITY_NAME)
 @Table(name = KnowledgeAndSkill.TABLE_NAME, schema = "leo_temp")
@@ -18,6 +19,7 @@ public class KnowledgeAndSkill {
   public static final String ENTITY_NAME = "KnowledgeAndSkill";
   public static final String TABLE_NAME = "knowledge_and_skill";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
@@ -25,6 +27,8 @@ public class KnowledgeAndSkill {
   public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
 
   private Integer id;
+
+  private Instant creationTime;
 
   private String name;
 
@@ -47,6 +51,16 @@ public class KnowledgeAndSkill {
 
   public KnowledgeAndSkill setId(Integer id) {
     this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public KnowledgeAndSkill setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

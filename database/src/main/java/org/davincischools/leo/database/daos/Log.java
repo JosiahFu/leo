@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = Log.ENTITY_NAME)
 @Table(name = Log.TABLE_NAME, schema = "leo_temp")
@@ -18,7 +19,7 @@ public class Log {
   public static final String ENTITY_NAME = "Log";
   public static final String TABLE_NAME = "log";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_TIMESTAMPMICROSUTC_NAME = "timestamp_micros_utc";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_SOURCE_NAME = "source";
   public static final String COLUMN_NOTES_NAME = "notes";
   public static final String COLUMN_REQUEST_NAME = "request";
@@ -26,7 +27,7 @@ public class Log {
 
   private Integer id;
 
-  private Long timestampMicrosUtc;
+  private Instant creationTime;
 
   private String source;
 
@@ -50,13 +51,13 @@ public class Log {
     return this;
   }
 
-  @Column(name = COLUMN_TIMESTAMPMICROSUTC_NAME, nullable = false)
-  public Long getTimestampMicrosUtc() {
-    return timestampMicrosUtc;
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
   }
 
-  public Log setTimestampMicrosUtc(Long timestampMicrosUtc) {
-    this.timestampMicrosUtc = timestampMicrosUtc;
+  public Log setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

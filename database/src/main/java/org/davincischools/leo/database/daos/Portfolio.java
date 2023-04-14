@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = Portfolio.ENTITY_NAME)
 @Table(name = Portfolio.TABLE_NAME, schema = "leo_temp")
@@ -15,6 +16,7 @@ public class Portfolio {
   public static final String ENTITY_NAME = "Portfolio";
   public static final String TABLE_NAME = "portfolio";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
@@ -22,6 +24,8 @@ public class Portfolio {
   public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
 
   private Integer id;
+
+  private Instant creationTime;
 
   private String name;
 
@@ -42,6 +46,16 @@ public class Portfolio {
 
   public Portfolio setId(Integer id) {
     this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public Portfolio setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

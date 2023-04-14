@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = School.ENTITY_NAME)
 @Table(name = School.TABLE_NAME, schema = "leo_temp")
@@ -17,10 +18,13 @@ public class School {
   public static final String ENTITY_NAME = "School";
   public static final String TABLE_NAME = "school";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_CITY_NAME = "city";
 
   private Integer id;
+
+  private Instant creationTime;
 
   private String name;
 
@@ -37,6 +41,16 @@ public class School {
 
   public School setId(Integer id) {
     this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public School setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

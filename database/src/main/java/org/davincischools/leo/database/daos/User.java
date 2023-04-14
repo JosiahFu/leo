@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = User.ENTITY_NAME)
 @Table(
@@ -27,12 +28,15 @@ public class User {
   public static final String ENTITY_NAME = "User";
   public static final String TABLE_NAME = "user";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_FIRSTNAME_NAME = "first_name";
   public static final String COLUMN_LASTNAME_NAME = "last_name";
   public static final String COLUMN_EMAILADDRESS_NAME = "email_address";
   public static final String COLUMN_ENCODEDPASSWORDUTF8_NAME = "encoded_password_utf8";
 
   private Integer id;
+
+  private Instant creationTime;
 
   private String firstName;
 
@@ -59,6 +63,16 @@ public class User {
 
   public User setId(Integer id) {
     this.id = id;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public User setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

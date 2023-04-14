@@ -1,5 +1,6 @@
 package org.davincischools.leo.database.utils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import org.davincischools.leo.database.daos.Admin;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
@@ -64,6 +66,9 @@ public class Database {
   public interface DistrictRepository extends JpaRepository<District, Integer> {}
 
   @Repository
+  public interface IkigaiInputRepository extends JpaRepository<IkigaiInput, Integer> {}
+
+  @Repository
   public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
 
   @Repository
@@ -80,6 +85,7 @@ public class Database {
     default KnowledgeAndSkillAssignment createKnowledgeAndSkillAssignment(
         KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
       return new KnowledgeAndSkillAssignment()
+          .setCreationTime(Instant.now())
           .setId(createKnowledgeAndSkillAssignmentId(knowledgeAndSkill, assignment))
           .setKnowledgeAndSkill(knowledgeAndSkill)
           .setAssignment(assignment);
@@ -143,6 +149,7 @@ public class Database {
 
     default StudentClass createStudentClass(Student student, Class classField) {
       return new StudentClass()
+          .setCreationTime(Instant.now())
           .setId(new StudentClassId().setStudentId(student.getId()).setClassId(classField.getId()))
           .setStudent(student)
           .setClassField(classField);
@@ -157,6 +164,7 @@ public class Database {
 
     default TeacherClass createTeacherClass(Teacher teacher, Class classField) {
       return new TeacherClass()
+          .setCreationTime(Instant.now())
           .setId(new TeacherClassId().setTeacherId(teacher.getId()).setClassId(classField.getId()))
           .setTeacher(teacher)
           .setClassField(classField);
@@ -172,6 +180,8 @@ public class Database {
 
     default TeacherSchool createTeacherSchool(Teacher teacher, School school) {
       return new TeacherSchool()
+          .setCreationTime(Instant.now())
+          .setCreationTime(Instant.now())
           .setId(createTeacherSchoolId(teacher, school))
           .setTeacher(teacher)
           .setSchool(school);
@@ -233,6 +243,7 @@ public class Database {
   @Autowired private AssignmentRepository assignmentRepository;
   @Autowired private ClassRepository classRepository;
   @Autowired private DistrictRepository districtRepository;
+  @Autowired private IkigaiInputRepository ikigaiInputRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
   @Autowired private PortfolioRepository portfolioRepository;
@@ -264,6 +275,10 @@ public class Database {
 
   public DistrictRepository getDistrictRepository() {
     return districtRepository;
+  }
+
+  public IkigaiInputRepository getIkigaiInputRepository() {
+    return ikigaiInputRepository;
   }
 
   public KnowledgeAndSkillRepository getKnowledgeAndSkillRepository() {

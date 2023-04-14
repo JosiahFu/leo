@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = IkigaiInput.ENTITY_NAME)
 @Table(name = IkigaiInput.TABLE_NAME, schema = "leo_temp")
@@ -17,13 +18,13 @@ public class IkigaiInput {
   public static final String ENTITY_NAME = "IkigaiInput";
   public static final String TABLE_NAME = "ikigai_input";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_TIMESTAMPMICROSUTC_NAME = "timestamp_micros_utc";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_SOMETHINGYOULOVE_NAME = "something_you_love";
   public static final String COLUMN_WHATYOUAREGOODAT_NAME = "what_you_are_good_at";
 
   private Integer id;
 
-  private Long timestampMicrosUtc;
+  private Instant creationTime;
 
   private String somethingYouLove;
 
@@ -45,13 +46,13 @@ public class IkigaiInput {
     return this;
   }
 
-  @Column(name = COLUMN_TIMESTAMPMICROSUTC_NAME, nullable = false)
-  public Long getTimestampMicrosUtc() {
-    return timestampMicrosUtc;
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
   }
 
-  public IkigaiInput setTimestampMicrosUtc(Long timestampMicrosUtc) {
-    this.timestampMicrosUtc = timestampMicrosUtc;
+  public IkigaiInput setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 

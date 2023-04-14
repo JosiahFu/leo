@@ -1,5 +1,6 @@
 package org.davincischools.leo.server.controllers;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,7 +37,10 @@ public class DistrictManagementService {
     request = Optional.of(request.orElse(AddDistrictRequest.getDefaultInstance()));
 
     if (request.get().hasDistrict()) {
-      District district = new District().setName(request.get().getDistrict().getName());
+      District district =
+          new District()
+              .setCreationTime(Instant.now())
+              .setName(request.get().getDistrict().getName());
       db.getDistrictRepository().save(district);
       return getAllDistricts(district.getId());
     }
@@ -54,6 +58,7 @@ public class DistrictManagementService {
       db.getDistrictRepository()
           .save(
               new District()
+                  .setCreationTime(Instant.now())
                   .setId(request.get().getDistrict().getId())
                   .setName(request.get().getDistrict().getName()));
       return getAllDistricts(request.get().getDistrict().getId());

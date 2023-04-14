@@ -2,6 +2,7 @@ package org.davincischools.leo.database.test;
 
 import static org.davincischools.leo.database.utils.UserUtils.setPassword;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,47 +54,57 @@ public class TestData {
 
     District district =
         db.getDistrictRepository()
-            .save(new District().setName("Wiseburn Unified School District " + counter.get()));
+            .save(
+                new District()
+                    .setCreationTime(Instant.now())
+                    .setName("Wiseburn Unified School District " + counter.get()));
 
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Communications High School " + counter.get())
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Connect (TK-8) " + counter.get())
                 .setCity("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Connect High School " + counter.get())
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Extension " + counter.get())
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-Richstone " + counter.get())
                 .setCity("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-APCH " + counter.get())
                 .setCity("Los Angeles, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
+                .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-New Earth " + counter.get())
                 .setCity("Culver City, CA")
                 .setDistrict(district));
@@ -101,6 +112,7 @@ public class TestData {
         db.getSchoolRepository()
             .save(
                 new School()
+                    .setCreationTime(Instant.now())
                     .setName("Da Vinci Science High School " + counter.get())
                     .setCity("El Segundo, CA")
                     .setDistrict(district));
@@ -110,6 +122,7 @@ public class TestData {
             db,
             setPassword(
                 new User()
+                    .setCreationTime(Instant.now())
                     .setFirstName("Scott")
                     .setLastName("Hendrickson")
                     .setEmailAddress("sahendrickson@gmail.com")
@@ -121,6 +134,7 @@ public class TestData {
             db,
             setPassword(
                 new User()
+                    .setCreationTime(Instant.now())
                     .setFirstName("Steven")
                     .setLastName("Eno")
                     .setEmailAddress("seno@davincischools.org")
@@ -132,6 +146,7 @@ public class TestData {
             db,
             setPassword(
                 new User()
+                    .setCreationTime(Instant.now())
                     .setFirstName("Steve")
                     .setLastName("Wallis")
                     .setEmailAddress("swallis@davincischools.org")
@@ -206,7 +221,7 @@ public class TestData {
   public static void addAdminPermission(Database db, User... users) {
     for (var user : users) {
       if (user.getAdmin() == null) {
-        user.setAdmin(db.getAdminRepository().save(new Admin()));
+        user.setAdmin(db.getAdminRepository().save(new Admin().setCreationTime(Instant.now())));
         db.getUserRepository().save(user);
       }
     }
@@ -215,7 +230,8 @@ public class TestData {
   public static void addTeacherPermission(Database db, User... teachers) {
     for (var teacher : teachers) {
       if (teacher.getTeacher() == null) {
-        teacher.setTeacher(db.getTeacherRepository().save(new Teacher()));
+        teacher.setTeacher(
+            db.getTeacherRepository().save(new Teacher().setCreationTime(Instant.now())));
         db.getUserRepository().save(teacher);
       }
     }
@@ -224,7 +240,8 @@ public class TestData {
   public static void addStudentPermission(Database db, User... students) {
     for (var student : students) {
       if (student.getStudent() == null) {
-        student.setStudent(db.getStudentRepository().save(new Student()));
+        student.setStudent(
+            db.getStudentRepository().save(new Student().setCreationTime(Instant.now())));
         db.getUserRepository().save(student);
       }
     }
@@ -251,6 +268,7 @@ public class TestData {
         db.getClassRepository()
             .save(
                 new Class()
+                    .setCreationTime(Instant.now())
                     .setSchool(school)
                     .setName(name)
                     .setShortDescr(descr)
@@ -268,6 +286,7 @@ public class TestData {
         db.getAssignmentRepository()
             .save(
                 new Assignment()
+                    .setCreationTime(Instant.now())
                     .setClassField(clazz)
                     .setName(name)
                     .setShortDescr(descr)
@@ -284,6 +303,7 @@ public class TestData {
     return db.getKnowledgeAndSkillRepository()
         .save(
             new KnowledgeAndSkill()
+                .setCreationTime(Instant.now())
                 .setClassField(clazz)
                 .setName(name)
                 .setShortDescr(descr)

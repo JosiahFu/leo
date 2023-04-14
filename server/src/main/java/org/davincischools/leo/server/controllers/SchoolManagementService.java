@@ -1,5 +1,6 @@
 package org.davincischools.leo.server.controllers;
 
+import java.time.Instant;
 import java.util.Optional;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.utils.Database;
@@ -34,6 +35,7 @@ public class SchoolManagementService {
 
     School school =
         new School()
+            .setCreationTime(Instant.now())
             .setDistrict(
                 db.getDistrictRepository()
                     .findById(request.get().getSchool().getDistrictId())

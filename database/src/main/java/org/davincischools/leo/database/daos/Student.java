@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = Student.ENTITY_NAME)
 @Table(name = Student.TABLE_NAME, schema = "leo_temp")
@@ -14,8 +15,11 @@ public class Student {
   public static final String ENTITY_NAME = "Student";
   public static final String TABLE_NAME = "student";
   public static final String COLUMN_ID_NAME = "id";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
   private Integer id;
+
+  private Instant creationTime;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +33,13 @@ public class Student {
     return this;
   }
 
-  // TODO [JPA Buddy] generate columns from DB
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public Student setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
+    return this;
+  }
 }

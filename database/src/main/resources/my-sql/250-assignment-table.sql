@@ -1,6 +1,7 @@
 CREATE TABLE assignment
 (
     id                    INT PRIMARY KEY AUTO_INCREMENT,
+    creation_time         DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name                  VARCHAR(255)  NOT NULL,
     short_descr           VARCHAR(2048) NOT NULL,

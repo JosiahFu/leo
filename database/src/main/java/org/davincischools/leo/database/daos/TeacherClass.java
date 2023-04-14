@@ -1,5 +1,6 @@
 package org.davincischools.leo.database.daos;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -7,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = TeacherClass.ENTITY_NAME)
 @Table(name = TeacherClass.TABLE_NAME, schema = "leo_temp")
@@ -14,12 +16,15 @@ public class TeacherClass {
 
   public static final String ENTITY_NAME = "TeacherClass";
   public static final String TABLE_NAME = "teacher_class";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
   private TeacherClassId id;
 
   private Teacher teacher;
 
   private Class classField;
+
+  private Instant creationTime;
 
   @EmbeddedId
   public TeacherClassId getId() {
@@ -52,6 +57,16 @@ public class TeacherClass {
 
   public TeacherClass setClassField(Class classField) {
     this.classField = classField;
+    return this;
+  }
+
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public TeacherClass setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity(name = ProjectPost.ENTITY_NAME)
 @Table(name = ProjectPost.TABLE_NAME, schema = "leo_temp")
@@ -18,7 +19,7 @@ public class ProjectPost {
   public static final String ENTITY_NAME = "ProjectPost";
   public static final String TABLE_NAME = "project_post";
   public static final String COLUMN_ID_NAME = "id";
-  public static final String COLUMN_POSTTIMEMICROSUTC_NAME = "post_time_micros_utc";
+  public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
@@ -27,7 +28,7 @@ public class ProjectPost {
 
   private Integer id;
 
-  private Long postTimeMicrosUtc;
+  private Instant creationTime;
 
   private String name;
 
@@ -55,13 +56,13 @@ public class ProjectPost {
     return this;
   }
 
-  @Column(name = COLUMN_POSTTIMEMICROSUTC_NAME, nullable = false)
-  public Long getPostTimeMicrosUtc() {
-    return postTimeMicrosUtc;
+  @Column(name = COLUMN_CREATIONTIME_NAME, nullable = false)
+  public Instant getCreationTime() {
+    return creationTime;
   }
 
-  public ProjectPost setPostTimeMicrosUtc(Long postTimeMicrosUtc) {
-    this.postTimeMicrosUtc = postTimeMicrosUtc;
+  public ProjectPost setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
     return this;
   }
 
