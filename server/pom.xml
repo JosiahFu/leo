@@ -72,6 +72,13 @@
             <artifactId>project-leo-database</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <!-- HttpClient to send requests to OpenAI. -->
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty-http</artifactId>
+            <version>1.1.6</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
-import org.davincischools.leo.protos.open_ai.CreateCompletionMessage;
-import org.davincischools.leo.protos.open_ai.CreateCompletionRequest;
-import org.davincischools.leo.protos.open_ai.CreateCompletionResponse;
-import org.davincischools.leo.protos.open_ai.CreateCompletionResponse.CreateCompletionChoice;
+import org.davincischools.leo.protos.open_ai.OpenAiMessage;
+import org.davincischools.leo.protos.open_ai.OpenAiRequest;
+import org.davincischools.leo.protos.open_ai.OpenAiResponse;
+import org.davincischools.leo.protos.open_ai.OpenAiResponse.CreateCompletionChoice;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRequest;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsResponse;
@@ -64,11 +64,11 @@ public class PartialTextOpenAiPromptController {
       throw new IllegalArgumentException("Invalid prompt: " + request.get().getPrompt());
     }
 
-    CreateCompletionRequest aiRequest =
-        CreateCompletionRequest.newBuilder()
+    OpenAiRequest aiRequest =
+        OpenAiRequest.newBuilder()
             .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
             .addMessages(
-                CreateCompletionMessage.newBuilder()
+                OpenAiMessage.newBuilder()
                     .setRole("user")
                     .setContent(
                         PROMPT_VARIABLE
@@ -79,18 +79,18 @@ public class PartialTextOpenAiPromptController {
                                     + "\"")))
             .build();
 
-    CreateCompletionResponse aiResponse =
+    OpenAiResponse aiResponse =
         openAiUtils
             .sendOpenAiRequest(
                 URI.create(environment.getProperty(OpenAiUtils.OPENAI_API_URL_PROP_NAME)),
                 aiRequest,
-                CreateCompletionResponse.newBuilder())
+                OpenAiResponse.newBuilder())
             .build();
 
     List<String> suggestions =
         aiResponse.getChoicesList().stream()
             .map(CreateCompletionChoice::getMessage)
-            .map(CreateCompletionMessage::getContent)
+            .map(OpenAiMessage::getContent)
             .flatMap(content -> parseContentIntoList(content).stream())
             .distinct()
             .sorted()

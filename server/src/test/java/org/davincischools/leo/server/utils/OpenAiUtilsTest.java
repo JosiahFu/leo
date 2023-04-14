@@ -4,9 +4,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 import java.net.URI;
-import org.davincischools.leo.protos.open_ai.CreateCompletionMessage;
-import org.davincischools.leo.protos.open_ai.CreateCompletionRequest;
-import org.davincischools.leo.protos.open_ai.CreateCompletionResponse;
+import org.davincischools.leo.protos.open_ai.OpenAiMessage;
+import org.davincischools.leo.protos.open_ai.OpenAiRequest;
+import org.davincischools.leo.protos.open_ai.OpenAiResponse;
 import org.davincischools.leo.server.ServerApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,18 +35,18 @@ public class OpenAiUtilsTest {
     }
 
     try {
-      CreateCompletionResponse response =
+      OpenAiResponse response =
           openAiUtils
               .sendOpenAiRequest(
                   URI.create(environment.getProperty(OpenAiUtils.OPENAI_API_URL_PROP_NAME)),
-                  CreateCompletionRequest.newBuilder()
+                  OpenAiRequest.newBuilder()
                       .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
                       .addMessages(
-                          CreateCompletionMessage.newBuilder()
+                          OpenAiMessage.newBuilder()
                               .setRole("user")
                               .setContent("Say exactly \"Test.\"."))
                       .build(),
-                  CreateCompletionResponse.newBuilder())
+                  OpenAiResponse.newBuilder())
               .build();
       assertThat(response.getChoicesList()).hasSize(1);
       assertThat(response.getChoices(0).getMessage().getContent()).contains("Test.");

@@ -7,12 +7,17 @@ import com.google.protobuf.GeneratedMessageV3.Builder;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,10 +25,12 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import reactor.netty.http.client.HttpClient;
 
 @Component
 public class OpenAiUtils {
@@ -58,8 +65,20 @@ public class OpenAiUtils {
                   + "' environment variable.");
       return responseBuilder;
     }
+
+    HttpClient client =
+        HttpClient.create()
+            .responseTimeout(Duration.ofSeconds(120))
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 120 * 100)
+            .option(ChannelOption.SO_KEEPALIVE, true)
+            .doOnConnected(
+                conn ->
+                    conn.addHandlerFirst(new ReadTimeoutHandler(120, TimeUnit.SECONDS))
+                        .addHandlerFirst(new WriteTimeoutHandler(120, TimeUnit.SECONDS)));
     ResponseSpec responseSpec =
-        WebClient.create()
+        WebClient.builder()
+            .clientConnector(new ReactorClientHttpConnector(client))
+            .build()
             .post()
             .uri(uri)
             .contentType(MediaType.APPLICATION_JSON)
@@ -70,16 +89,16 @@ public class OpenAiUtils {
             .bodyValue(JsonFormat.printer().print(request))
             .retrieve();
 
-    // Get response header.
-    ResponseEntity<?> headerResponse =
-        Objects.requireNonNull(responseSpec.toBodilessEntity().block());
-    if (headerResponse.getStatusCode().isError()) {
-      throw new HttpClientErrorException(headerResponse.getStatusCode());
-    }
-
-    // Stream the response body because the buffer is limited.
-    byte[] reactBody;
     try {
+      // Get response header.
+      ResponseEntity<?> headerResponse =
+          Objects.requireNonNull(responseSpec.toBodilessEntity().block());
+      if (headerResponse.getStatusCode().isError()) {
+        throw new HttpClientErrorException(headerResponse.getStatusCode());
+      }
+
+      // Stream the response body because the buffer is limited.
+      byte[] reactBody;
       ImmutableList<byte[]> streamedBytes =
           responseSpec
               .bodyToFlux(DataBuffer.class)
@@ -94,17 +113,17 @@ public class OpenAiUtils {
               .collect(ImmutableList.toImmutableList())
               .block();
       reactBody = Bytes.concat(Objects.requireNonNull(streamedBytes).toArray(byte[][]::new));
-    } catch (WrappedIOException e) {
-      throw e.getCause();
+
+      logger.atInfo().log("OpenAI Response: {}.", new String(reactBody, StandardCharsets.UTF_8));
+
+      // Translate the bytes into a proto.
+      JsonFormat.parser()
+          .ignoringUnknownFields()
+          .merge(new String(reactBody, StandardCharsets.UTF_8), responseBuilder);
+
+      return responseBuilder;
+    } catch (Exception e) {
+      throw new IOException(e);
     }
-
-    logger.atInfo().log("OpenAI Response: {}.", new String(reactBody, StandardCharsets.UTF_8));
-
-    // Translate the bytes into a proto.
-    JsonFormat.parser()
-        .ignoringUnknownFields()
-        .merge(new String(reactBody, StandardCharsets.UTF_8), responseBuilder);
-
-    return responseBuilder;
   }
 }
