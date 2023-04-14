@@ -21,6 +21,8 @@ import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.StudentRepository.StudentAssignment;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsRequest;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
+import org.davincischools.leo.protos.class_management.GetProjectsRequest;
+import org.davincischools.leo.protos.class_management.GetProjectsResponse;
 import org.davincischools.leo.protos.class_management.GetStudentAssignmentsRequest;
 import org.davincischools.leo.protos.class_management.GetStudentAssignmentsResponse;
 import org.davincischools.leo.protos.open_ai.OpenAiMessage;
@@ -149,6 +151,18 @@ public class ClassManagementService {
         i += 2;
       }
     }
+
+    return response.build();
+  }
+
+  @PostMapping(value = "/api/protos/ClassManagementService/GetProjects")
+  @ResponseBody
+  public GetProjectsResponse getProjects(
+      @RequestBody Optional<GetProjectsRequest> optionalRequest) throws IOException {
+    var request = optionalRequest.orElse(GetProjectsRequest.getDefaultInstance());
+    var response = GetProjectsResponse.newBuilder();
+
+    response.addAllProjects(DataAccess.getProtoProjectsByUserId(db, request.getUserId()));
 
     return response.build();
   }

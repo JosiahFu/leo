@@ -110,7 +110,15 @@ public class Database {
   public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
 
   @Repository
-  public interface ProjectRepository extends JpaRepository<Project, Integer> {}
+  public interface ProjectRepository extends JpaRepository<Project, Integer> {
+    @Query(
+        "SELECT p FROM Project p "
+            + "INNER JOIN IkigaiInput ii "
+            + "INNER JOIN User u "
+            + "WHERE u.id = (:user_id) "
+            + "ORDER BY p.creationTime DESC")
+    List<Project> findAllByUserId(@Param("user_id") int userId);
+  }
 
   @Repository
   public interface ProjectCycleRepository extends JpaRepository<ProjectCycle, Integer> {}

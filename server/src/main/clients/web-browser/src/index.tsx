@@ -16,6 +16,7 @@ import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
 import {LandingPageNav} from './pages/LandingPageNav';
 import {DefaultPageNav} from './pages/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
+import {MyProjects} from './pages/projects/MyProjects/MyProjects';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -32,6 +33,7 @@ root.render(
         </Route>
         <Route path="/projects" Component={DefaultPageNav}>
           <Route path="ikigai-builder" Component={IkigaiBuilder} />
+          <Route path="my-projects" Component={MyProjects} />
         </Route>
         <Route path="/login" Component={DefaultPageNav}>
           <Route path="" Component={Login} />

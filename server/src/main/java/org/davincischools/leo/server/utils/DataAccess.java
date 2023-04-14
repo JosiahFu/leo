@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
+import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
@@ -27,7 +28,7 @@ public class DataAccess {
   }
 
   public static List<org.davincischools.leo.protos.user_management.User>
-      getProtoFullUsersByDistrictId(Database db, int districtId) {
+  getProtoFullUsersByDistrictId(Database db, int districtId) {
     return StreamSupport.stream(
             db.getUserRepository().findAllFullUsersByDistrictId(districtId).spliterator(), false)
         .map(DataAccess::convertFullUserToProto)
@@ -45,7 +46,7 @@ public class DataAccess {
   }
 
   public static List<org.davincischools.leo.protos.school_management.School>
-      getProtoSchoolsByDistrictId(Database db, int districtId) {
+  getProtoSchoolsByDistrictId(Database db, int districtId) {
     return StreamSupport.stream(
             db.getSchoolRepository().findAllByDistrictId(districtId).spliterator(), false)
         .map(DataAccess::convertSchoolToProto)
@@ -71,5 +72,20 @@ public class DataAccess {
         .setLongDescr(assignment.getLongDescr())
         .setClass_(convertClassToProto(class_))
         .build();
+  }
+
+  public static org.davincischools.leo.protos.class_management.Project convertProjectToProto(
+      Project project) {
+    return org.davincischools.leo.protos.class_management.Project.newBuilder()
+        .setId(project.getId()).setName(project.getName()).setShortDescr(project.getShortDescr())
+        .setLongDescr(project.getLongDescr()).build();
+  }
+
+  public static List<org.davincischools.leo.protos.class_management.Project> getProtoProjectsByUserId(
+      Database db, int userId) {
+    return StreamSupport.stream(db.getProjectRepository().findAllByUserId(userId).spliterator(),
+            false)
+        .map(DataAccess::convertProjectToProto).collect(Collectors.toList());
+
   }
 }
