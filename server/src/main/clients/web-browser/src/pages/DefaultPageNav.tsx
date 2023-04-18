@@ -36,7 +36,7 @@ export function DefaultPageNav() {
           <div>
             <Link to="/">
               <img
-                src="/logo-orange-on-white.svg"
+                src="/images/logo-orange-on-white.svg"
                 alt="Project Leo Logo | Go Home"
               />
             </Link>

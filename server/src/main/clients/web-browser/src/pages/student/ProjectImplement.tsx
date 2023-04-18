@@ -29,19 +29,19 @@ function App() {
           <div className="tiles">
             <Card
               title="John Doe"
-              imageSrc="/profile.png"
+              imageSrc="/images/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />
             <Card
               title="John Doe"
-              imageSrc="/profile.png"
+              imageSrc="/images/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />
             <Card
               title="John Doe"
-              imageSrc="/profile.png"
+              imageSrc="/images/profile.png"
               description="A doe"
               path="/student/connection-profile/john"
             />

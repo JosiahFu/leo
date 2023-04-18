@@ -51,11 +51,10 @@ public class ReactResourceController {
   @RequestMapping({
     "/",
     "/favicon.ico",
+    "/images/**",
     "/index.html",
     "/installHooks.js",
     "/login",
-    "/logo*.png",
-    "/logo*.svg",
     "/manifest.json",
     "/profiles/**",
     "/projects/**",

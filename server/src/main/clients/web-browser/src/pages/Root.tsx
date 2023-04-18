@@ -42,7 +42,7 @@ export function Root() {
     <>
       <header>
         <Link to="/" className="header-section header-section-left">
-          <img src="/logo-white-on-orange.svg" />
+          <img src="/images/logo-white-on-orange.svg" />
         </Link>
         <div className="header-section header-section-center">
           <Link to="" className="nav-link">
@@ -86,9 +86,9 @@ export function Root() {
               I'm interested! Tell me more!
             </button>
           </div>
-          <img src="/main_section_landing_page.png" />
+          <img src="/images/main_section_landing_page.png" />
         </section>
-        <img src="/swoop.svg" style={{width: '100%'}} />
+        <img src="/images/swoop.svg" style={{width: '100%'}} />
         <section className="details-with-image">
           <div>
             <h2>What is Project Leo?</h2>
@@ -104,10 +104,10 @@ export function Root() {
               them for their future careers.
             </p>
           </div>
-          <img src="/placeholder.jpg" />
+          <img src="/images/placeholder.jpg" />
         </section>
         <section className="details-with-image">
-          <img src="/placeholder.jpg" />
+          <img src="/images/placeholder.jpg" />
           <div>
             <h2>Why Project Leo?</h2>
             <p>
@@ -136,10 +136,10 @@ export function Root() {
                   creating a truly customized and engaging learning experience.
                 </p>
               </div>
-              <img src="/placeholder.jpg" width="50%" />
+              <img src="/images/placeholder.jpg" />
             </div>
             <div className="timeline-with-image">
-              <img src="/placeholder.jpg" width="50%" />
+              <img src="/images/placeholder.jpg" />
               <div>
                 <h3>Students post their progress</h3>
                 <p>
@@ -166,10 +166,10 @@ export function Root() {
                   growth.
                 </p>
               </div>
-              <img src="/placeholder.jpg" width="50%" />
+              <img src="/images/placeholder.jpg" />
             </div>
             <div className="timeline-with-image">
-              <img src="/placeholder.jpg" width="50%" />
+              <img src="/images/placeholder.jpg" />
               <div>
                 <h3>Project Leo outputs final results</h3>
                 <p>
@@ -194,7 +194,7 @@ export function Root() {
                   engaged and motivated to continue exploring and learning.
                 </p>
               </div>
-              <img src="/placeholder.jpg" width="50%" />
+              <img src="/images/placeholder.jpg" />
             </div>
           </div>
         </section>
@@ -211,7 +211,7 @@ export function Root() {
               their passions, build new skills, and prepare for future careers.
             </p>
           </div>
-          <img src="/placeholder.jpg" />
+          <img src="/images/placeholder.jpg" />
         </section>
         <section className="details">
           <div>

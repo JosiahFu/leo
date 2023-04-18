@@ -10,7 +10,7 @@ export function LandingPageNav() {
           to="/"
           className="header-section header-section-left header-title nav-link"
         >
-          <img src="/logo-white-on-orange.svg" />
+          <img src="/images/logo-white-on-orange.svg" />
           <div id="site-title">PROJECT LEO</div>
         </Link>
         <div className="header-section header-section-center">
