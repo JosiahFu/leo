@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.davincischools.leo.protos.interest_service";
+
+package interest_service;
+
+service InterestService {
+  rpc RegisterInterest (RegisterInterestRequest) returns (RegisterInterestResponse) {}
+}
+
+message RegisterInterestRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string email_address = 3;
+  string profession = 5;
+  string reason_for_interest = 6;
+  string district_name = 7;
+  string school_name = 8;
+  string address_line_1 = 9;
+  string address_line_2 = 10;
+  string city = 11;
+  string state = 12;
+  string zip_code = 13;
+  int32 num_teachers = 14;
+  int32 num_students = 15;
+}
+
+message RegisterInterestResponse {
+}

@@ -1,8 +1,73 @@
 import './Root.scss';
+import {Link} from 'react-router-dom';
+import {Button, Dropdown, Form, Input, InputNumber, Modal, Space} from 'antd';
+import {ChangeEvent, useState} from 'react';
+import {DownOutlined} from '@ant-design/icons';
+import * as React from 'react';
+import {interest_service} from '../generated/protobuf-js';
+import InterestService = interest_service.InterestService;
+import {createService} from '../protos';
+import RegisterInterestRequest = interest_service.RegisterInterestRequest;
 
 export function Root() {
+  const selectProfession = 'Select Profession';
+  const otherProfession = 'Other (please describe below)';
+  const defaultProfessions = [
+    'K-12 District Leader/Administrator',
+    'K-12 Educator',
+    'Higher Education Leader/Administrator',
+    'Higher Education Faculty Member',
+    'Student',
+    otherProfession,
+  ];
+
+  const [interestForm] = Form.useForm();
+  const [interestFormOpen, setInterestFormOpen] = useState(false);
+  const [professionSelection, setProfessionSelection] =
+    useState(selectProfession);
+  const [professionDescr, setProfessionDescr] = useState('');
+
+  function submitInterestForm(values: {}) {
+    setInterestFormOpen(false);
+    const interestService = createService(InterestService, 'InterestService');
+    const request = RegisterInterestRequest.fromObject(values);
+    request.profession =
+      professionSelection !== otherProfession
+        ? professionSelection
+        : professionDescr;
+    interestService.registerInterest(request);
+  }
+
   return (
     <>
+      <header>
+        <Link
+          to="/"
+          className="header-section header-section-left header-title nav-link"
+        >
+          <img src="/logo-white-on-orange.svg" />
+          <div id="site-title">PROJECT LEO</div>
+        </Link>
+        <div className="header-section header-section-center">
+          <Link to="" className="nav-link">
+            About
+          </Link>
+          <Link to="" className="nav-link">
+            Our Mission
+          </Link>
+          <Link to="" className="nav-link">
+            Projects
+          </Link>
+          <Link to="" className="nav-link">
+            Blog
+          </Link>
+        </div>
+        <div className="header-section header-section-right">
+          <button className="light" onClick={() => setInterestFormOpen(true)}>
+            I'm interested! Tell me more!
+          </button>
+        </div>
+      </header>
       <section className="primary-section">
         <h1>Empowering Teachers, Engaging Students</h1>
         <div className="subtitle">
@@ -15,8 +80,9 @@ export function Root() {
           them. Say goodbye to the monotony of traditional schooling and hello
           to a purposeful and engaging learning experience.
         </p>
-        <button className="light">Learn more</button>
-        <button className="primary">Sign up</button>
+        <button className="light" onClick={() => setInterestFormOpen(true)}>
+          I'm interested! Tell me more!
+        </button>
         {/* <Carousel />*/}
       </section>
       <section>
@@ -143,15 +209,197 @@ export function Root() {
           <a href="mailto:seno@davincischools.org">seno@davincischools.org</a>.
         </p>
       </section>
+      <footer>&nbsp;</footer>
+      <Modal
+        title="I'm interested! Tell me more!"
+        width="80%"
+        open={interestFormOpen}
+        closable={true}
+        onCancel={() => setInterestFormOpen(false)}
+        footer={null}
+        forceRender
+      >
+        <Form
+          form={interestForm}
+          name="interested_form"
+          labelWrap={false}
+          labelCol={{span: 6}}
+          wrapperCol={{span: 96}}
+          onFinish={submitInterestForm}
+        >
+          <Form.Item
+            label="First Name"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: 'Please enter your first name',
+              },
+            ]}
+            name="firstName"
+          >
+            <Input name="firstName" maxLength={255} />
+          </Form.Item>
+          <Form.Item
+            label="Last Name"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: 'Please enter your last name',
+              },
+            ]}
+            name="lastName"
+          >
+            <Input name="lastName" maxLength={255} />
+          </Form.Item>
+          <Form.Item
+            label="E-mail"
+            rules={[
+              {
+                type: 'email',
+                message: 'This e-mail address is not valid',
+              },
+              {
+                required: true,
+                message: 'Please enter your e-mail address',
+              },
+            ]}
+            name="emailAddress"
+          >
+            <Input name="emailAddress" maxLength={254} />
+          </Form.Item>
+          <Form.Item
+            label="Profession"
+            required={true}
+            rules={[
+              {
+                validator: () => {
+                  if (professionSelection.trim() === selectProfession) {
+                    return Promise.reject('Please select your profession');
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+            name="professionSelection"
+          >
+            <Dropdown
+              menu={{
+                items: defaultProfessions.map(value => {
+                  return {
+                    key: value,
+                    label: (
+                      <div
+                        onClick={() => {
+                          setProfessionSelection(value);
+                          interestForm.setFieldValue(
+                            'professionSelection',
+                            value
+                          );
+                        }}
+                      >
+                        {value}
+                      </div>
+                    ),
+                  };
+                }),
+              }}
+            >
+              <Button>
+                <Space>
+                  {professionSelection}
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+          </Form.Item>
+          <Form.Item
+            label="Describe Profession"
+            required={true}
+            hidden={professionSelection !== otherProfession}
+            rules={[
+              {
+                validator: () => {
+                  if (professionSelection === otherProfession) {
+                    if (professionDescr.trim() === '') {
+                      return Promise.reject('Please describe your profession');
+                    }
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+            name="professionDescr"
+          >
+            <Input
+              name="professionDescr"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setProfessionDescr(e.target.value)
+              }
+              value={professionDescr}
+              maxLength={255}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Reason for Interest"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: 'Please enter your reason for interest',
+              },
+            ]}
+            name="reasonForInterest"
+          >
+            <Input.TextArea name="reasonForInterest" maxLength={8192} />
+          </Form.Item>
+          <Form.Item label="District Name" name="districtName">
+            <Input name="districtName" maxLength={255} />
+          </Form.Item>
+          <Form.Item label="School Name" name="schoolName">
+            <Input name="schoolName" maxLength={255} />
+          </Form.Item>
+          <Form.Item label="Anticipated Usage" style={{marginBottom: 0}}>
+            <div style={{display: 'flex', gap: 10}}>
+              <Form.Item label="Teachers" name="numTeachers">
+                <InputNumber name="numTeachers" min={0} />
+              </Form.Item>
+              <Form.Item label="Students" name="numStudents">
+                <InputNumber name="numTeachers" min={0} />
+              </Form.Item>
+            </div>
+          </Form.Item>
+          <Form.Item label="Address Line 1:" name="addressLine_1">
+            <Input name="addressLine_1" maxLength={255} />
+          </Form.Item>
+          <Form.Item label="Address Line 2:" name="addressLine_2">
+            <Input name="addressLine_2" maxLength={255} />
+          </Form.Item>
+          <Form.Item label="City" name="city">
+            <Input name="city" maxLength={20} />
+          </Form.Item>
+          <Form.Item label="State" name="state">
+            <Input name="state" maxLength={2} />
+          </Form.Item>
+          <Form.Item label="Zip Code" name="zipCode">
+            <Input name="zipCode" maxLength={10} />
+          </Form.Item>
+          <Form.Item style={{textAlign: 'end'}}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+            &nbsp;
+            <Button type="default" onClick={() => setInterestFormOpen(false)}>
+              Cancel
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 }
 
-// import {useEffect, useState} from 'react';
-// import * as protos from '../protos';
-// import {Coordinate, IkigaiReel} from '../IkigaiReel/IkigaiReel';
-
-// export function Spinner() {
 //   const [messageOfTheDay, setMessageOfTheDay] = useState('');
 
 //   const [ikigaiCenter, setIkigaiCenter] = useState<Coordinate | null>(null);

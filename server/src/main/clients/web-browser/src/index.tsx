@@ -13,7 +13,6 @@ import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
 import Login from './pages/login/Login';
 import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
-import {LandingPageNav} from './pages/LandingPageNav';
 import {DefaultPageNav} from './pages/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
 import {MyProjects} from './pages/projects/MyProjects/MyProjects';
@@ -26,6 +25,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="/login" Component={DefaultPageNav}>
+          <Route path="" Component={Login} />
+        </Route>
         <Route path="/profiles" Component={DefaultPageNav}>
           <Route path="edit-districts" Component={EditDistricts} />
           <Route path="edit-schools" Component={EditSchools} />
@@ -35,19 +37,17 @@ root.render(
           <Route path="ikigai-builder" Component={IkigaiBuilder} />
           <Route path="my-projects" Component={MyProjects} />
         </Route>
-        <Route path="/login" Component={DefaultPageNav}>
-          <Route path="" Component={Login} />
-        </Route>
-        <Route path="/" Component={LandingPageNav}>
-          <Route path="" Component={Root} />
-          <Route path="/studdent" Component={StudentNav} />
-          <Route path="/student/project-gen" Component={StudentProjectGen} />
+        <Route path="/student" Component={DefaultPageNav}>
+          <Route path="" Component={StudentNav} />
+          <Route path="project-gen" Component={StudentProjectGen} />
           <Route
-            path="/student/project-implement"
+            path="project-implement"
             Component={StudentProjectImplementation}
           />
-          <Route path="/student/upload" Component={StudentUpload} />
+          <Route path="upload" Component={StudentUpload} />
         </Route>
+        <Route path="/" Component={Root} />
+        <Route path="" Component={Root} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
