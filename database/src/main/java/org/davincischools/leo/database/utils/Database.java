@@ -9,6 +9,7 @@ import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.Class;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.IkigaiInput;
+import org.davincischools.leo.database.daos.Interest;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
@@ -78,6 +79,9 @@ public class Database {
 
   @Repository
   public interface IkigaiInputRepository extends JpaRepository<IkigaiInput, Integer> {}
+
+  @Repository
+  public interface InterestRepository extends JpaRepository<Interest, Integer> {}
 
   @Repository
   public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
@@ -266,6 +270,7 @@ public class Database {
   @Autowired private ClassRepository classRepository;
   @Autowired private DistrictRepository districtRepository;
   @Autowired private IkigaiInputRepository ikigaiInputRepository;
+  @Autowired private InterestRepository interestRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
   @Autowired private LogRepository logRepository;
@@ -302,6 +307,10 @@ public class Database {
 
   public IkigaiInputRepository getIkigaiInputRepository() {
     return ikigaiInputRepository;
+  }
+
+  public InterestRepository getInterestRepository() {
+    return interestRepository;
   }
 
   public KnowledgeAndSkillRepository getKnowledgeAndSkillRepository() {
