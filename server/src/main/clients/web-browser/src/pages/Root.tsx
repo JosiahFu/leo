@@ -45,12 +45,12 @@ export function Root() {
           <img src="/images/logo-white-on-orange.svg" />
         </Link>
         <div className="header-section header-section-center">
-          <Link to="" className="nav-link">
+          <a href="#what_is_project_leo" className="nav-link">
             About
-          </Link>
-          <Link to="" className="nav-link">
+          </a>
+          <a href="#our_mission" className="nav-link">
             Our Mission
-          </Link>
+          </a>
           <Link to="" className="nav-link">
             Projects
           </Link>
@@ -86,11 +86,11 @@ export function Root() {
               I'm interested! Tell me more!
             </button>
           </div>
-          <img src="/images/main_section_landing_page.png" />
+          <img src="/images/landing/girl_at_board.jpg" />
         </section>
-        <img src="/images/swoop.svg" style={{width: '100%'}} />
+        <img src="/images/landing/swoop.svg" style={{width: '100%'}} />
         <section className="details-with-image">
-          <div>
+          <div id="what_is_project_leo">
             <h2>What is Project Leo?</h2>
             <p>
               Project Leo is an innovative educational tool designed to inspire
@@ -104,7 +104,7 @@ export function Root() {
               them for their future careers.
             </p>
           </div>
-          <img src="/images/placeholder.jpg" />
+          <img src="/images/landing/group.png" />
         </section>
         <section className="details-with-image">
           <img src="/images/placeholder.jpg" />
@@ -136,10 +136,12 @@ export function Root() {
                   creating a truly customized and engaging learning experience.
                 </p>
               </div>
-              <img src="/images/placeholder.jpg" />
+              <div>
+                <img src="/images/landing/woman-lightbulb.png" />
+              </div>
             </div>
             <div className="timeline-with-image">
-              <img src="/images/placeholder.jpg" />
+              <img src="/images/landing/man-at-desk.png" />
               <div>
                 <h3>Students post their progress</h3>
                 <p>
@@ -166,10 +168,10 @@ export function Root() {
                   growth.
                 </p>
               </div>
-              <img src="/images/placeholder.jpg" />
+              <img src="/images/landing/man-messaging.png" />
             </div>
             <div className="timeline-with-image">
-              <img src="/images/placeholder.jpg" />
+              <img src="/images/landing/people-computer.png" />
               <div>
                 <h3>Project Leo outputs final results</h3>
                 <p>
@@ -194,12 +196,12 @@ export function Root() {
                   engaged and motivated to continue exploring and learning.
                 </p>
               </div>
-              <img src="/images/placeholder.jpg" />
+              <img src="/images/landing/woman-on-books.png" />
             </div>
           </div>
         </section>
         <section className="details">
-          <div>
+          <div id="our_mission">
             <h2>Our Mission</h2>
             <p>
               At Project Leo, our mission is to empower teachers and students by
@@ -211,7 +213,7 @@ export function Root() {
               their passions, build new skills, and prepare for future careers.
             </p>
           </div>
-          <img src="/images/placeholder.jpg" />
+          <img src="/images/landing/kids-jumping.png" />
         </section>
         <section className="details">
           <div>

@@ -22,7 +22,7 @@ header {
   flex-basis: 0;
   flex-grow: 1;
   height: 100%;
-  gap: 1em;
+  gap: 5em;
 
   &-left {
     justify-content: flex-start;
@@ -50,7 +50,7 @@ footer {
 
 .primary-section {
   background-color: color.$primary-600;
-  padding: 4em 2em 2em 2em;
+  padding: 2em 10% 2em 10%;
   color: color.$neutral-0;
 
   h1 {
@@ -69,16 +69,9 @@ footer {
   }
 
   img {
-    width: 40%;
+    padding-left: 5%;
+    width: 45%;
   }
-}
-
-.image-placeholder {
-    background-color: #0000001f;
-    display: grid;
-    place-content: center;
-    height: 20em;
-    width: 30em;
 }
 
 .details {
@@ -101,6 +94,7 @@ footer {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  gap: 5em;
 
   div {}
 
@@ -118,12 +112,15 @@ footer {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  width: 100%;
+  gap: 5em;
 
-  div {}
 
-  img {
-    width: 50%;
+  div {
+    width: 100%;
+  }
+
+  div img {
+    width: 90%;
   }
 }
 

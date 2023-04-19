@@ -1,0 +1,12 @@
+<svg width="400" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            .foreground {
+            stroke: #f4a062;
+            fill: #f4a062;
+            stroke-width: 0;
+            }
+        </style>
+    </defs>
+    <ellipse cx="200" cy="-375" rx="600" ry="400" class="foreground icon"/>
+</svg>
