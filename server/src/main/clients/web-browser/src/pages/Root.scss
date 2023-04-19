@@ -21,7 +21,6 @@ header {
   align-items: center;
   flex-basis: 0;
   flex-grow: 1;
-  height: 100%;
   gap: 5em;
 
   &-left {
@@ -50,7 +49,7 @@ footer {
 
 .primary-section {
   background-color: color.$primary-600;
-  padding: 2em 10% 2em 10%;
+  padding: 2em 5% 2em 5%;
   color: color.$neutral-0;
 
   h1 {

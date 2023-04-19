@@ -44,7 +44,10 @@ export function Root() {
         <Link to="/" className="header-section header-section-left">
           <img src="/images/logo-white-on-orange.svg" />
         </Link>
-        <div className="header-section header-section-center">
+        <div
+          className="header-section header-section-center"
+          style={{whiteSpace: 'nowrap'}}
+        >
           <a href="#what_is_project_leo" className="nav-link">
             About
           </a>
@@ -70,7 +73,7 @@ export function Root() {
           style={{display: 'flex', alignItems: 'flex-start', gap: '15px'}}
         >
           <div>
-            <h1>Empowering&nbsp;Teachers, Engaging&nbsp;Students</h1>
+            <h1>Empowering Teachers, Engaging Students</h1>
             <div className="subheading">
               Unlock Your Classroom's Full Potential with Project Leo
             </div>
@@ -230,12 +233,7 @@ export function Root() {
         </section>
       </main>
       <footer>
-        <Link
-          to="https://www.freepik.com/free-vector/illustration-gallery-icon_2922280.htm#query=placeholder&position=0&from_view=search&track=sph"
-          className="nav-link"
-        >
-          Placeholder image by rawpixel.com on Freepik
-        </Link>
+        Images by <Link to="https://www.freepik.com/">Freepik</Link>.
       </footer>
       <Modal
         title="I'm interested! Tell me more!"
@@ -426,73 +424,3 @@ export function Root() {
     </>
   );
 }
-
-//   const [messageOfTheDay, setMessageOfTheDay] = useState('');
-
-//   const [ikigaiCenter, setIkigaiCenter] = useState<Coordinate | null>(null);
-//   const [ikigaiDistance, setIkigaiDistance] = useState(0);
-//   const [ikigaiSize, setIkigaiSize] = useState(0);
-
-//   function updateIkigaiPosition() {
-//     const main = document.getElementsByTagName('main').item(0) as HTMLElement;
-//     if (main) {
-//       setIkigaiCenter({
-//         x: main.offsetLeft + main.offsetWidth / 2,
-//         y:
-//           main.offsetTop +
-//           main.offsetHeight / 2 +
-//           (Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.07,
-//       });
-//       setIkigaiSize((Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.8);
-//       setIkigaiDistance(
-//         (Math.min(main.offsetWidth, main.offsetHeight) / 2) * 0.8 * 0.4
-//       );
-//     }
-//   }
-
-//   // Updates the Ikigai position after layout and on window resize.
-//   useEffect(() => {
-//     updateIkigaiPosition();
-//     window.addEventListener('resize', updateIkigaiPosition);
-//   }, []);
-
-//   // Loads and sets the message of the day.
-//   useEffect(() => {
-//     const motdService = protos.createService(
-//       protos.message_of_the_day.MessageOfTheDayService,
-//       'MessageOfTheDayService'
-//     );
-
-//     motdService
-//       .getMessage(protos.message_of_the_day.MessageRequest.create({}))
-//       .then((response: protos.message_of_the_day.MessageResponse) => {
-//         setMessageOfTheDay(response.message!);
-//       })
-//       .catch((error: Error) => {
-//         setMessageOfTheDay(`${error.name}: ${error.message}`);
-//       });
-//   }, []);
-
-//   return (
-//     <>
-//       <IkigaiReel
-//         id="IkigaiReel"
-//         origin={ikigaiCenter}
-//         size={ikigaiSize}
-//         sizeDelta={ikigaiSize / 6}
-//         distance={ikigaiDistance * 1.1}
-//         distanceDelta={ikigaiDistance / 6}
-//       />
-//       {messageOfTheDay}
-//       <div>
-//         <button>Default</button>
-//         <button className="light">Light</button>
-//         <button className="primary">Primary</button>
-//         <button className="info">Info</button>
-//         <button className="delete">Delete</button>
-//         <button className="prev">Prev</button>
-//         <button className="next">Next</button>
-//       </div>
-//     </>
-//   );
-// }
