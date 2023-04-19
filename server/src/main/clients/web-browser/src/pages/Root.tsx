@@ -62,6 +62,9 @@ export function Root() {
           </Link>
         </div>
         <div className="header-section header-section-right">
+          <Link to="/login">
+            <button className="primary">Login</button>
+          </Link>
           <button className="light" onClick={() => setInterestFormOpen(true)}>
             I'm interested! Tell me more!
           </button>
