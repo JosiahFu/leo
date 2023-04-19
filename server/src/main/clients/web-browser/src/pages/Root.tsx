@@ -81,12 +81,14 @@ export function Root() {
               Unlock Your Classroom's Full Potential with Project Leo
             </div>
             <div className="summary">
-              Designed with both teachers and students in mind, Project Leo
-              provides an easy way to incorporate differentiation into your
-              class, while giving students the freedom to pursue projects that
-              truly inspire them. Say goodbye to the monotony of traditional
-              schooling and hello to a purposeful and engaging learning
-              experience.
+              Designed with the teachers and students at Da Vinci Schools,
+              Project Leo provides the tools necessary to bring personalized
+              Project Based Learning into every classroom. Our AI-enhanced
+              learning platform gives students the freedom to build projects
+              that truly inspire them while getting feedback from teachers,
+              professionals, and peers throughout the process. Leverage the
+              latest AI tools in a safe way to give your students a more
+              purposeful and engaging learning experience.
             </div>
             <button className="light" onClick={() => setInterestFormOpen(true)}>
               I'm interested! Tell me more!
