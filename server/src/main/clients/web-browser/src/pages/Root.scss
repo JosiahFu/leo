@@ -21,7 +21,8 @@ header {
   align-items: center;
   flex-basis: 0;
   flex-grow: 1;
-  gap: 5em;
+  white-space: nowrap;
+  gap: 1em;
 
   &-left {
     justify-content: flex-start;
@@ -38,7 +39,6 @@ header {
 
 main {
   flex: auto;
-
 }
 
 footer {
