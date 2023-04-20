@@ -125,7 +125,7 @@ public class Interest {
     return this;
   }
 
-  @Column(name = COLUMN_REASONFORINTEREST_NAME, length = 8192)
+  @Column(name = COLUMN_REASONFORINTEREST_NAME, nullable = false, length = 8192)
   public String getReasonForInterest() {
     return reasonForInterest;
   }

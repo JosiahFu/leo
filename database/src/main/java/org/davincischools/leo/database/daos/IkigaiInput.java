@@ -21,6 +21,7 @@ public class IkigaiInput {
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_SOMETHINGYOULOVE_NAME = "something_you_love";
   public static final String COLUMN_WHATYOUAREGOODAT_NAME = "what_you_are_good_at";
+  public static final String COLUMN_PENDINGCOMPLETION_NAME = "pending_completion";
 
   private Integer id;
 
@@ -29,6 +30,8 @@ public class IkigaiInput {
   private String somethingYouLove;
 
   private String whatYouAreGoodAt;
+
+  private Instant pendingCompletion;
 
   private Assignment assignment;
 
@@ -73,6 +76,16 @@ public class IkigaiInput {
 
   public IkigaiInput setWhatYouAreGoodAt(String whatYouAreGoodAt) {
     this.whatYouAreGoodAt = whatYouAreGoodAt;
+    return this;
+  }
+
+  @Column(name = COLUMN_PENDINGCOMPLETION_NAME)
+  public Instant getPendingCompletion() {
+    return pendingCompletion;
+  }
+
+  public IkigaiInput setPendingCompletion(Instant pendingCompletion) {
+    this.pendingCompletion = pendingCompletion;
     return this;
   }
 

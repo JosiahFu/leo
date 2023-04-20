@@ -21,7 +21,7 @@ public class ProjectPostComment {
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_COMMENT_NAME = "comment";
-  public static final String COLUMN_COMMENTQUILLZIP_NAME = "comment_quill_zip";
+  public static final String COLUMN_COMMENTQUILL_NAME = "comment_quill";
 
   private Integer id;
 
@@ -29,7 +29,7 @@ public class ProjectPostComment {
 
   private String comment;
 
-  private byte[] commentQuillZip;
+  private String commentQuill;
 
   private User user;
 
@@ -68,13 +68,14 @@ public class ProjectPostComment {
     return this;
   }
 
-  @Column(name = COLUMN_COMMENTQUILLZIP_NAME)
-  public byte[] getCommentQuillZip() {
-    return commentQuillZip;
+  @Lob
+  @Column(name = COLUMN_COMMENTQUILL_NAME, nullable = false)
+  public String getCommentQuill() {
+    return commentQuill;
   }
 
-  public ProjectPostComment setCommentQuillZip(byte[] commentQuillZip) {
-    this.commentQuillZip = commentQuillZip;
+  public ProjectPostComment setCommentQuill(String commentQuill) {
+    this.commentQuill = commentQuill;
     return this;
   }
 

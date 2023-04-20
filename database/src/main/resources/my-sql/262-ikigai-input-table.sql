@@ -5,6 +5,7 @@ CREATE TABLE ikigai_input
 
     something_you_love   VARCHAR(255) NOT NULL,
     what_you_are_good_at VARCHAR(255) NOT NULL,
+    pending_completion   DATETIME,
 
     assignment_id        INT          NOT NULL,
     CONSTRAINT ikigai_input_assignment_id

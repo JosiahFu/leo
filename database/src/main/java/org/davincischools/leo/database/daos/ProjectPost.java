@@ -22,9 +22,9 @@ public class ProjectPost {
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
-  public static final String COLUMN_SHORTDESCRQUILLZIP_NAME = "short_descr_quill_zip";
+  public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
-  public static final String COLUMN_LONGDESCRQUILLZIP_NAME = "long_descr_quill_zip";
+  public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
 
   private Integer id;
 
@@ -34,11 +34,11 @@ public class ProjectPost {
 
   private String shortDescr;
 
-  private byte[] shortDescrQuillZip;
+  private String shortDescrQuill;
 
   private String longDescr;
 
-  private byte[] longDescrQuillZip;
+  private String longDescrQuill;
 
   private User user;
 
@@ -86,13 +86,14 @@ public class ProjectPost {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCRQUILLZIP_NAME)
-  public byte[] getShortDescrQuillZip() {
-    return shortDescrQuillZip;
+  @Lob
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  public String getShortDescrQuill() {
+    return shortDescrQuill;
   }
 
-  public ProjectPost setShortDescrQuillZip(byte[] shortDescrQuillZip) {
-    this.shortDescrQuillZip = shortDescrQuillZip;
+  public ProjectPost setShortDescrQuill(String shortDescrQuill) {
+    this.shortDescrQuill = shortDescrQuill;
     return this;
   }
 
@@ -107,13 +108,14 @@ public class ProjectPost {
     return this;
   }
 
-  @Column(name = COLUMN_LONGDESCRQUILLZIP_NAME)
-  public byte[] getLongDescrQuillZip() {
-    return longDescrQuillZip;
+  @Lob
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  public String getLongDescrQuill() {
+    return longDescrQuill;
   }
 
-  public ProjectPost setLongDescrQuillZip(byte[] longDescrQuillZip) {
-    this.longDescrQuillZip = longDescrQuillZip;
+  public ProjectPost setLongDescrQuill(String longDescrQuill) {
+    this.longDescrQuill = longDescrQuill;
     return this;
   }
 
