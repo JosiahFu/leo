@@ -23,11 +23,9 @@ public class Log {
   public static final String COLUMN_SOURCE_NAME = "source";
   public static final String COLUMN_NOTES_NAME = "notes";
   public static final String COLUMN_REQUEST_NAME = "request";
-  public static final String COLUMN_REQUESTTIME_NAME = "request_time";
   public static final String COLUMN_UNPROCESSEDRESPONSE_NAME = "unprocessed_response";
   public static final String COLUMN_UNPROCESSEDRESPONSETIME_NAME = "unprocessed_response_time";
   public static final String COLUMN_RESPONSE_NAME = "response";
-  public static final String COLUMN_RESPONSETIME_NAME = "response_time";
   public static final String COLUMN_STATUS_NAME = "status";
 
   private Integer id;
@@ -40,15 +38,11 @@ public class Log {
 
   private String request;
 
-  private Instant requestTime;
-
   private byte[] unprocessedResponse;
 
   private Instant unprocessedResponseTime;
 
   private String response;
-
-  private Instant responseTime;
 
   private String status;
 
@@ -108,16 +102,6 @@ public class Log {
     return this;
   }
 
-  @Column(name = COLUMN_REQUESTTIME_NAME, nullable = false)
-  public Instant getRequestTime() {
-    return requestTime;
-  }
-
-  public Log setRequestTime(Instant requestTime) {
-    this.requestTime = requestTime;
-    return this;
-  }
-
   @Column(name = COLUMN_UNPROCESSEDRESPONSE_NAME)
   public byte[] getUnprocessedResponse() {
     return unprocessedResponse;
@@ -146,16 +130,6 @@ public class Log {
 
   public Log setResponse(String response) {
     this.response = response;
-    return this;
-  }
-
-  @Column(name = COLUMN_RESPONSETIME_NAME)
-  public Instant getResponseTime() {
-    return responseTime;
-  }
-
-  public Log setResponseTime(Instant responseTime) {
-    this.responseTime = responseTime;
     return this;
   }
 

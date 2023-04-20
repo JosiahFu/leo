@@ -16,10 +16,16 @@ public class Student {
   public static final String TABLE_NAME = "student";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
+  public static final String COLUMN_STUDENTID_NAME = "student_id";
+  public static final String COLUMN_GRADE_NAME = "grade";
 
   private Integer id;
 
   private Instant creationTime;
+
+  private String studentId;
+
+  private String grade;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +46,26 @@ public class Student {
 
   public Student setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
+    return this;
+  }
+
+  @Column(name = COLUMN_STUDENTID_NAME, nullable = false, length = 20)
+  public String getStudentId() {
+    return studentId;
+  }
+
+  public Student setStudentId(String studentId) {
+    this.studentId = studentId;
+    return this;
+  }
+
+  @Column(name = COLUMN_GRADE_NAME, length = 20)
+  public String getGrade() {
+    return grade;
+  }
+
+  public Student setGrade(String grade) {
+    this.grade = grade;
     return this;
   }
 }
