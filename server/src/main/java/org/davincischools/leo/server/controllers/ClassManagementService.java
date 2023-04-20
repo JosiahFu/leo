@@ -19,6 +19,7 @@ import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.User;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.StudentRepository.StudentAssignment;
+import org.davincischools.leo.database.utils.QuillInitializer;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsRequest;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
 import org.davincischools.leo.protos.class_management.GetProjectsRequest;
@@ -148,7 +149,9 @@ public class ClassManagementService {
                     .setIkigaiInput(ikigaiInput)
                     .setName(name.group(1))
                     .setShortDescr(shortDescr.group(1))
-                    .setLongDescr(longDescr.group(1)));
+                    .setShortDescrQuill(QuillInitializer.toQuillDelta(shortDescr.group(1)))
+                    .setLongDescr(longDescr.group(1))
+                    .setLongDescrQuill(QuillInitializer.toQuillDelta(longDescr.group(1))));
         i += 2;
       }
     }

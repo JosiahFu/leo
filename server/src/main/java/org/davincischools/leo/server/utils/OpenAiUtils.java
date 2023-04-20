@@ -138,10 +138,10 @@ public class OpenAiUtils {
               .collect(ImmutableList.toImmutableList())
               .block();
       responseBytes = Bytes.concat(Objects.requireNonNull(streamedBytes).toArray(byte[][]::new));
+      logEntry.setUnprocessedResponse(responseBytes).setUnprocessedResponseTime(Instant.now());
 
       // Translate the response back into a proto.
       String responseString = new String(responseBytes, StandardCharsets.UTF_8);
-      logEntry.setUnprocessedResponse(responseString);
       JsonFormat.parser().ignoringUnknownFields().merge(responseString, responseBuilder);
 
       logger.atInfo().log("OpenAI Response: " + JsonFormat.printer().print(responseBuilder));

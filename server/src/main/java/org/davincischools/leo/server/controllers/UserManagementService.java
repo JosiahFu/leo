@@ -159,8 +159,10 @@ public class UserManagementService {
 
     if ((user.getStudent() != null) ^ request.getUser().getIsStudent()) {
       if (request.getUser().getIsStudent()) {
+        // TODO: Set the student ID.
         user.setStudent(
-            db.getStudentRepository().save(new Student().setCreationTime(Instant.now())));
+            db.getStudentRepository()
+                .save(new Student().setCreationTime(Instant.now()).setStudentId("")));
       } else {
         user.setStudent(null);
       }

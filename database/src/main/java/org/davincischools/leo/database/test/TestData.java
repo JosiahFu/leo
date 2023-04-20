@@ -19,6 +19,7 @@ import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.StudentClassRepository;
 import org.davincischools.leo.database.utils.Database.TeacherClassRepository;
 import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
+import org.davincischools.leo.database.utils.QuillInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -241,7 +242,11 @@ public class TestData {
     for (var student : students) {
       if (student.getStudent() == null) {
         student.setStudent(
-            db.getStudentRepository().save(new Student().setCreationTime(Instant.now())));
+            db.getStudentRepository()
+                .save(
+                    new Student()
+                        .setCreationTime(Instant.now())
+                        .setStudentId(Integer.toString(counter.incrementAndGet()))));
         db.getUserRepository().save(student);
       }
     }
@@ -272,7 +277,9 @@ public class TestData {
                     .setSchool(school)
                     .setName(name)
                     .setShortDescr(descr)
-                    .setLongDescr(descr));
+                    .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
+                    .setLongDescr(descr)
+                    .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
     return clazz;
   }
 
@@ -290,7 +297,9 @@ public class TestData {
                     .setClassField(clazz)
                     .setName(name)
                     .setShortDescr(descr)
-                    .setLongDescr(descr));
+                    .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
+                    .setLongDescr(descr)
+                    .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
 
     var ksaRepo = db.getKnowledgeAndSkillAssignmentRepository();
     Arrays.asList(knowledgeAndSkills)
@@ -307,6 +316,8 @@ public class TestData {
                 .setClassField(clazz)
                 .setName(name)
                 .setShortDescr(descr)
-                .setLongDescr(descr));
+                .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
+                .setLongDescr(descr)
+                .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
   }
 }
