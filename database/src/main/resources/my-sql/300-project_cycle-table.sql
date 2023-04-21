@@ -10,7 +10,7 @@ CREATE TABLE project_cycle
     long_descr_quill  TEXT         NOT NULL,
 
     project_id        INT          NOT NULL,
-    CONSTRAINT project_cycle_project_id
+    CONSTRAINT project_cycle__project_id
         FOREIGN KEY (project_id)
             REFERENCES project (id)
             ON DELETE RESTRICT

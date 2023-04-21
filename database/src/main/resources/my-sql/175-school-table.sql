@@ -7,7 +7,7 @@ CREATE TABLE school
     city          VARCHAR(255) NOT NULL,
 
     district_id   INT          NOT NULL,
-    CONSTRAINT school_district_id
+    CONSTRAINT school__district_id
         FOREIGN KEY (district_id)
             REFERENCES district (id)
             ON DELETE RESTRICT

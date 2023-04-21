@@ -9,10 +9,10 @@ CREATE TABLE knowledge_and_skill
     long_descr        TEXT         NOT NULL,
     long_descr_quill  TEXT         NOT NULL,
 
-    class_id          INT          NOT NULL,
-    CONSTRAINT knowledge_and_skill_class_id
-        FOREIGN KEY (class_id)
-            REFERENCES class (id)
+    class_x_id        INT          NOT NULL,
+    CONSTRAINT knowledge_and_skill__class_x_id
+        FOREIGN KEY (class_x_id)
+            REFERENCES class_x (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB

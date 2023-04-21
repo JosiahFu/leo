@@ -52,7 +52,7 @@ public class Log {
 
   private String notes;
 
-  private User user;
+  private UserX userX;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -171,13 +171,13 @@ public class Log {
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  public User getUser() {
-    return user;
+  @JoinColumn(name = "user_x_id")
+  public UserX getUserX() {
+    return userX;
   }
 
-  public Log setUser(User user) {
-    this.user = user;
+  public Log setUserX(UserX userX) {
+    this.userX = userX;
     return this;
   }
 }

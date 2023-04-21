@@ -15,7 +15,7 @@ import java.time.Instant;
 public class TeacherSchool {
 
   public static final String ENTITY_NAME = "TeacherSchool";
-  public static final String TABLE_NAME = "teacher_school";
+  public static final String TABLE_NAME = "teacher__school";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
   private TeacherSchoolId id;

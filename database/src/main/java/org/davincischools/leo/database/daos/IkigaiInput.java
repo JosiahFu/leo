@@ -36,7 +36,7 @@ public class IkigaiInput {
 
   private Assignment assignment;
 
-  private User user;
+  private UserX userX;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,13 +104,13 @@ public class IkigaiInput {
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  public User getUser() {
-    return user;
+  @JoinColumn(name = "user_x_id", nullable = false)
+  public UserX getUserX() {
+    return userX;
   }
 
-  public IkigaiInput setUser(User user) {
-    this.user = user;
+  public IkigaiInput setUserX(UserX userX) {
+    this.userX = userX;
     return this;
   }
 }

@@ -10,7 +10,7 @@ CREATE TABLE project
     long_descr_quill  TEXT         NOT NULL,
 
     ikigai_input_id   INT          NOT NULL,
-    CONSTRAINT project_ikigai_input_id
+    CONSTRAINT project__ikigai_input_id
         FOREIGN KEY (ikigai_input_id)
             REFERENCES ikigai_input (id)
             ON DELETE RESTRICT

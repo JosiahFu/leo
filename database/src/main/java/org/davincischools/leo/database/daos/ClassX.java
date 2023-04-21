@@ -12,12 +12,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = Class.ENTITY_NAME)
-@Table(name = Class.TABLE_NAME, schema = "leo_temp")
-public class Class {
+@Entity(name = ClassX.ENTITY_NAME)
+@Table(name = ClassX.TABLE_NAME, schema = "leo_temp")
+public class ClassX {
 
-  public static final String ENTITY_NAME = "Class";
-  public static final String TABLE_NAME = "class";
+  public static final String ENTITY_NAME = "ClassX";
+  public static final String TABLE_NAME = "class_x";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
@@ -49,7 +49,7 @@ public class Class {
     return id;
   }
 
-  public Class setId(Integer id) {
+  public ClassX setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -59,7 +59,7 @@ public class Class {
     return creationTime;
   }
 
-  public Class setCreationTime(Instant creationTime) {
+  public ClassX setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }
@@ -69,7 +69,7 @@ public class Class {
     return name;
   }
 
-  public Class setName(String name) {
+  public ClassX setName(String name) {
     this.name = name;
     return this;
   }
@@ -80,7 +80,7 @@ public class Class {
     return shortDescr;
   }
 
-  public Class setShortDescr(String shortDescr) {
+  public ClassX setShortDescr(String shortDescr) {
     this.shortDescr = shortDescr;
     return this;
   }
@@ -91,7 +91,7 @@ public class Class {
     return shortDescrQuill;
   }
 
-  public Class setShortDescrQuill(String shortDescrQuill) {
+  public ClassX setShortDescrQuill(String shortDescrQuill) {
     this.shortDescrQuill = shortDescrQuill;
     return this;
   }
@@ -102,7 +102,7 @@ public class Class {
     return longDescr;
   }
 
-  public Class setLongDescr(String longDescr) {
+  public ClassX setLongDescr(String longDescr) {
     this.longDescr = longDescr;
     return this;
   }
@@ -113,7 +113,7 @@ public class Class {
     return longDescrQuill;
   }
 
-  public Class setLongDescrQuill(String longDescrQuill) {
+  public ClassX setLongDescrQuill(String longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
     return this;
   }
@@ -124,7 +124,7 @@ public class Class {
     return school;
   }
 
-  public Class setSchool(School school) {
+  public ClassX setSchool(School school) {
     this.school = school;
     return this;
   }

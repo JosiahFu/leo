@@ -17,10 +17,10 @@ CREATE TABLE log
 
     notes                 MEDIUMTEXT,
 
-    user_id               INT,
-    CONSTRAINT log_user_id
-        FOREIGN KEY (user_id)
-            REFERENCES user (id)
+    user_x_id             INT,
+    CONSTRAINT log__user_x_id
+        FOREIGN KEY (user_x_id)
+            REFERENCES user_x (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB

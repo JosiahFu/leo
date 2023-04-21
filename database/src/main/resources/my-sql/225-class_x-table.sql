@@ -1,4 +1,5 @@
-CREATE TABLE class
+-- 'class' is a Java reserved word. So, append '_x'.
+CREATE TABLE class_x
 (
     id                INT PRIMARY KEY AUTO_INCREMENT,
     creation_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -10,7 +11,7 @@ CREATE TABLE class
     long_descr_quill  TEXT         NOT NULL,
 
     school_id         INT          NOT NULL,
-    CONSTRAINT class_school_id
+    CONSTRAINT class_x__school_id
         FOREIGN KEY (school_id)
             REFERENCES school (id)
             ON DELETE RESTRICT

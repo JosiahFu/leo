@@ -8,16 +8,16 @@ CREATE TABLE ikigai_input
     pending_completion   DATETIME,
 
     assignment_id        INT      NOT NULL,
-    CONSTRAINT ikigai_input_assignment_id
+    CONSTRAINT ikigai_input__assignment_id
         FOREIGN KEY (assignment_id)
             REFERENCES assignment (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    user_id              INT      NOT NULL,
-    CONSTRAINT ikigai_input_user_id
-        FOREIGN KEY (user_id)
-            REFERENCES user (id)
+    user_x_id            INT      NOT NULL,
+    CONSTRAINT ikigai_input__user_x_id
+        FOREIGN KEY (user_x_id)
+            REFERENCES user_x (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB

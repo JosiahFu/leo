@@ -1,21 +1,21 @@
-CREATE TABLE student_class
+CREATE TABLE student__class_x
 (
     creation_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     student_id    INT      NOT NULL,
-    CONSTRAINT student_class_student_id
+    CONSTRAINT student__class_x__student_id
         FOREIGN KEY (student_id)
             REFERENCES student (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    class_id      INT      NOT NULL,
-    CONSTRAINT student_class_class_id
-        FOREIGN KEY (class_id)
-            REFERENCES class (id)
+    class_x_id    INT      NOT NULL,
+    CONSTRAINT student__class_x__class_x_id
+        FOREIGN KEY (class_x_id)
+            REFERENCES class_x (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    PRIMARY KEY (student_id, class_id)
+    PRIMARY KEY (student_id, class_x_id)
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

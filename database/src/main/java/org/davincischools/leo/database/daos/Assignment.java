@@ -40,7 +40,7 @@ public class Assignment {
 
   private String longDescrQuill;
 
-  private Class classField;
+  private ClassX classX;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,13 +119,13 @@ public class Assignment {
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "class_id", nullable = false)
-  public Class getClassField() {
-    return classField;
+  @JoinColumn(name = "class_x_id", nullable = false)
+  public ClassX getClassX() {
+    return classX;
   }
 
-  public Assignment setClassField(Class classField) {
-    this.classField = classField;
+  public Assignment setClassX(ClassX classX) {
+    this.classX = classX;
     return this;
   }
 }

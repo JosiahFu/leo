@@ -14,20 +14,20 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = User.ENTITY_NAME)
+@Entity(name = UserX.ENTITY_NAME)
 @Table(
-    name = User.TABLE_NAME,
+    name = UserX.TABLE_NAME,
     schema = "leo_temp",
     indexes = {
       @Index(name = "email_address", columnList = "email_address", unique = true),
       @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
-      @Index(name = "admin_id", columnList = "admin_id", unique = true),
+      @Index(name = "admin_x_id", columnList = "admin_x_id", unique = true),
       @Index(name = "student_id", columnList = "student_id", unique = true)
     })
-public class User {
+public class UserX {
 
-  public static final String ENTITY_NAME = "User";
-  public static final String TABLE_NAME = "user";
+  public static final String ENTITY_NAME = "UserX";
+  public static final String TABLE_NAME = "user_x";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_FIRSTNAME_NAME = "first_name";
@@ -49,7 +49,7 @@ public class User {
 
   private District district;
 
-  private Admin admin;
+  private AdminX adminX;
 
   private Teacher teacher;
 
@@ -62,7 +62,7 @@ public class User {
     return id;
   }
 
-  public User setId(Integer id) {
+  public UserX setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -72,7 +72,7 @@ public class User {
     return creationTime;
   }
 
-  public User setCreationTime(Instant creationTime) {
+  public UserX setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }
@@ -82,7 +82,7 @@ public class User {
     return firstName;
   }
 
-  public User setFirstName(String firstName) {
+  public UserX setFirstName(String firstName) {
     this.firstName = firstName;
     return this;
   }
@@ -92,7 +92,7 @@ public class User {
     return lastName;
   }
 
-  public User setLastName(String lastName) {
+  public UserX setLastName(String lastName) {
     this.lastName = lastName;
     return this;
   }
@@ -102,7 +102,7 @@ public class User {
     return emailAddress;
   }
 
-  public User setEmailAddress(String emailAddress) {
+  public UserX setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
     return this;
   }
@@ -113,7 +113,7 @@ public class User {
     return encodedPassword;
   }
 
-  public User setEncodedPassword(String encodedPassword) {
+  public UserX setEncodedPassword(String encodedPassword) {
     this.encodedPassword = encodedPassword;
     return this;
   }
@@ -124,19 +124,19 @@ public class User {
     return district;
   }
 
-  public User setDistrict(District district) {
+  public UserX setDistrict(District district) {
     this.district = district;
     return this;
   }
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "admin_id")
-  public Admin getAdmin() {
-    return admin;
+  @JoinColumn(name = "admin_x_id")
+  public AdminX getAdminX() {
+    return adminX;
   }
 
-  public User setAdmin(Admin admin) {
-    this.admin = admin;
+  public UserX setAdminX(AdminX adminX) {
+    this.adminX = adminX;
     return this;
   }
 
@@ -146,7 +146,7 @@ public class User {
     return teacher;
   }
 
-  public User setTeacher(Teacher teacher) {
+  public UserX setTeacher(Teacher teacher) {
     this.teacher = teacher;
     return this;
   }
@@ -157,7 +157,7 @@ public class User {
     return student;
   }
 
-  public User setStudent(Student student) {
+  public UserX setStudent(Student student) {
     this.student = student;
     return this;
   }

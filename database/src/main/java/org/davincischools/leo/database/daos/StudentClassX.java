@@ -10,53 +10,53 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = TeacherClass.ENTITY_NAME)
-@Table(name = TeacherClass.TABLE_NAME, schema = "leo_temp")
-public class TeacherClass {
+@Entity(name = StudentClassX.ENTITY_NAME)
+@Table(name = StudentClassX.TABLE_NAME, schema = "leo_temp")
+public class StudentClassX {
 
-  public static final String ENTITY_NAME = "TeacherClass";
-  public static final String TABLE_NAME = "teacher_class";
+  public static final String ENTITY_NAME = "StudentClassX";
+  public static final String TABLE_NAME = "student__class_x";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
-  private TeacherClassId id;
+  private StudentClassXId id;
 
-  private Teacher teacher;
+  private Student student;
 
-  private Class classField;
+  private ClassX classX;
 
   private Instant creationTime;
 
   @EmbeddedId
-  public TeacherClassId getId() {
+  public StudentClassXId getId() {
     return id;
   }
 
-  public TeacherClass setId(TeacherClassId id) {
+  public StudentClassX setId(StudentClassXId id) {
     this.id = id;
     return this;
   }
 
-  @MapsId("teacherId")
+  @MapsId("studentId")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "teacher_id", nullable = false)
-  public Teacher getTeacher() {
-    return teacher;
+  @JoinColumn(name = "student_id", nullable = false)
+  public Student getStudent() {
+    return student;
   }
 
-  public TeacherClass setTeacher(Teacher teacher) {
-    this.teacher = teacher;
+  public StudentClassX setStudent(Student student) {
+    this.student = student;
     return this;
   }
 
-  @MapsId("classId")
+  @MapsId("classXId")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "class_id", nullable = false)
-  public Class getClassField() {
-    return classField;
+  @JoinColumn(name = "class_x_id", nullable = false)
+  public ClassX getClassX() {
+    return classX;
   }
 
-  public TeacherClass setClassField(Class classField) {
-    this.classField = classField;
+  public StudentClassX setClassX(ClassX classX) {
+    this.classX = classX;
     return this;
   }
 
@@ -65,7 +65,7 @@ public class TeacherClass {
     return creationTime;
   }
 
-  public TeacherClass setCreationTime(Instant creationTime) {
+  public StudentClassX setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }

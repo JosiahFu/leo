@@ -7,33 +7,33 @@ import java.util.Objects;
 import org.hibernate.Hibernate;
 
 @Embeddable
-public class StudentClassId implements Serializable {
+public class StudentClassXId implements Serializable {
 
   public static final String COLUMN_STUDENTID_NAME = "student_id";
-  public static final String COLUMN_CLASSID_NAME = "class_id";
-  private static final long serialVersionUID = -1277370007835971023L;
+  public static final String COLUMN_CLASSXID_NAME = "class_x_id";
+  private static final long serialVersionUID = -5385720289826446713L;
 
   private Integer studentId;
 
-  private Integer classId;
+  private Integer classXId;
 
   @Column(name = COLUMN_STUDENTID_NAME, nullable = false)
   public Integer getStudentId() {
     return studentId;
   }
 
-  public StudentClassId setStudentId(Integer studentId) {
+  public StudentClassXId setStudentId(Integer studentId) {
     this.studentId = studentId;
     return this;
   }
 
-  @Column(name = COLUMN_CLASSID_NAME, nullable = false)
-  public Integer getClassId() {
-    return classId;
+  @Column(name = COLUMN_CLASSXID_NAME, nullable = false)
+  public Integer getClassXId() {
+    return classXId;
   }
 
-  public StudentClassId setClassId(Integer classId) {
-    this.classId = classId;
+  public StudentClassXId setClassXId(Integer classXId) {
+    this.classXId = classXId;
     return this;
   }
 
@@ -45,13 +45,13 @@ public class StudentClassId implements Serializable {
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
       return false;
     }
-    StudentClassId entity = (StudentClassId) o;
+    StudentClassXId entity = (StudentClassXId) o;
     return Objects.equals(this.studentId, entity.studentId)
-        && Objects.equals(this.classId, entity.classId);
+        && Objects.equals(this.classXId, entity.classXId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(studentId, classId);
+    return Objects.hash(studentId, classXId);
   }
 }

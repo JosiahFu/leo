@@ -40,7 +40,7 @@ public class ProjectPost {
 
   private String longDescrQuill;
 
-  private User user;
+  private UserX userX;
 
   private Project project;
 
@@ -121,13 +121,13 @@ public class ProjectPost {
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  public User getUser() {
-    return user;
+  @JoinColumn(name = "user_x_id", nullable = false)
+  public UserX getUserX() {
+    return userX;
   }
 
-  public ProjectPost setUser(User user) {
-    this.user = user;
+  public ProjectPost setUserX(UserX userX) {
+    this.userX = userX;
     return this;
   }
 

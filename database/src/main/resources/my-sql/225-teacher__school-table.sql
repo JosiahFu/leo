@@ -1,16 +1,16 @@
-CREATE TABLE teacher_school
+CREATE TABLE teacher__school
 (
     creation_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     teacher_id    INT      NOT NULL,
-    CONSTRAINT teacher_school_teacher_id
+    CONSTRAINT teacher__school__teacher_id
         FOREIGN KEY (teacher_id)
             REFERENCES teacher (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
     school_id     INT      NOT NULL,
-    CONSTRAINT teacher_school_school_id
+    CONSTRAINT teacher__school__school_id
         FOREIGN KEY (school_id)
             REFERENCES school (id)
             ON DELETE RESTRICT

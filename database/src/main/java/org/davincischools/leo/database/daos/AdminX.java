@@ -8,12 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = Admin.ENTITY_NAME)
-@Table(name = Admin.TABLE_NAME, schema = "leo_temp")
-public class Admin {
+@Entity(name = AdminX.ENTITY_NAME)
+@Table(name = AdminX.TABLE_NAME, schema = "leo_temp")
+public class AdminX {
 
-  public static final String ENTITY_NAME = "Admin";
-  public static final String TABLE_NAME = "admin";
+  public static final String ENTITY_NAME = "AdminX";
+  public static final String TABLE_NAME = "admin_x";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
@@ -28,7 +28,7 @@ public class Admin {
     return id;
   }
 
-  public Admin setId(Integer id) {
+  public AdminX setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -38,7 +38,7 @@ public class Admin {
     return creationTime;
   }
 
-  public Admin setCreationTime(Instant creationTime) {
+  public AdminX setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }

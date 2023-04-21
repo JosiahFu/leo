@@ -15,7 +15,7 @@ import java.time.Instant;
 public class KnowledgeAndSkillAssignment {
 
   public static final String ENTITY_NAME = "KnowledgeAndSkillAssignment";
-  public static final String TABLE_NAME = "knowledge_and_skill_assignment";
+  public static final String TABLE_NAME = "knowledge_and_skill__assignment";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
 
   private KnowledgeAndSkillAssignmentId id;

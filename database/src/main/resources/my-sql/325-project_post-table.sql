@@ -9,15 +9,15 @@ CREATE TABLE project_post
     long_descr        TEXT         NOT NULL,
     long_descr_quill  TEXT         NOT NULL,
 
-    user_id           INT          NOT NULL,
-    CONSTRAINT project_post_user_id
-        FOREIGN KEY (user_id)
-            REFERENCES user (id)
+    user_x_id         INT          NOT NULL,
+    CONSTRAINT project_post__user_x_id
+        FOREIGN KEY (user_x_id)
+            REFERENCES user_x (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
     project_id        INT          NOT NULL,
-    CONSTRAINT project_post_project_id
+    CONSTRAINT project_post__project_id
         FOREIGN KEY (project_id)
             REFERENCES project (id)
             ON DELETE RESTRICT

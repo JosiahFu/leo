@@ -4,15 +4,15 @@
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql-dangerous/drop_all_tables.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/150-district-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/175-school-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-admin-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-admin_x-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-student-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/200-teacher-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-class-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-teacher_school-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-user-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-class_x-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-teacher__school-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/225-user_x-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-assignment-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-student_class-table.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-teacher-class-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-student__class_x-table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/250-teacher__class_x-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/275-project-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-knowledge_and_skill-table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/database/src/main/resources/my-sql/300-project_cycle-table.sql" dialect="GenericSQL" />
