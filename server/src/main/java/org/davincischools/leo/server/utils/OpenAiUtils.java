@@ -88,7 +88,7 @@ public class OpenAiUtils {
     Log logEntry =
         new Log()
             .setCreationTime(Instant.now())
-            .setSource(this.getClass().getName())
+            .setOperation(this.getClass().getName())
             .setRequest(TextFormat.printer().printToString(request))
             .setUser(user_id.map(id -> new User().setId(id)).orElse(null));
     try {
@@ -138,18 +138,21 @@ public class OpenAiUtils {
               .collect(ImmutableList.toImmutableList())
               .block();
       responseBytes = Bytes.concat(Objects.requireNonNull(streamedBytes).toArray(byte[][]::new));
-      logEntry.setUnprocessedResponse(responseBytes).setUnprocessedResponseTime(Instant.now());
+      logEntry.setInitialResponse(responseBytes).setInitialResponseTime(Instant.now());
 
       // Translate the response back into a proto.
       String responseString = new String(responseBytes, StandardCharsets.UTF_8);
       JsonFormat.parser().ignoringUnknownFields().merge(responseString, responseBuilder);
 
       logger.atInfo().log("OpenAI Response: " + JsonFormat.printer().print(responseBuilder));
-      logEntry.setResponse(TextFormat.printer().printToString(responseBuilder));
+      logEntry
+          .setStatus("SUCCESS")
+          .setFinalResponse(TextFormat.printer().printToString(responseBuilder))
+          .setFinalResponseTime(Instant.now());
       return responseBuilder;
     } catch (Exception e) {
       logger.atError().withThrowable(e).log("OpenAI Error: {}", e.getMessage());
-      logEntry.setStatus("ERROR: " + Throwables.getStackTraceAsString(e));
+      logEntry.setStatus("ERROR").setStackTrace(Throwables.getStackTraceAsString(e));
       throw new IOException(e);
     } finally {
       db.getLogRepository().save(logEntry);

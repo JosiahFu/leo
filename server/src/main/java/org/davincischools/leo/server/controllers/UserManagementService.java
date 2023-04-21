@@ -104,7 +104,7 @@ public class UserManagementService {
           user.setAdmin(e.getAdmin());
           user.setTeacher(e.getTeacher());
           user.setStudent(e.getStudent());
-          user.setEncodedPasswordUtf8(e.getEncodedPasswordUtf8());
+          user.setEncodedPassword(e.getEncodedPassword());
         });
 
     if (!request.getUser().getPassword().isEmpty()) {
@@ -162,7 +162,7 @@ public class UserManagementService {
         // TODO: Set the student ID.
         user.setStudent(
             db.getStudentRepository()
-                .save(new Student().setCreationTime(Instant.now()).setStudentId("")));
+                .save(new Student().setCreationTime(Instant.now()).setStudentId(-1)));
       } else {
         user.setStudent(null);
       }

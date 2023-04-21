@@ -53,7 +53,6 @@ public class Database {
   public static final int USER_MAX_LAST_NAME_LENGTH =
       EntityUtils.getColumn(User.class, User.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
-  public static final int USER_MAX_ENCODED_PASSWORD_UTF8_BLOB_LENGTH = 65535;
 
   @Repository
   public interface AdminRepository extends JpaRepository<Admin, Integer> {}

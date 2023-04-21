@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
@@ -125,7 +126,8 @@ public class Interest {
     return this;
   }
 
-  @Column(name = COLUMN_REASONFORINTEREST_NAME, nullable = false, length = 8192)
+  @Lob
+  @Column(name = COLUMN_REASONFORINTEREST_NAME, nullable = false)
   public String getReasonForInterest() {
     return reasonForInterest;
   }

@@ -74,7 +74,8 @@ public class Class {
     return this;
   }
 
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false, length = 2048)
+  @Lob
+  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
   public String getShortDescr() {
     return shortDescr;
   }

@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -32,7 +33,7 @@ public class User {
   public static final String COLUMN_FIRSTNAME_NAME = "first_name";
   public static final String COLUMN_LASTNAME_NAME = "last_name";
   public static final String COLUMN_EMAILADDRESS_NAME = "email_address";
-  public static final String COLUMN_ENCODEDPASSWORDUTF8_NAME = "encoded_password_utf8";
+  public static final String COLUMN_ENCODEDPASSWORD_NAME = "encoded_password";
 
   private Integer id;
 
@@ -44,7 +45,7 @@ public class User {
 
   private String emailAddress;
 
-  private byte[] encodedPasswordUtf8;
+  private String encodedPassword;
 
   private District district;
 
@@ -106,13 +107,14 @@ public class User {
     return this;
   }
 
-  @Column(name = COLUMN_ENCODEDPASSWORDUTF8_NAME, nullable = false)
-  public byte[] getEncodedPasswordUtf8() {
-    return encodedPasswordUtf8;
+  @Lob
+  @Column(name = COLUMN_ENCODEDPASSWORD_NAME, nullable = false)
+  public String getEncodedPassword() {
+    return encodedPassword;
   }
 
-  public User setEncodedPasswordUtf8(byte[] encodedPasswordUtf8) {
-    this.encodedPasswordUtf8 = encodedPasswordUtf8;
+  public User setEncodedPassword(String encodedPassword) {
+    this.encodedPassword = encodedPassword;
     return this;
   }
 

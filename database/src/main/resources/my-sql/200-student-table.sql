@@ -1,9 +1,9 @@
 CREATE TABLE student
 (
     id            INT PRIMARY KEY AUTO_INCREMENT,
-    creation_time DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creation_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    student_id    VARCHAR(20) NOT NULL,
-    grade         VARCHAR(20)
+    student_id    INT      NOT NULL,
+    grade         INT
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

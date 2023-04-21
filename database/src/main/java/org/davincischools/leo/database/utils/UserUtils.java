@@ -1,9 +1,5 @@
 package org.davincischools.leo.database.utils;
 
-import static org.davincischools.leo.database.utils.Database.USER_MAX_ENCODED_PASSWORD_UTF8_BLOB_LENGTH;
-
-import com.google.common.base.Preconditions;
-import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
 import org.davincischools.leo.database.daos.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -18,18 +14,12 @@ public class UserUtils {
 
   public static boolean checkPassword(User user, String password) {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-        .matches(password, new String(user.getEncodedPasswordUtf8(), StandardCharsets.UTF_8));
+        .matches(password, user.getEncodedPassword());
   }
 
   public static User setPassword(User user, String password) {
-    byte[] encodedPassword =
-        PasswordEncoderFactories.createDelegatingPasswordEncoder()
-            .encode(password)
-            .getBytes(StandardCharsets.UTF_8);
-    Preconditions.checkArgument(
-        encodedPassword.length <= USER_MAX_ENCODED_PASSWORD_UTF8_BLOB_LENGTH,
-        "Encoded password too long.");
-    user.setEncodedPasswordUtf8(encodedPassword);
+    user.setEncodedPassword(
+        PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password));
     return user;
   }
 

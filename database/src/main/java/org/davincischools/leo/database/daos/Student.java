@@ -23,9 +23,9 @@ public class Student {
 
   private Instant creationTime;
 
-  private String studentId;
+  private Integer studentId;
 
-  private String grade;
+  private Integer grade;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,22 +49,22 @@ public class Student {
     return this;
   }
 
-  @Column(name = COLUMN_STUDENTID_NAME, nullable = false, length = 20)
-  public String getStudentId() {
+  @Column(name = COLUMN_STUDENTID_NAME, nullable = false)
+  public Integer getStudentId() {
     return studentId;
   }
 
-  public Student setStudentId(String studentId) {
+  public Student setStudentId(Integer studentId) {
     this.studentId = studentId;
     return this;
   }
 
-  @Column(name = COLUMN_GRADE_NAME, length = 20)
-  public String getGrade() {
+  @Column(name = COLUMN_GRADE_NAME)
+  public Integer getGrade() {
     return grade;
   }
 
-  public Student setGrade(String grade) {
+  public Student setGrade(Integer grade) {
     this.grade = grade;
     return this;
   }

@@ -393,10 +393,10 @@ export function Root() {
           <Form.Item label="Anticipated Usage" style={{marginBottom: 0}}>
             <div style={{display: 'flex', gap: 10}}>
               <Form.Item label="Teachers" name="numTeachers">
-                <InputNumber name="numTeachers" min={0} />
+                <InputNumber name="numTeachers" min={0} max={100000} />
               </Form.Item>
               <Form.Item label="Students" name="numStudents">
-                <InputNumber name="numTeachers" min={0} />
+                <InputNumber name="numTeachers" min={0} max={100000} />
               </Form.Item>
             </div>
           </Form.Item>

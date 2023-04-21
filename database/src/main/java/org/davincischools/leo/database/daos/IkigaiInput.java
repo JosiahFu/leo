@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
@@ -59,6 +60,7 @@ public class IkigaiInput {
     return this;
   }
 
+  @Lob
   @Column(name = COLUMN_SOMETHINGYOULOVE_NAME, nullable = false)
   public String getSomethingYouLove() {
     return somethingYouLove;
@@ -69,6 +71,7 @@ public class IkigaiInput {
     return this;
   }
 
+  @Lob
   @Column(name = COLUMN_WHATYOUAREGOODAT_NAME, nullable = false)
   public String getWhatYouAreGoodAt() {
     return whatYouAreGoodAt;

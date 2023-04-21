@@ -241,12 +241,14 @@ public class TestData {
   public static void addStudentPermission(Database db, User... students) {
     for (var student : students) {
       if (student.getStudent() == null) {
+        int idNum = counter.incrementAndGet();
         student.setStudent(
             db.getStudentRepository()
                 .save(
                     new Student()
                         .setCreationTime(Instant.now())
-                        .setStudentId(Integer.toString(counter.incrementAndGet()))));
+                        .setGrade(idNum)
+                        .setStudentId(idNum)));
         db.getUserRepository().save(student);
       }
     }
