@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.Class;
+import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.School;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 
 public class DataAccess {
 
-  public static org.davincischools.leo.protos.user_management.User convertFullUserToProto(
-      User user) {
+  public static org.davincischools.leo.protos.user_management.User convertFullUserXToProto(
+      UserX user) {
     var userProto =
         org.davincischools.leo.protos.user_management.User.newBuilder()
             .setId(user.getId())
@@ -21,17 +21,17 @@ public class DataAccess {
             .setFirstName(user.getFirstName())
             .setLastName(user.getLastName())
             .setEmailAddress(user.getEmailAddress())
-            .setIsAdmin(user.getAdmin() != null)
+            .setIsAdmin(user.getAdminX() != null)
             .setIsTeacher(user.getTeacher() != null)
             .setIsStudent(user.getStudent() != null);
     return userProto.build();
   }
 
   public static List<org.davincischools.leo.protos.user_management.User>
-      getProtoFullUsersByDistrictId(Database db, int districtId) {
+      getProtoFullUserXsByDistrictId(Database db, int districtId) {
     return StreamSupport.stream(
-            db.getUserRepository().findAllFullUsersByDistrictId(districtId).spliterator(), false)
-        .map(DataAccess::convertFullUserToProto)
+            db.getUserXRepository().findAllFullUserXsByDistrictId(districtId).spliterator(), false)
+        .map(DataAccess::convertFullUserXToProto)
         .collect(Collectors.toList());
   }
 
@@ -53,24 +53,24 @@ public class DataAccess {
         .collect(Collectors.toList());
   }
 
-  public static org.davincischools.leo.protos.class_management.Class convertClassToProto(
-      Class classField) {
-    return org.davincischools.leo.protos.class_management.Class.newBuilder()
-        .setId(classField.getId())
-        .setName(classField.getName())
-        .setShortDescr(classField.getShortDescr())
-        .setLongDescr(classField.getLongDescr())
+  public static org.davincischools.leo.protos.class_management.ClassX convertClassToProto(
+      ClassX classX) {
+    return org.davincischools.leo.protos.class_management.ClassX.newBuilder()
+        .setId(classX.getId())
+        .setName(classX.getName())
+        .setShortDescr(classX.getShortDescr())
+        .setLongDescr(classX.getLongDescr())
         .build();
   }
 
   public static org.davincischools.leo.protos.class_management.Assignment convertAssignmentToProto(
-      Class class_, Assignment assignment) {
+      ClassX class_, Assignment assignment) {
     return org.davincischools.leo.protos.class_management.Assignment.newBuilder()
         .setId(assignment.getId())
         .setName(assignment.getName())
         .setShortDescr(assignment.getShortDescr())
         .setLongDescr(assignment.getLongDescr())
-        .setClass_(convertClassToProto(class_))
+        .setClassX(convertClassToProto(class_))
         .build();
   }
 
@@ -85,9 +85,9 @@ public class DataAccess {
   }
 
   public static List<org.davincischools.leo.protos.class_management.Project>
-      getProtoProjectsByUserId(Database db, int userId) {
+      getProtoProjectsByUserXId(Database db, int userXId) {
     return StreamSupport.stream(
-            db.getProjectRepository().findAllByUserId(userId).spliterator(), false)
+            db.getProjectRepository().findAllByUserXId(userXId).spliterator(), false)
         .map(DataAccess::convertProjectToProto)
         .collect(Collectors.toList());
   }

@@ -25,23 +25,23 @@ export function SelectUserFromList(props: {
   id: string;
   display: Display;
   users: Map<number, IUser>;
-  userId: number;
-  onSelect: (userId: number) => void;
+  userXId: number;
+  onSelect: (userXId: number) => void;
   defaultText: string;
 }) {
   return SelectFromList<number, IUser>({
     id: props.id,
     display: props.display,
     values: props.users,
-    selectedKey: props.userId,
+    selectedKey: props.userXId,
     getKey: user => (user != null ? user.id! : -1),
     stringToKey: Number,
     compareValues: (a, b) =>
       (a.lastName || '').localeCompare(b.lastName || '') ||
       (a.firstName || '').localeCompare(b.firstName || ''),
     onSelect: props.onSelect,
-    renderValue: userId => {
-      const user = props.users.get(userId);
+    renderValue: userXId => {
+      const user = props.users.get(userXId);
       if (user != null) {
         return (
           <>
@@ -64,7 +64,7 @@ export function EditUsers() {
   const [schools, setSchools] = useState(new Map<number, ISchool>());
 
   const [users, setUsers] = useState(new Map<number, IUser>());
-  const [userId, setUserId] = useState(-1);
+  const [userXId, setUserXId] = useState(-1);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -122,7 +122,7 @@ export function EditUsers() {
       .upsertUser({
         user: {
           districtId: districtId,
-          id: userId !== -1 ? userId : undefined,
+          id: userXId !== -1 ? userXId : undefined,
           firstName: firstName,
           lastName: lastName,
           emailAddress: emailAddress,
@@ -141,7 +141,7 @@ export function EditUsers() {
     userManagementService
       .removeUser({
         districtId: districtId,
-        userId: userId,
+        userXId: userXId,
       })
       .then(processUserInformationResponse);
   }
@@ -152,14 +152,14 @@ export function EditUsers() {
     if (response.success) {
       setDistrictId(response.districtId!);
       setUsers(new Map(response.users!.map(v => [v.id!, v])));
-      loadUser(response.nextUserId!);
+      loadUser(response.nextUserXId!);
     }
   }
 
-  function loadUser(userId: number) {
-    userManagementService.getUserDetails({userId: userId}).then(response => {
+  function loadUser(userXId: number) {
+    userManagementService.getUserDetails({userXId: userXId}).then(response => {
       if (response.user != null) {
-        setUserId(userId);
+        setUserXId(userXId);
         setFirstName(response.user.firstName!);
         setLastName(response.user.lastName!);
         setEmailAddress(response.user.emailAddress!);
@@ -172,7 +172,7 @@ export function EditUsers() {
         );
         setIsStudent(response.user.isStudent!);
       } else {
-        setUserId(-1);
+        setUserXId(-1);
         setFirstName('');
         setLastName('');
         setEmailAddress('');
@@ -220,7 +220,7 @@ export function EditUsers() {
                     id="users"
                     display={Display.RADIO_BUTTONS}
                     users={users}
-                    userId={userId}
+                    userXId={userXId}
                     onSelect={loadUser}
                     defaultText="[Create New User]"
                   />
@@ -374,15 +374,15 @@ export function EditUsers() {
               <tr hidden={districtId === -1}>
                 <th></th>
                 <td className="form-buttons">
-                  <div hidden={userId !== -1} onClick={upsertUser}>
+                  <div hidden={userXId !== -1} onClick={upsertUser}>
                     Add
                   </div>
-                  <div hidden={userId === -1} onClick={upsertUser}>
+                  <div hidden={userXId === -1} onClick={upsertUser}>
                     Update
                   </div>
                   <div
                     className="delete-button"
-                    hidden={userId === -1}
+                    hidden={userXId === -1}
                     onClick={removeUser}
                   >
                     Delete

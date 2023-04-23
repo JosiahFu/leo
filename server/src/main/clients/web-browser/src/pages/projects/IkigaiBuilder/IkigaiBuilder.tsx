@@ -102,7 +102,7 @@ export function IkigaiBuilder() {
       'ClassManagementService'
     );
     classManagementService
-      .getStudentAssignments({userId: user!.userId!})
+      .getStudentAssignments({userXId: user!.userXId!})
       .then(response => setAssignments(response.assignments));
   }, []);
 
@@ -133,7 +133,7 @@ export function IkigaiBuilder() {
       .getSuggestions({
         partialText: modalLovesValue,
         prompt: Prompt.SUGGEST_THINGS_YOU_LOVE,
-        userId: user!.userId!,
+        userXId: user!.userXId!,
       })
       .then(response => setLovesSuggestions(response.suggestions))
       .catch(() => setLovesSuggestions([]))
@@ -164,7 +164,7 @@ export function IkigaiBuilder() {
       .getSuggestions({
         partialText: modalGoodAtValue,
         prompt: Prompt.SUGGEST_THINGS_YOU_ARE_GOOD_AT,
-        userId: user!.userId!,
+        userXId: user!.userXId!,
       })
       .then(response => setGoodAtSuggestions(response.suggestions))
       .catch(() => setGoodAtSuggestions([]))
@@ -180,7 +180,7 @@ export function IkigaiBuilder() {
     );
     classManagementService
       .generateAssignmentProjects({
-        userId: user!.userId,
+        userXId: user!.userXId,
         somethingYouLove: lovesValue,
         whatYouAreGoodAt: goodAtValue,
         assignmentId: assignment!.id!,
@@ -367,7 +367,7 @@ export function IkigaiBuilder() {
                 }}
               >
                 <span style={{fontWeight: 'bold'}}>
-                  Class: {assignment.class?.name}
+                  Class: {assignment.classX?.name}
                 </span>
                 <br />
                 <span style={{fontStyle: 'italic'}}>

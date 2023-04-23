@@ -4,9 +4,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.davincischools.leo.database.daos.Admin;
+import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.Class;
+import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.Interest;
@@ -21,14 +21,14 @@ import org.davincischools.leo.database.daos.ProjectPost;
 import org.davincischools.leo.database.daos.ProjectPostComment;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
-import org.davincischools.leo.database.daos.StudentClass;
-import org.davincischools.leo.database.daos.StudentClassId;
+import org.davincischools.leo.database.daos.StudentClassX;
+import org.davincischools.leo.database.daos.StudentClassXId;
 import org.davincischools.leo.database.daos.Teacher;
-import org.davincischools.leo.database.daos.TeacherClass;
-import org.davincischools.leo.database.daos.TeacherClassId;
+import org.davincischools.leo.database.daos.TeacherClassX;
+import org.davincischools.leo.database.daos.TeacherClassXId;
 import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.TeacherSchoolId;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,21 +41,21 @@ import org.springframework.stereotype.Repository;
 
 @Component
 @EnableJpaRepositories(
-    basePackageClasses = {User.class, Database.class},
+    basePackageClasses = {UserX.class, Database.class},
     considerNestedRepositories = true)
-@EntityScan(basePackageClasses = User.class)
+@EntityScan(basePackageClasses = UserX.class)
 public class Database {
 
   public static final int USER_MAX_EMAIL_ADDRESS_LENGTH =
-      EntityUtils.getColumn(User.class, User.COLUMN_EMAILADDRESS_NAME).length();
+      EntityUtils.getColumn(UserX.class, UserX.COLUMN_EMAILADDRESS_NAME).length();
   public static final int USER_MAX_FIRST_NAME_LENGTH =
-      EntityUtils.getColumn(User.class, User.COLUMN_FIRSTNAME_NAME).length();
+      EntityUtils.getColumn(UserX.class, UserX.COLUMN_FIRSTNAME_NAME).length();
   public static final int USER_MAX_LAST_NAME_LENGTH =
-      EntityUtils.getColumn(User.class, User.COLUMN_LASTNAME_NAME).length();
+      EntityUtils.getColumn(UserX.class, UserX.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
 
   @Repository
-  public interface AdminRepository extends JpaRepository<Admin, Integer> {}
+  public interface AdminXRepository extends JpaRepository<AdminX, Integer> {}
 
   @Repository
   public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
@@ -71,7 +71,7 @@ public class Database {
   }
 
   @Repository
-  public interface ClassRepository extends JpaRepository<Class, Integer> {}
+  public interface ClassXRepository extends JpaRepository<ClassX, Integer> {}
 
   @Repository
   public interface DistrictRepository extends JpaRepository<District, Integer> {}
@@ -117,10 +117,10 @@ public class Database {
     @Query(
         "SELECT p FROM Project p "
             + "INNER JOIN IkigaiInput ii "
-            + "INNER JOIN User u "
-            + "WHERE u.id = (:user_id) "
+            + "INNER JOIN UserX u "
+            + "WHERE u.id = (:user_x_id) "
             + "ORDER BY p.creationTime DESC")
-    List<Project> findAllByUserId(@Param("user_id") int userId);
+    List<Project> findAllByUserXId(@Param("user_x_id") int userXId);
   }
 
   @Repository
@@ -143,41 +143,45 @@ public class Database {
   public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     @Query(
-        "SELECT u, s, c, a FROM User u "
+        "SELECT u, s, c, a FROM UserX u "
             + "INNER JOIN FETCH Student s "
-            + "INNER JOIN FETCH StudentClass sc "
-            + "INNER JOIN FETCH Class c "
+            + "INNER JOIN FETCH StudentClassX sc "
+            + "INNER JOIN FETCH ClassX c "
             + "INNER JOIN FETCH Assignment a "
-            + "WHERE u.id = (:user_id) "
+            + "WHERE u.id = (:user_x_id) "
             + "AND u.student.id = s.id "
             + "AND s.id = sc.student.id "
-            + "AND sc.classField.id = c.id "
-            + "AND c.id = a.classField.id")
-    public List<Object[]> _internal_findAllAssignmentsByStudentUserId(@Param("user_id") int userId);
+            + "AND sc.classX.id = c.id "
+            + "AND c.id = a.classX.id")
+    public List<Object[]> _internal_findAllAssignmentsByStudentUserXId(
+        @Param("user_x_id") int userXId);
 
     public record StudentAssignment(
-        User user, Student student, Class classField, Assignment assignment) {}
+        UserX user, Student student, ClassX classX, Assignment assignment) {}
 
-    default List<StudentAssignment> findAllAssignmentsByStudentUserId(int user_id) {
+    default List<StudentAssignment> findAllAssignmentsByStudentUserXId(int userXId) {
       List<StudentAssignment> studentAssignments = new ArrayList<>();
-      for (var result : _internal_findAllAssignmentsByStudentUserId(user_id)) {
+      for (var result : _internal_findAllAssignmentsByStudentUserXId(userXId)) {
         studentAssignments.add(
             new StudentAssignment(
-                (User) result[0], (Student) result[1], (Class) result[2], (Assignment) result[3]));
+                (UserX) result[0],
+                (Student) result[1],
+                (ClassX) result[2],
+                (Assignment) result[3]));
       }
       return studentAssignments;
     }
   }
 
   @Repository
-  public interface StudentClassRepository extends JpaRepository<StudentClass, StudentClassId> {
+  public interface StudentClassXRepository extends JpaRepository<StudentClassX, StudentClassXId> {
 
-    default StudentClass createStudentClass(Student student, Class classField) {
-      return new StudentClass()
+    default StudentClassX createStudentClassX(Student student, ClassX classX) {
+      return new StudentClassX()
           .setCreationTime(Instant.now())
-          .setId(new StudentClassId().setStudentId(student.getId()).setClassId(classField.getId()))
+          .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
           .setStudent(student)
-          .setClassField(classField);
+          .setClassX(classX);
     }
   }
 
@@ -185,14 +189,14 @@ public class Database {
   public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
 
   @Repository
-  public interface TeacherClassRepository extends JpaRepository<TeacherClass, TeacherClassId> {
+  public interface TeacherClassXRepository extends JpaRepository<TeacherClassX, TeacherClassXId> {
 
-    default TeacherClass createTeacherClass(Teacher teacher, Class classField) {
-      return new TeacherClass()
+    default TeacherClassX createTeacherClassX(Teacher teacher, ClassX classX) {
+      return new TeacherClassX()
           .setCreationTime(Instant.now())
-          .setId(new TeacherClassId().setTeacherId(teacher.getId()).setClassId(classField.getId()))
+          .setId(new TeacherClassXId().setTeacherId(teacher.getId()).setClassXId(classX.getId()))
           .setTeacher(teacher)
-          .setClassField(classField);
+          .setClassX(classX);
     }
   }
 
@@ -216,12 +220,12 @@ public class Database {
         "SELECT s FROM School s "
             + "INNER JOIN FETCH TeacherSchool ts "
             + "INNER JOIN FETCH Teacher t "
-            + "INNER JOIN FETCH User u "
-            + "WHERE u.id = (:user_id) "
+            + "INNER JOIN FETCH UserX u "
+            + "WHERE u.id = (:user_x_id) "
             + "AND t.id = u.teacher.id "
             + "AND ts.teacher.id = t.id "
             + "AND ts.school.id = s.id ")
-    List<School> findSchoolsByUserId(@Param("user_id") int userId);
+    List<School> findSchoolsByUserXId(@Param("user_x_id") int userXId);
 
     @Modifying
     @Query(
@@ -233,40 +237,40 @@ public class Database {
   }
 
   @Repository
-  public interface UserRepository extends JpaRepository<User, Integer> {
+  public interface UserXRepository extends JpaRepository<UserX, Integer> {
 
     @Query(
         "SELECT u "
-            + "FROM User u "
-            + "LEFT JOIN FETCH Admin a "
+            + "FROM UserX u "
+            + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
             + "WHERE u.emailAddress = (:email_address) ")
-    Optional<User> findFullUserByEmailAddress(@Param("email_address") String emailAddress);
+    Optional<UserX> findFullUserXByEmailAddress(@Param("email_address") String emailAddress);
 
     @Query(
         "SELECT u "
-            + "FROM User u "
+            + "FROM UserX u "
             + "JOIN FETCH District d "
-            + "LEFT JOIN FETCH Admin a "
+            + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
             + "WHERE d.id = (:district_id) ")
-    List<User> findAllFullUsersByDistrictId(@Param("district_id") int districtId);
+    List<UserX> findAllFullUserXsByDistrictId(@Param("district_id") int districtId);
 
     @Query(
         "SELECT u "
-            + "FROM User u "
-            + "LEFT JOIN FETCH Admin a "
+            + "FROM UserX u "
+            + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
-            + "WHERE u.id = (:user_id) ")
-    Optional<User> findFullUserByUserId(@Param("user_id") int userId);
+            + "WHERE u.id = (:user_x_id) ")
+    Optional<UserX> findFullUserXByUserXId(@Param("user_x_id") int userXId);
   }
 
-  @Autowired private AdminRepository adminRepository;
+  @Autowired private AdminXRepository adminRepository;
   @Autowired private AssignmentRepository assignmentRepository;
-  @Autowired private ClassRepository classRepository;
+  @Autowired private ClassXRepository classRepository;
   @Autowired private DistrictRepository districtRepository;
   @Autowired private IkigaiInputRepository ikigaiInputRepository;
   @Autowired private InterestRepository interestRepository;
@@ -280,15 +284,15 @@ public class Database {
   @Autowired private ProjectPostCommentRepository projectPostCommentRepository;
   @Autowired private SchoolRepository schoolRepository;
   @Autowired private StudentRepository studentRepository;
-  @Autowired private StudentClassRepository studentClassRepository;
+  @Autowired private StudentClassXRepository studentClassXRepository;
   @Autowired private TeacherRepository teacherRepository;
-  @Autowired private TeacherClassRepository teacherClassRepository;
+  @Autowired private TeacherClassXRepository teacherClassXRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
-  @Autowired private UserRepository userRepository;
+  @Autowired private UserXRepository userRepository;
 
   public Database() {}
 
-  public AdminRepository getAdminRepository() {
+  public AdminXRepository getAdminXRepository() {
     return adminRepository;
   }
 
@@ -296,7 +300,7 @@ public class Database {
     return assignmentRepository;
   }
 
-  public ClassRepository getClassRepository() {
+  public ClassXRepository getClassXRepository() {
     return classRepository;
   }
 
@@ -352,23 +356,23 @@ public class Database {
     return studentRepository;
   }
 
-  public StudentClassRepository getStudentClassRepository() {
-    return studentClassRepository;
+  public StudentClassXRepository getStudentClassXRepository() {
+    return studentClassXRepository;
   }
 
   public TeacherRepository getTeacherRepository() {
     return teacherRepository;
   }
 
-  public TeacherClassRepository getTeacherClassRepository() {
-    return teacherClassRepository;
+  public TeacherClassXRepository getTeacherClassXRepository() {
+    return teacherClassXRepository;
   }
 
   public TeacherSchoolRepository getTeacherSchoolRepository() {
     return teacherSchoolRepository;
   }
 
-  public UserRepository getUserRepository() {
+  public UserXRepository getUserXRepository() {
     return userRepository;
   }
 }

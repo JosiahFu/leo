@@ -1,7 +1,7 @@
 package org.davincischools.leo.database.utils;
 
 import java.util.EnumSet;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 public class UserUtils {
@@ -12,12 +12,12 @@ public class UserUtils {
     ADMIN
   }
 
-  public static boolean checkPassword(User user, String password) {
+  public static boolean checkPassword(UserX user, String password) {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder()
         .matches(password, user.getEncodedPassword());
   }
 
-  public static User setPassword(User user, String password) {
+  public static UserX setPassword(UserX user, String password) {
     user.setEncodedPassword(
         PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password));
     return user;
@@ -37,9 +37,9 @@ public class UserUtils {
     return true;
   }
 
-  public static EnumSet<Role> getRoles(User user) {
+  public static EnumSet<Role> getRoles(UserX user) {
     EnumSet<Role> roles = EnumSet.noneOf(Role.class);
-    if (user.getAdmin() != null) {
+    if (user.getAdminX() != null) {
       roles.add(Role.ADMIN);
     }
     if (user.getTeacher() != null) {

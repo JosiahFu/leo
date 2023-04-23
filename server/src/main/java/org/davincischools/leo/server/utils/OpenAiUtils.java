@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.Log;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +90,7 @@ public class OpenAiUtils {
             .setCreationTime(Instant.now())
             .setOperation(this.getClass().getName())
             .setRequest(TextFormat.printer().printToString(request))
-            .setUser(user_id.map(id -> new User().setId(id)).orElse(null));
+            .setUserX(user_id.map(id -> new UserX().setId(id)).orElse(null));
     try {
       HttpClient client =
           HttpClient.create()

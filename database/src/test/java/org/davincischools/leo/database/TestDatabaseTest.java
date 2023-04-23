@@ -36,7 +36,7 @@ public class TestDatabaseTest {
       while (resultSet.next()) {
         tableNames.add(resultSet.getString("TABLE_NAME"));
       }
-      assertThat(tableNames).contains("user");
+      assertThat(tableNames).contains("user_x");
     }
   }
 }

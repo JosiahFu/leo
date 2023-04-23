@@ -6,18 +6,18 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.davincischools.leo.database.daos.Admin;
+import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.Class;
+import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
-import org.davincischools.leo.database.utils.Database.StudentClassRepository;
-import org.davincischools.leo.database.utils.Database.TeacherClassRepository;
+import org.davincischools.leo.database.utils.Database.StudentClassXRepository;
+import org.davincischools.leo.database.utils.Database.TeacherClassXRepository;
 import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
 import org.davincischools.leo.database.utils.QuillInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +31,17 @@ public class TestData {
 
   private final Database db;
 
-  public final User teacher;
-  public final User student;
-  public final User admin;
+  public final UserX teacher;
+  public final UserX student;
+  public final UserX admin;
 
-  public final Class chemistry_clazz;
-  public final KnowledgeAndSkill chemistry_eks_1, chemistry_eks_2;
-  public final Assignment chemistry_assignment;
+  public final ClassX chemistryClassX;
+  public final KnowledgeAndSkill chemistryEks1, chemistryEks2;
+  public final Assignment chemistryAssignment;
 
-  public final Class programming_clazz;
-  public final KnowledgeAndSkill programming_eks_1, programming_eks_2;
-  public final Assignment programming_assignment;
+  public final ClassX programmingClassX;
+  public final KnowledgeAndSkill programmingEks1, programmingEks2;
+  public final Assignment programmingAssignment;
 
   public final String password = "password";
 
@@ -122,7 +122,7 @@ public class TestData {
         createUser(
             db,
             setPassword(
-                new User()
+                new UserX()
                     .setCreationTime(Instant.now())
                     .setFirstName("Scott")
                     .setLastName("Hendrickson")
@@ -134,7 +134,7 @@ public class TestData {
         createUser(
             db,
             setPassword(
-                new User()
+                new UserX()
                     .setCreationTime(Instant.now())
                     .setFirstName("Steven")
                     .setLastName("Eno")
@@ -146,7 +146,7 @@ public class TestData {
         createUser(
             db,
             setPassword(
-                new User()
+                new UserX()
                     .setCreationTime(Instant.now())
                     .setFirstName("Steve")
                     .setLastName("Wallis")
@@ -159,86 +159,88 @@ public class TestData {
     addStudentPermission(db, admin, teacher, student);
     addTeachersToSchool(db.getTeacherSchoolRepository(), school, teacher);
 
-    chemistry_clazz = createClass(db, school, "Chemistry I", "Intro to general chemistry.");
-    addTeachersToClass(db.getTeacherClassRepository(), chemistry_clazz, teacher);
-    addStudentsToClass(db.getStudentClassRepository(), chemistry_clazz, admin, teacher, student);
+    chemistryClassX = createClassX(db, school, "Chemistry I", "Intro to general chemistry.");
+    addTeachersToClassX(db.getTeacherClassXRepository(), chemistryClassX, teacher);
+    addStudentsToClassX(db.getStudentClassXRepository(), chemistryClassX, admin, teacher, student);
 
-    chemistry_eks_1 =
+    chemistryEks1 =
         createKnowledgeAndSkill(
             db,
-            chemistry_clazz,
+            chemistryClassX,
             "Periodic Table",
             "I can recognize the basic elements on a periodic table.");
-    chemistry_eks_2 =
+    chemistryEks2 =
         createKnowledgeAndSkill(
             db,
-            chemistry_clazz,
+            chemistryClassX,
             "Valence Electrons",
             "I can determine the number of valence electrons for each element.");
 
-    chemistry_assignment =
+    chemistryAssignment =
         createAssignment(
             db,
-            chemistry_clazz,
+            chemistryClassX,
             "Valence Electrons",
             "Show that you understand valence electrons.",
-            chemistry_eks_1,
-            chemistry_eks_2);
+            chemistryEks1,
+            chemistryEks2);
 
-    programming_clazz = createClass(db, school, "Computer Science I", "Intro to Programming.");
-    addTeachersToClass(db.getTeacherClassRepository(), programming_clazz, teacher);
-    addStudentsToClass(db.getStudentClassRepository(), programming_clazz, admin, teacher, student);
+    programmingClassX = createClassX(db, school, "Computer Science I", "Intro to Programming.");
+    addTeachersToClassX(db.getTeacherClassXRepository(), programmingClassX, teacher);
+    addStudentsToClassX(
+        db.getStudentClassXRepository(), programmingClassX, admin, teacher, student);
 
-    programming_eks_1 =
+    programmingEks1 =
         createKnowledgeAndSkill(
             db,
-            programming_clazz,
+            programmingClassX,
             "Sort Functions",
             "I understand and can implement different sort functions.");
-    programming_eks_2 =
+    programmingEks2 =
         createKnowledgeAndSkill(
-            db, programming_clazz, "Collections", "I can use Lists, Sets, and Maps.");
+            db, programmingClassX, "Collections", "I can use Lists, Sets, and Maps.");
 
-    programming_assignment =
+    programmingAssignment =
         createAssignment(
             db,
-            programming_clazz,
+            programmingClassX,
             "Sort Algorithms",
             "Show that you can implement sort algorithms.",
-            programming_eks_1);
+            programmingEks1);
   }
 
-  public static User createUser(Database db, User template) {
-    return db.getUserRepository()
-        .findFullUserByEmailAddress(template.getEmailAddress())
+  public static UserX createUser(Database db, UserX template) {
+    return db.getUserXRepository()
+        .findFullUserXByEmailAddress(template.getEmailAddress())
         .or(
             () -> {
-              db.getUserRepository().save(template);
-              return db.getUserRepository().findFullUserByEmailAddress(template.getEmailAddress());
+              db.getUserXRepository().save(template);
+              return db.getUserXRepository()
+                  .findFullUserXByEmailAddress(template.getEmailAddress());
             })
         .orElseThrow();
   }
 
-  public static void addAdminPermission(Database db, User... users) {
+  public static void addAdminPermission(Database db, UserX... users) {
     for (var user : users) {
-      if (user.getAdmin() == null) {
-        user.setAdmin(db.getAdminRepository().save(new Admin().setCreationTime(Instant.now())));
-        db.getUserRepository().save(user);
+      if (user.getAdminX() == null) {
+        user.setAdminX(db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())));
+        db.getUserXRepository().save(user);
       }
     }
   }
 
-  public static void addTeacherPermission(Database db, User... teachers) {
+  public static void addTeacherPermission(Database db, UserX... teachers) {
     for (var teacher : teachers) {
       if (teacher.getTeacher() == null) {
         teacher.setTeacher(
             db.getTeacherRepository().save(new Teacher().setCreationTime(Instant.now())));
-        db.getUserRepository().save(teacher);
+        db.getUserXRepository().save(teacher);
       }
     }
   }
 
-  public static void addStudentPermission(Database db, User... students) {
+  public static void addStudentPermission(Database db, UserX... students) {
     for (var student : students) {
       if (student.getStudent() == null) {
         int idNum = counter.incrementAndGet();
@@ -249,32 +251,32 @@ public class TestData {
                         .setCreationTime(Instant.now())
                         .setGrade(idNum)
                         .setStudentId(idNum)));
-        db.getUserRepository().save(student);
+        db.getUserXRepository().save(student);
       }
     }
   }
 
   public static void addTeachersToSchool(
-      TeacherSchoolRepository repo, School school, User... teachers) {
+      TeacherSchoolRepository repo, School school, UserX... teachers) {
     Arrays.asList(teachers)
         .forEach(teacher -> repo.save(repo.createTeacherSchool(teacher.getTeacher(), school)));
   }
 
-  public void addTeachersToClass(TeacherClassRepository repo, Class clazz, User... teachers) {
+  public void addTeachersToClassX(TeacherClassXRepository repo, ClassX classX, UserX... teachers) {
     Arrays.asList(teachers)
-        .forEach(teacher -> repo.save(repo.createTeacherClass(teacher.getTeacher(), clazz)));
+        .forEach(teacher -> repo.save(repo.createTeacherClassX(teacher.getTeacher(), classX)));
   }
 
-  public void addStudentsToClass(StudentClassRepository repo, Class clazz, User... students) {
+  public void addStudentsToClassX(StudentClassXRepository repo, ClassX classX, UserX... students) {
     Arrays.asList(students)
-        .forEach(student -> repo.save(repo.createStudentClass(student.getStudent(), clazz)));
+        .forEach(student -> repo.save(repo.createStudentClassX(student.getStudent(), classX)));
   }
 
-  private Class createClass(Database db, School school, String name, String descr) {
-    Class clazz =
-        db.getClassRepository()
+  private ClassX createClassX(Database db, School school, String name, String descr) {
+    ClassX classX =
+        db.getClassXRepository()
             .save(
-                new Class()
+                new ClassX()
                     .setCreationTime(Instant.now())
                     .setSchool(school)
                     .setName(name)
@@ -282,12 +284,12 @@ public class TestData {
                     .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
                     .setLongDescr(descr)
                     .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
-    return clazz;
+    return classX;
   }
 
   private Assignment createAssignment(
       Database db,
-      Class clazz,
+      ClassX classX,
       String name,
       String descr,
       KnowledgeAndSkill... knowledgeAndSkills) {
@@ -296,7 +298,7 @@ public class TestData {
             .save(
                 new Assignment()
                     .setCreationTime(Instant.now())
-                    .setClassField(clazz)
+                    .setClassX(classX)
                     .setName(name)
                     .setShortDescr(descr)
                     .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
@@ -310,12 +312,12 @@ public class TestData {
   }
 
   public KnowledgeAndSkill createKnowledgeAndSkill(
-      Database db, Class clazz, String name, String descr) {
+      Database db, ClassX classX, String name, String descr) {
     return db.getKnowledgeAndSkillRepository()
         .save(
             new KnowledgeAndSkill()
                 .setCreationTime(Instant.now())
-                .setClassField(clazz)
+                .setClassX(classX)
                 .setName(name)
                 .setShortDescr(descr)
                 .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))

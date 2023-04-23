@@ -5,7 +5,7 @@ import static com.google.common.truth.Truth8.assertThat;
 import static org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor.USE_TEST_DATABASE;
 
 import java.util.Optional;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.test.TestApplication;
 import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.test.TestDatabase;
@@ -28,8 +28,8 @@ public class TestDataTest {
 
   @Test
   public void usersAddedTest() {
-    Optional<User> student =
-        db.getUserRepository().findFullUserByEmailAddress(testData.student.getEmailAddress());
+    Optional<UserX> student =
+        db.getUserXRepository().findFullUserXByEmailAddress(testData.student.getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.orElseThrow().getId()).isGreaterThan(0);
   }

@@ -4,7 +4,7 @@ import static org.davincischools.leo.database.utils.EntityUtils.checkRequiredMax
 import static org.davincischools.leo.database.utils.EntityUtils.checkThat;
 
 import java.util.Optional;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.davincischools.leo.protos.user_management.LoginRequest;
@@ -41,15 +41,15 @@ public class UserManagementLoginController {
       return;
     }
 
-    Optional<User> user =
-        db.getUserRepository().findFullUserByEmailAddress(request.getEmailAddress());
+    Optional<UserX> user =
+        db.getUserXRepository().findFullUserXByEmailAddress(request.getEmailAddress());
     if (!user.isPresent() || !UserUtils.checkPassword(user.get(), request.getPassword())) {
       response.setSuccess(false);
       response.setLoginFailure(true);
       return;
     }
 
-    user = db.getUserRepository().findFullUserByUserId(user.get().getId());
+    user = db.getUserXRepository().findFullUserXByUserXId(user.get().getId());
     if (!user.isPresent()) {
       response.setSuccess(false);
       response.setLoginFailure(true);
@@ -64,7 +64,7 @@ public class UserManagementLoginController {
             .setFirstName(user.get().getFirstName())
             .setLastName(user.get().getLastName())
             .setEmailAddress(user.get().getEmailAddress())
-            .setIsAdmin(user.get().getAdmin() != null)
+            .setIsAdmin(user.get().getAdminX() != null)
             .setIsTeacher(user.get().getTeacher() != null)
             .setIsStudent(user.get().getStudent() != null)
             .build());

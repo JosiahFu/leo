@@ -33,7 +33,7 @@ message GetUsersRequest {
 }
 
 message GetUserDetailsRequest {
-  optional int32 user_id = 1;
+  optional int32 user_x_id = 1;
 }
 
 message GetUserDetailsResponse {
@@ -48,12 +48,12 @@ message UpsertUserRequest {
 
 message RemoveUserRequest {
   optional int32 district_id = 1;
-  optional int32 user_id = 2;
+  optional int32 user_x_id = 2;
 }
 
 message UserInformationResponse {
   optional int32 district_id = 1;
-  optional int32 next_user_id = 2;
+  optional int32 next_user_x_id = 2;
   repeated User users = 3;
 
   optional bool success = 4;

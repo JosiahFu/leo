@@ -7,8 +7,8 @@ export enum Role {
   STUDENT,
 }
 
-export type User = {
-  userId: number;
+export type LoggedInUser = {
+  userXId: number;
   districtId: number;
   firstName: string;
   lastName: string;
@@ -24,7 +24,9 @@ export function logout() {
   localStorage.removeItem('user');
 }
 
-export function getCurrentUser(onNotLoggedIn: () => void): User | undefined {
+export function getCurrentUser(
+  onNotLoggedIn: () => void
+): LoggedInUser | undefined {
   const userJson = localStorage.getItem('user');
   if (userJson != null) {
     const user = user_management.User.fromObject(JSON.parse(userJson));
@@ -35,7 +37,7 @@ export function getCurrentUser(onNotLoggedIn: () => void): User | undefined {
     user.isStudent && roles.add(Role.STUDENT);
 
     return {
-      userId: user.id!,
+      userXId: user.id!,
       districtId: user.districtId!,
       firstName: user.firstName!,
       lastName: user.lastName!,

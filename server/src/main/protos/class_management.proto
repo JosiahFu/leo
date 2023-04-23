@@ -18,7 +18,7 @@ message KnowledgeAndSkill {
   optional string long_descr = 5;
 }
 
-message Class {
+message ClassX {
   optional int32 id = 1;
   optional string name = 2;
   optional string short_descr = 3;
@@ -31,7 +31,7 @@ message Assignment {
   optional string short_descr = 4;
   optional string long_descr = 5;
 
-  optional Class class = 2;
+  optional ClassX class_x = 2;
 }
 
 message Project {
@@ -42,7 +42,7 @@ message Project {
 }
 
 message GetStudentAssignmentsRequest {
-  optional int32 user_id = 1;
+  optional int32 user_x_id = 1;
 }
 
 message GetStudentAssignmentsResponse {
@@ -50,7 +50,7 @@ message GetStudentAssignmentsResponse {
 }
 
 message GenerateAssignmentProjectsRequest {
-  optional int32 user_id = 1;
+  optional int32 user_x_id = 1;
   optional string something_you_love = 2;
   optional string what_you_are_good_at = 3;
   optional int32 assignment_id = 4;
@@ -59,7 +59,7 @@ message GenerateAssignmentProjectsRequest {
 message GenerateAssignmentProjectsResponse {}
 
 message GetProjectsRequest {
-  optional int32 user_id = 1;
+  optional int32 user_x_id = 1;
 }
 
 message GetProjectsResponse {

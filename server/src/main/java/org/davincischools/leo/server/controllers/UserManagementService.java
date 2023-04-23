@@ -12,12 +12,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import javax.security.auth.login.AccountNotFoundException;
-import org.davincischools.leo.database.daos.Admin;
+import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.davincischools.leo.protos.user_management.GetUserDetailsRequest;
@@ -44,7 +44,7 @@ public class UserManagementService {
   public UserInformationResponse getUsers(@RequestBody Optional<GetUsersRequest> optionalRequest) {
     var request = optionalRequest.orElse(GetUsersRequest.getDefaultInstance());
     var response = UserInformationResponse.newBuilder();
-    getAllFullUsers(request.getDistrictId(), -1, response);
+    getAllFullUserXs(request.getDistrictId(), -1, response);
     response.setSuccess(true);
     return response.build();
   }
@@ -57,13 +57,13 @@ public class UserManagementService {
     var request = optionalRequest.orElse(GetUserDetailsRequest.getDefaultInstance());
     var response = GetUserDetailsResponse.newBuilder();
 
-    Optional<User> user = db.getUserRepository().findFullUserByUserId(request.getUserId());
+    Optional<UserX> user = db.getUserXRepository().findFullUserXByUserXId(request.getUserXId());
 
     if (user.isPresent()) {
-      response.setUser(DataAccess.convertFullUserToProto(user.get()));
+      response.setUser(DataAccess.convertFullUserXToProto(user.get()));
       response.addAllSchoolIds(
           Lists.transform(
-              db.getTeacherSchoolRepository().findSchoolsByUserId(request.getUserId()),
+              db.getTeacherSchoolRepository().findSchoolsByUserXId(request.getUserXId()),
               School::getId));
     }
 
@@ -78,9 +78,9 @@ public class UserManagementService {
     var request = optionalRequest.orElse(UpsertUserRequest.getDefaultInstance());
     var response = UserInformationResponse.newBuilder();
 
-    Optional<User> existingUser = Optional.empty();
+    Optional<UserX> existingUser = Optional.empty();
     if (request.getUser().hasId()) {
-      existingUser = db.getUserRepository().findFullUserByUserId(request.getUser().getId());
+      existingUser = db.getUserXRepository().findFullUserXByUserXId(request.getUser().getId());
     }
 
     if (setFieldErrors(request, response, existingUser)) {
@@ -88,8 +88,8 @@ public class UserManagementService {
       return response.build();
     }
 
-    User user =
-        new User()
+    UserX user =
+        new UserX()
             .setCreationTime(Instant.now())
             .setDistrict(
                 new District()
@@ -101,7 +101,7 @@ public class UserManagementService {
     existingUser.ifPresent(
         e -> {
           user.setId(e.getId());
-          user.setAdmin(e.getAdmin());
+          user.setAdminX(e.getAdminX());
           user.setTeacher(e.getTeacher());
           user.setStudent(e.getStudent());
           user.setEncodedPassword(e.getEncodedPassword());
@@ -111,11 +111,11 @@ public class UserManagementService {
       UserUtils.setPassword(user, request.getUser().getPassword());
     }
 
-    if ((user.getAdmin() != null) ^ request.getUser().getIsAdmin()) {
+    if ((user.getAdminX() != null) ^ request.getUser().getIsAdmin()) {
       if (request.getUser().getIsAdmin()) {
-        user.setAdmin(db.getAdminRepository().save(new Admin().setCreationTime(Instant.now())));
+        user.setAdminX(db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())));
       } else {
-        user.setAdmin(null);
+        user.setAdminX(null);
       }
     }
 
@@ -139,7 +139,7 @@ public class UserManagementService {
         // Calculate missing schools.
         List<Integer> existingSchoolIds =
             Lists.transform(
-                db.getTeacherSchoolRepository().findSchoolsByUserId(user.getId()), School::getId);
+                db.getTeacherSchoolRepository().findSchoolsByUserXId(user.getId()), School::getId);
         schoolIdsToAdd =
             Sets.difference(
                     Sets.newHashSet(request.getSchoolIdsList()), Sets.newHashSet(existingSchoolIds))
@@ -168,12 +168,12 @@ public class UserManagementService {
       }
     }
 
-    db.getUserRepository().save(user);
+    db.getUserXRepository().save(user);
 
     existingUser.ifPresent(
         e -> {
-          if (e.getAdmin() != null && user.getAdmin() == null) {
-            db.getAdminRepository().delete(e.getAdmin());
+          if (e.getAdminX() != null && user.getAdminX() == null) {
+            db.getAdminXRepository().delete(e.getAdminX());
           }
           if (e.getTeacher() != null && user.getTeacher() == null) {
             db.getTeacherRepository().delete(e.getTeacher());
@@ -183,14 +183,14 @@ public class UserManagementService {
           }
         });
 
-    getAllFullUsers(request.getUser().getDistrictId(), user.getId(), response);
+    getAllFullUserXs(request.getUser().getDistrictId(), user.getId(), response);
     response.setSuccess(true);
     return response.build();
   }
 
   /** Checks fields for errors. Sets error messages and returns true if there are any errors. */
   private boolean setFieldErrors(
-      UpsertUserRequest request, Builder response, Optional<User> existingUser) {
+      UpsertUserRequest request, Builder response, Optional<UserX> existingUser) {
     boolean inputValid = true;
 
     inputValid &=
@@ -263,8 +263,8 @@ public class UserManagementService {
               Database.USER_MIN_PASSWORD_LENGTH);
     }
 
-    Optional<User> emailUser =
-        db.getUserRepository().findFullUserByEmailAddress(request.getUser().getEmailAddress());
+    Optional<UserX> emailUser =
+        db.getUserXRepository().findFullUserXByEmailAddress(request.getUser().getEmailAddress());
     if (emailUser.isPresent()) {
       inputValid &=
           checkThat(
@@ -283,15 +283,15 @@ public class UserManagementService {
   public UserInformationResponse removeUser(@RequestBody Optional<RemoveUserRequest> request) {
     request = Optional.of(request.orElse(RemoveUserRequest.getDefaultInstance()));
     UserInformationResponse.Builder response = UserInformationResponse.newBuilder();
-    db.getUserRepository().deleteById(request.get().getUserId());
-    getAllFullUsers(request.get().getDistrictId(), -1, response);
+    db.getUserXRepository().deleteById(request.get().getUserXId());
+    getAllFullUserXs(request.get().getDistrictId(), -1, response);
     response.setSuccess(true);
     return response.build();
   }
 
-  private void getAllFullUsers(int districtId, int nextUserId, Builder response) {
+  private void getAllFullUserXs(int districtId, int nextUserXId, Builder response) {
     response.setDistrictId(districtId);
-    response.setNextUserId(nextUserId);
-    response.addAllUsers(DataAccess.getProtoFullUsersByDistrictId(db, districtId));
+    response.setNextUserXId(nextUserXId);
+    response.addAllUsers(DataAccess.getProtoFullUserXsByDistrictId(db, districtId));
   }
 }

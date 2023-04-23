@@ -79,7 +79,7 @@ public class PartialTextOpenAiPromptController {
     OpenAiResponse aiResponse =
         openAiUtils
             .sendOpenAiRequest(
-                aiRequest, OpenAiResponse.newBuilder(), Optional.of(request.get().getUserId()))
+                aiRequest, OpenAiResponse.newBuilder(), Optional.of(request.get().getUserXId()))
             .build();
 
     List<String> suggestions =

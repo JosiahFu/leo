@@ -24,7 +24,7 @@ export function MyProjects() {
       'ClassManagementService'
     );
     classManagementService
-      .getProjects({userId: user!.userId!})
+      .getProjects({userXId: user!.userXId!})
       .then(response => setProjects(response.projects));
   }, []);
 

@@ -16,7 +16,7 @@ import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Project;
-import org.davincischools.leo.database.daos.User;
+import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.StudentRepository.StudentAssignment;
 import org.davincischools.leo.database.utils.QuillInitializer;
@@ -58,9 +58,9 @@ public class ClassManagementService {
     var response = GetStudentAssignmentsResponse.newBuilder();
 
     for (StudentAssignment assignment :
-        db.getStudentRepository().findAllAssignmentsByStudentUserId(request.getUserId())) {
+        db.getStudentRepository().findAllAssignmentsByStudentUserXId(request.getUserXId())) {
       response.addAssignments(
-          DataAccess.convertAssignmentToProto(assignment.classField(), assignment.assignment()));
+          DataAccess.convertAssignmentToProto(assignment.classX(), assignment.assignment()));
     }
 
     return response.build();
@@ -73,7 +73,7 @@ public class ClassManagementService {
     var request = optionalRequest.orElse(GenerateAssignmentProjectsRequest.getDefaultInstance());
     var response = GenerateAssignmentProjectsResponse.newBuilder();
 
-    User user = db.getUserRepository().findFullUserByUserId(request.getUserId()).orElseThrow();
+    UserX user = db.getUserXRepository().findFullUserXByUserXId(request.getUserXId()).orElseThrow();
 
     // Save the Ikigai settings.
     IkigaiInput ikigaiInput =
@@ -81,7 +81,7 @@ public class ClassManagementService {
             .save(
                 new IkigaiInput()
                     .setCreationTime(Instant.now())
-                    .setUser(user)
+                    .setUserX(user)
                     .setAssignment(new Assignment().setId(request.getAssignmentId()))
                     .setSomethingYouLove(request.getSomethingYouLove())
                     .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
@@ -166,7 +166,7 @@ public class ClassManagementService {
     var request = optionalRequest.orElse(GetProjectsRequest.getDefaultInstance());
     var response = GetProjectsResponse.newBuilder();
 
-    response.addAllProjects(DataAccess.getProtoProjectsByUserId(db, request.getUserId()));
+    response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, request.getUserXId()));
 
     return response.build();
   }
