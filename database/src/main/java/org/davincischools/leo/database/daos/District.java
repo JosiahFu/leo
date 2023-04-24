@@ -5,11 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity(name = District.ENTITY_NAME)
-@Table(name = District.TABLE_NAME, schema = "leo_temp")
+@Table(
+    name = District.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {@Index(name = "name", columnList = "name", unique = true)})
 public class District {
 
   public static final String ENTITY_NAME = "District";

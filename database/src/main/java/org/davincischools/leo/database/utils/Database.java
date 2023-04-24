@@ -74,7 +74,9 @@ public class Database {
   public interface ClassXRepository extends JpaRepository<ClassX, Integer> {}
 
   @Repository
-  public interface DistrictRepository extends JpaRepository<District, Integer> {}
+  public interface DistrictRepository extends JpaRepository<District, Integer> {
+    public District findByName(String name);
+  }
 
   @Repository
   public interface IkigaiInputRepository extends JpaRepository<IkigaiInput, Integer> {}
