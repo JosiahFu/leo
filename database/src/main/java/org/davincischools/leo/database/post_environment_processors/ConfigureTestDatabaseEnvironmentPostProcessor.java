@@ -26,14 +26,14 @@ public class ConfigureTestDatabaseEnvironmentPostProcessor implements Environmen
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
 
+    // Check that a test database should be started.
+    if (!"true".equals(environment.getProperty(USE_TEST_DATABASE_KEY, "false"))) {
+      return;
+    }
+
     log.atDebug().log("Configuring test database environment.");
 
     try {
-      // Check that a test database should be started.
-      if (!"true".equals(environment.getProperty(USE_TEST_DATABASE_KEY, "false"))) {
-        return;
-      }
-
       // Set JDBC properties.
       Map<String, Object> properties = new HashMap<>();
       properties.computeIfAbsent(
