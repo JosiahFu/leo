@@ -118,8 +118,8 @@ public class Project {
     return this;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "ikigai_input_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ikigai_input_id")
   public IkigaiInput getIkigaiInput() {
     return ikigaiInput;
   }

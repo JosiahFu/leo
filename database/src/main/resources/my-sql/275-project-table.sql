@@ -9,7 +9,7 @@ CREATE TABLE project
     long_descr        TEXT         NOT NULL,
     long_descr_quill  TEXT         NOT NULL,
 
-    ikigai_input_id   INT          NOT NULL,
+    ikigai_input_id   INT,
     CONSTRAINT project__ikigai_input_id
         FOREIGN KEY (ikigai_input_id)
             REFERENCES ikigai_input (id)
