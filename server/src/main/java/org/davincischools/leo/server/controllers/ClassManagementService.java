@@ -93,7 +93,9 @@ public class ClassManagementService {
               var response = GenerateAssignmentProjectsResponse.newBuilder();
 
               UserX user =
-                  db.getUserXRepository().findFullUserXByUserXId(request.getUserXId()).orElseThrow();
+                  db.getUserXRepository()
+                      .findFullUserXByUserXId(request.getUserXId())
+                      .orElseThrow();
 
               // Save the Ikigai settings.
               IkigaiInput ikigaiInput =
@@ -199,7 +201,8 @@ public class ClassManagementService {
               checkArgument(request.hasUserXId());
               var response = GetProjectsResponse.newBuilder();
 
-    response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, request.getUserXId()));
+              response.addAllProjects(
+                  DataAccess.getProtoProjectsByUserXId(db, request.getUserXId()));
 
               return response.build();
             })
