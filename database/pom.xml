@@ -27,6 +27,12 @@
             <version>6.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
         <!-- MySQL test containers. -->
         <dependency>
             <groupId>org.testcontainers</groupId>
