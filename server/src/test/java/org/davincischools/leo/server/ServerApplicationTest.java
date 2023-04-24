@@ -42,6 +42,7 @@ public class ServerApplicationTest {
     ServerApplication.ServerApplicationConfigurer configurer =
         new ServerApplication.ServerApplicationConfigurer();
     configurer.extendMessageConverters(restTemplate.getRestTemplate().getMessageConverters());
+    testData.addTestData(TestData.counter.incrementAndGet());
   }
 
   @Test
@@ -58,7 +59,8 @@ public class ServerApplicationTest {
   @Test
   public void usersAddedTest() {
     Optional<UserX> student =
-        db.getUserXRepository().findFullUserXByEmailAddress(testData.student.getEmailAddress());
+        db.getUserXRepository()
+            .findFullUserXByEmailAddress(testData.getStudent().getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.get().getId()).isGreaterThan(0);
   }

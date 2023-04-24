@@ -10,6 +10,7 @@ import org.davincischools.leo.database.test.TestApplication;
 import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.test.TestDatabase;
 import org.davincischools.leo.database.utils.Database;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,16 @@ public class TestDataTest {
   @Autowired TestData testData;
   @Autowired Database db;
 
+  @Before
+  public void setUp() {
+    testData.addTestData(TestData.counter.incrementAndGet());
+  }
+
   @Test
   public void usersAddedTest() {
     Optional<UserX> student =
-        db.getUserXRepository().findFullUserXByEmailAddress(testData.student.getEmailAddress());
+        db.getUserXRepository()
+            .findFullUserXByEmailAddress(testData.getStudent().getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.orElseThrow().getId()).isGreaterThan(0);
   }

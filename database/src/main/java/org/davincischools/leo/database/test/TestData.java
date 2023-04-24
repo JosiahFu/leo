@@ -26,29 +26,74 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestData {
 
-  private static final AtomicInteger counter =
+  public static final String PASSWORD = "password";
+
+  public static final AtomicInteger counter =
       new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE - 1000));
 
   private final Database db;
 
-  public final UserX teacher;
-  public final UserX student;
-  public final UserX admin;
+  private UserX teacher;
+  private UserX student;
+  private UserX admin;
 
-  public final ClassX chemistryClassX;
-  public final KnowledgeAndSkill chemistryEks1, chemistryEks2;
-  public final Assignment chemistryAssignment;
+  private ClassX chemistryClassX;
+  private KnowledgeAndSkill chemistryEks1, chemistryEks2;
+  private Assignment chemistryAssignment;
 
-  public final ClassX programmingClassX;
-  public final KnowledgeAndSkill programmingEks1, programmingEks2;
-  public final Assignment programmingAssignment;
-
-  public final String password = "password";
+  private ClassX programmingClassX;
+  private KnowledgeAndSkill programmingEks1, programmingEks2;
+  private Assignment programmingAssignment;
 
   public TestData(@Autowired Database db) {
     this.db = db;
-    counter.incrementAndGet();
+  }
 
+  public UserX getTeacher() {
+    return teacher;
+  }
+
+  public UserX getStudent() {
+    return student;
+  }
+
+  public UserX getAdmin() {
+    return admin;
+  }
+
+  public ClassX getChemistryClassX() {
+    return chemistryClassX;
+  }
+
+  public KnowledgeAndSkill getChemistryEks1() {
+    return chemistryEks1;
+  }
+
+  public KnowledgeAndSkill getChemistryEks2() {
+    return chemistryEks2;
+  }
+
+  public Assignment getChemistryAssignment() {
+    return chemistryAssignment;
+  }
+
+  public ClassX getProgrammingClassX() {
+    return programmingClassX;
+  }
+
+  public KnowledgeAndSkill getProgrammingEks1() {
+    return programmingEks1;
+  }
+
+  public KnowledgeAndSkill getProgrammingEks2() {
+    return programmingEks2;
+  }
+
+  public Assignment getProgrammingAssignment() {
+    return programmingAssignment;
+  }
+
+  public void addTestData(int count) {
     // Rather than delete what's there, which could be dangerous since it is
     // possible that a misconfiguration could point this to a real database,
     // we create new users each time with unique ids.
@@ -58,55 +103,55 @@ public class TestData {
             .save(
                 new District()
                     .setCreationTime(Instant.now())
-                    .setName("Wiseburn Unified School District " + counter.get()));
+                    .setName("Wiseburn Unified School District " + count));
 
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Communications High School " + counter.get())
+                .setName("Da Vinci Communications High School " + count)
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Connect (TK-8) " + counter.get())
+                .setName("Da Vinci Connect (TK-8) " + count)
                 .setCity("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Connect High School " + counter.get())
+                .setName("Da Vinci Connect High School " + count)
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Extension " + counter.get())
+                .setName("Da Vinci Extension " + count)
                 .setCity("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Rise High, RISE-Richstone " + counter.get())
+                .setName("Da Vinci Rise High, RISE-Richstone " + count)
                 .setCity("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Rise High, RISE-APCH " + counter.get())
+                .setName("Da Vinci Rise High, RISE-APCH " + count)
                 .setCity("Los Angeles, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
-                .setName("Da Vinci Rise High, RISE-New Earth " + counter.get())
+                .setName("Da Vinci Rise High, RISE-New Earth " + count)
                 .setCity("Culver City, CA")
                 .setDistrict(district));
     School school =
@@ -114,7 +159,7 @@ public class TestData {
             .save(
                 new School()
                     .setCreationTime(Instant.now())
-                    .setName("Da Vinci Science High School " + counter.get())
+                    .setName("Da Vinci Science High School " + count)
                     .setCity("El Segundo, CA")
                     .setDistrict(district));
 
@@ -126,9 +171,9 @@ public class TestData {
                     .setCreationTime(Instant.now())
                     .setFirstName("Scott")
                     .setLastName("Hendrickson")
-                    .setEmailAddress("sahendrickson@gmail.com")
+                    .setEmailAddress("sahendrickson-" + count + "@gmail.com")
                     .setDistrict(district),
-                password));
+                PASSWORD));
 
     teacher =
         createUser(
@@ -138,9 +183,9 @@ public class TestData {
                     .setCreationTime(Instant.now())
                     .setFirstName("Steven")
                     .setLastName("Eno")
-                    .setEmailAddress("seno@davincischools.org")
+                    .setEmailAddress("seno-" + count + "@davincischools.org")
                     .setDistrict(district),
-                password));
+                PASSWORD));
 
     student =
         createUser(
@@ -150,16 +195,17 @@ public class TestData {
                     .setCreationTime(Instant.now())
                     .setFirstName("Steve")
                     .setLastName("Wallis")
-                    .setEmailAddress("swallis@davincischools.org")
+                    .setEmailAddress("swallis-" + count + "@davincischools.org")
                     .setDistrict(district),
-                password));
+                PASSWORD));
 
     addAdminPermission(db, admin);
     addTeacherPermission(db, teacher);
     addStudentPermission(db, admin, teacher, student);
     addTeachersToSchool(db.getTeacherSchoolRepository(), school, teacher);
 
-    chemistryClassX = createClassX(db, school, "Chemistry I", "Intro to general chemistry.");
+    chemistryClassX =
+        createClassX(db, school, "Chemistry I " + count, "Intro to general chemistry.");
     addTeachersToClassX(db.getTeacherClassXRepository(), chemistryClassX, teacher);
     addStudentsToClassX(db.getStudentClassXRepository(), chemistryClassX, admin, teacher, student);
 
@@ -167,25 +213,26 @@ public class TestData {
         createKnowledgeAndSkill(
             db,
             chemistryClassX,
-            "Periodic Table",
+            "Periodic Table " + count,
             "I can recognize the basic elements on a periodic table.");
     chemistryEks2 =
         createKnowledgeAndSkill(
             db,
             chemistryClassX,
-            "Valence Electrons",
+            "Valence Electrons " + count,
             "I can determine the number of valence electrons for each element.");
 
     chemistryAssignment =
         createAssignment(
             db,
             chemistryClassX,
-            "Valence Electrons",
+            "Valence Electrons " + count,
             "Show that you understand valence electrons.",
             chemistryEks1,
             chemistryEks2);
 
-    programmingClassX = createClassX(db, school, "Computer Science I", "Intro to Programming.");
+    programmingClassX =
+        createClassX(db, school, "Computer Science I " + count, "Intro to Programming.");
     addTeachersToClassX(db.getTeacherClassXRepository(), programmingClassX, teacher);
     addStudentsToClassX(
         db.getStudentClassXRepository(), programmingClassX, admin, teacher, student);
@@ -194,17 +241,17 @@ public class TestData {
         createKnowledgeAndSkill(
             db,
             programmingClassX,
-            "Sort Functions",
+            "Sort Functions " + count,
             "I understand and can implement different sort functions.");
     programmingEks2 =
         createKnowledgeAndSkill(
-            db, programmingClassX, "Collections", "I can use Lists, Sets, and Maps.");
+            db, programmingClassX, "Collections " + count, "I can use Lists, Sets, and Maps.");
 
     programmingAssignment =
         createAssignment(
             db,
             programmingClassX,
-            "Sort Algorithms",
+            "Sort Algorithms " + count,
             "Show that you can implement sort algorithms.",
             programmingEks1);
   }
@@ -273,18 +320,16 @@ public class TestData {
   }
 
   private ClassX createClassX(Database db, School school, String name, String descr) {
-    ClassX classX =
-        db.getClassXRepository()
-            .save(
-                new ClassX()
-                    .setCreationTime(Instant.now())
-                    .setSchool(school)
-                    .setName(name)
-                    .setShortDescr(descr)
-                    .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
-                    .setLongDescr(descr)
-                    .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
-    return classX;
+    return db.getClassXRepository()
+        .save(
+            new ClassX()
+                .setCreationTime(Instant.now())
+                .setSchool(school)
+                .setName(name)
+                .setShortDescr(descr)
+                .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
+                .setLongDescr(descr)
+                .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
   }
 
   private Assignment createAssignment(
