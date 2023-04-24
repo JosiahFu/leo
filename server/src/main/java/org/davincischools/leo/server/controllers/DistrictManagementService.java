@@ -1,5 +1,7 @@
 package org.davincischools.leo.server.controllers;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +13,8 @@ import org.davincischools.leo.protos.district_management.DistrictInformationResp
 import org.davincischools.leo.protos.district_management.GetDistrictsRequest;
 import org.davincischools.leo.protos.district_management.RemoveDistrictRequest;
 import org.davincischools.leo.protos.district_management.UpdateDistrictRequest;
+import org.davincischools.leo.server.utils.LogUtils;
+import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,59 +29,80 @@ public class DistrictManagementService {
   @PostMapping(value = "/api/protos/DistrictManagementService/GetDistricts")
   @ResponseBody
   public DistrictInformationResponse getDistricts(
-      @RequestBody Optional<GetDistrictsRequest> request) {
-    request = Optional.of(request.orElse(GetDistrictsRequest.getDefaultInstance()));
-    return getAllDistricts(-1);
+      @RequestBody Optional<GetDistrictsRequest> optionalRequest) throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(GetDistrictsRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              return getAllDistricts(-1);
+            })
+        .finish();
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/AddDistrict")
   @ResponseBody
   public DistrictInformationResponse addDistrict(
-      @RequestBody Optional<AddDistrictRequest> request) {
-    request = Optional.of(request.orElse(AddDistrictRequest.getDefaultInstance()));
+      @RequestBody Optional<AddDistrictRequest> optionalRequest) throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(AddDistrictRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              if (request.hasDistrict()) {
+                District district =
+                    new District()
+                        .setCreationTime(Instant.now())
+                        .setName(request.getDistrict().getName());
+                db.getDistrictRepository().save(district);
+                return getAllDistricts(district.getId());
+              }
 
-    if (request.get().hasDistrict()) {
-      District district =
-          new District()
-              .setCreationTime(Instant.now())
-              .setName(request.get().getDistrict().getName());
-      db.getDistrictRepository().save(district);
-      return getAllDistricts(district.getId());
-    }
-
-    return getAllDistricts(-1);
+              return getAllDistricts(-1);
+            })
+        .finish();
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/UpdateDistrict")
   @ResponseBody
   public DistrictInformationResponse updateDistrict(
-      @RequestBody Optional<UpdateDistrictRequest> request) {
-    request = Optional.of(request.orElse(UpdateDistrictRequest.getDefaultInstance()));
+      @RequestBody Optional<UpdateDistrictRequest> optionalRequest) throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(UpdateDistrictRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              if (request.getDistrict().hasId()) {
+                db.getDistrictRepository()
+                    .save(
+                        new District()
+                            .setCreationTime(Instant.now())
+                            .setId(request.getDistrict().getId())
+                            .setName(request.getDistrict().getName()));
+                return getAllDistricts(request.getDistrict().getId());
+              }
 
-    if (request.get().getDistrict().hasId()) {
-      db.getDistrictRepository()
-          .save(
-              new District()
-                  .setCreationTime(Instant.now())
-                  .setId(request.get().getDistrict().getId())
-                  .setName(request.get().getDistrict().getName()));
-      return getAllDistricts(request.get().getDistrict().getId());
-    }
-
-    return getAllDistricts(-1);
+              return getAllDistricts(-1);
+            })
+        .finish();
   }
 
   @PostMapping(value = "/api/protos/DistrictManagementService/RemoveDistrict")
   @ResponseBody
   public DistrictInformationResponse removeDistrict(
-      @RequestBody Optional<RemoveDistrictRequest> request) {
-    request = Optional.of(request.orElse(RemoveDistrictRequest.getDefaultInstance()));
+      @RequestBody Optional<RemoveDistrictRequest> optionalRequest) throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(RemoveDistrictRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              checkArgument(request.hasDistrictId());
 
-    if (request.get().hasDistrictId()) {
-      db.getDistrictRepository().deleteById(request.get().getDistrictId());
-    }
+              db.getDistrictRepository().deleteById(request.getDistrictId());
 
-    return getAllDistricts(-1);
+              return getAllDistricts(-1);
+            })
+        .finish();
   }
 
   private DistrictInformationResponse getAllDistricts(int modifiedDistrictId) {

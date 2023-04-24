@@ -1,9 +1,10 @@
 package org.davincischools.leo.server.controllers;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import org.davincischools.leo.protos.open_ai.OpenAiMessage;
 import org.davincischools.leo.protos.open_ai.OpenAiRequest;
 import org.davincischools.leo.protos.open_ai.OpenAiResponse;
 import org.davincischools.leo.server.utils.DataAccess;
+import org.davincischools.leo.server.utils.LogUtils;
+import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,121 +56,153 @@ public class ClassManagementService {
   @PostMapping(value = "/api/protos/ClassManagementService/GetStudentAssignments")
   @ResponseBody
   public GetStudentAssignmentsResponse getStudentAssignments(
-      @RequestBody Optional<GetStudentAssignmentsRequest> optionalRequest) {
-    var request = optionalRequest.orElse(GetStudentAssignmentsRequest.getDefaultInstance());
-    var response = GetStudentAssignmentsResponse.newBuilder();
+      @RequestBody Optional<GetStudentAssignmentsRequest> optionalRequest)
+      throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(GetStudentAssignmentsRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              checkArgument(request.hasUserXId());
+              var response = GetStudentAssignmentsResponse.newBuilder();
 
-    for (StudentAssignment assignment :
-        db.getStudentRepository().findAllAssignmentsByStudentUserXId(request.getUserXId())) {
-      response.addAssignments(
-          DataAccess.convertAssignmentToProto(assignment.classX(), assignment.assignment()));
-    }
+              for (StudentAssignment assignment :
+                  db.getStudentRepository()
+                      .findAllAssignmentsByStudentUserXId(request.getUserXId())) {
+                response.addAssignments(
+                    DataAccess.convertAssignmentToProto(
+                        assignment.classX(), assignment.assignment()));
+              }
 
-    return response.build();
+              return response.build();
+            })
+        .finish();
   }
 
   @PostMapping(value = "/api/protos/ClassManagementService/GenerateAssignmentProjects")
   @ResponseBody
   public GenerateAssignmentProjectsResponse generateAssignmentProjects(
-      @RequestBody Optional<GenerateAssignmentProjectsRequest> optionalRequest) throws IOException {
-    var request = optionalRequest.orElse(GenerateAssignmentProjectsRequest.getDefaultInstance());
-    var response = GenerateAssignmentProjectsResponse.newBuilder();
+      @RequestBody Optional<GenerateAssignmentProjectsRequest> optionalRequest)
+      throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(GenerateAssignmentProjectsRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              checkArgument(request.hasUserXId());
+              var response = GenerateAssignmentProjectsResponse.newBuilder();
 
-    UserX user = db.getUserXRepository().findFullUserXByUserXId(request.getUserXId()).orElseThrow();
+              UserX user =
+                  db.getUserXRepository().findFullUserXByUserXId(request.getUserXId()).orElseThrow();
 
-    // Save the Ikigai settings.
-    IkigaiInput ikigaiInput =
-        db.getIkigaiInputRepository()
-            .save(
-                new IkigaiInput()
-                    .setCreationTime(Instant.now())
-                    .setUserX(user)
-                    .setAssignment(new Assignment().setId(request.getAssignmentId()))
-                    .setSomethingYouLove(request.getSomethingYouLove())
-                    .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
+              // Save the Ikigai settings.
+              IkigaiInput ikigaiInput =
+                  db.getIkigaiInputRepository()
+                      .save(
+                          new IkigaiInput()
+                              .setCreationTime(Instant.now())
+                              .setUserX(user)
+                              .setAssignment(new Assignment().setId(request.getAssignmentId()))
+                              .setSomethingYouLove(request.getSomethingYouLove())
+                              .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
 
-    // Get knowledge and skill contribution.
-    List<KnowledgeAndSkill> knowledgeAndSkills =
-        db.getAssignmentRepository().findAllKnowledgeAndSkillsById(request.getAssignmentId());
-    String knowledgeAndSkillsTextList =
-        COMMA_AND_JOINER.join(
-            Lists.transform(
-                knowledgeAndSkills,
-                knowledgeAndSkill ->
-                    ("\""
-                        + StringEscapeUtils.escapeJava(knowledgeAndSkill.getShortDescr())
-                        + "\"")));
+              // Get knowledge and skill contribution.
+              List<KnowledgeAndSkill> knowledgeAndSkills =
+                  db.getAssignmentRepository()
+                      .findAllKnowledgeAndSkillsById(request.getAssignmentId());
+              String knowledgeAndSkillsTextList =
+                  COMMA_AND_JOINER.join(
+                      Lists.transform(
+                          knowledgeAndSkills,
+                          knowledgeAndSkill ->
+                              ("\""
+                                  + StringEscapeUtils.escapeJava(knowledgeAndSkill.getShortDescr())
+                                  + "\"")));
 
-    // Query OpenAI for projects.
-    OpenAiRequest aiRequest =
-        OpenAiRequest.newBuilder()
-            .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
-            .addMessages(
-                OpenAiMessage.newBuilder()
-                    .setRole("system")
-                    .setContent(
-                        String.format(
-                            "You are a senior student who wants to spend 60 hours to build a"
-                                + " project that demonstrates your mastery of %s. You are"
-                                + " passionate about \"%s\" and good at \"%s\".",
-                            knowledgeAndSkillsTextList,
-                            StringEscapeUtils.escapeJava(request.getSomethingYouLove()),
-                            StringEscapeUtils.escapeJava(request.getWhatYouAreGoodAt()))))
-            .addMessages(
-                OpenAiMessage.newBuilder()
-                    .setRole("user")
-                    .setContent(
-                        "Generate 5 projects that would fit the criteria. Place a title, a short"
-                            + " description, and a full description on separate lines."))
-            .build();
+              // Query OpenAI for projects.
+              OpenAiRequest aiRequest =
+                  OpenAiRequest.newBuilder()
+                      .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
+                      .addMessages(
+                          OpenAiMessage.newBuilder()
+                              .setRole("system")
+                              .setContent(
+                                  String.format(
+                                      "You are a senior student who wants to spend 60 hours to"
+                                          + " build a project that demonstrates your mastery of %s."
+                                          + " You are passionate about \"%s\" and good at \"%s\".",
+                                      knowledgeAndSkillsTextList,
+                                      StringEscapeUtils.escapeJava(request.getSomethingYouLove()),
+                                      StringEscapeUtils.escapeJava(request.getWhatYouAreGoodAt()))))
+                      .addMessages(
+                          OpenAiMessage.newBuilder()
+                              .setRole("user")
+                              .setContent(
+                                  "Generate 5 projects that would fit the criteria. Place a title,"
+                                      + " a short description, and a full description on separate"
+                                      + " lines."))
+                      .build();
 
-    OpenAiResponse aiResponse =
-        openAiUtils
-            .sendOpenAiRequest(aiRequest, OpenAiResponse.newBuilder(), Optional.of(user.getId()))
-            .build();
+              OpenAiResponse aiResponse =
+                  openAiUtils
+                      .sendOpenAiRequest(
+                          aiRequest, OpenAiResponse.newBuilder(), Optional.of(user.getId()))
+                      .build();
 
-    // Parse the result into separate lines.
-    List<String> lines = new ArrayList<>();
-    BufferedReader reader =
-        new BufferedReader(new StringReader(aiResponse.getChoices(0).getMessage().getContent()));
-    String line;
-    while ((line = reader.readLine()) != null) {
-      lines.add(line);
-    }
+              // Parse the result into separate lines.
+              List<String> lines = new ArrayList<>();
+              BufferedReader reader =
+                  new BufferedReader(
+                      new StringReader(aiResponse.getChoices(0).getMessage().getContent()));
+              String line;
+              while ((line = reader.readLine()) != null) {
+                lines.add(line);
+              }
 
-    // Process the lines and extract projects.
-    lines = lines.stream().map(String::trim).filter(str -> !str.isEmpty()).toList();
-    for (int i = 0; i < lines.size() - 2; ++i) {
-      Matcher name = AI_PROJECT_NAME.matcher(lines.get(i));
-      Matcher shortDescr = AI_PROJECT_SHORT_DESCR.matcher(lines.get(i + 1));
-      Matcher longDescr = AI_PROJECT_LONG_DESCR.matcher(lines.get(i + 2));
-      if (name.find() && shortDescr.find() && longDescr.find()) {
-        db.getProjectRepository()
-            .save(
-                new Project()
-                    .setCreationTime(Instant.now())
-                    .setIkigaiInput(ikigaiInput)
-                    .setName(name.group(1))
-                    .setShortDescr(shortDescr.group(1))
-                    .setShortDescrQuill(QuillInitializer.toQuillDelta(shortDescr.group(1)))
-                    .setLongDescr(longDescr.group(1))
-                    .setLongDescrQuill(QuillInitializer.toQuillDelta(longDescr.group(1))));
-        i += 2;
-      }
-    }
+              // Process the lines and extract projects.
+              lines = lines.stream().map(String::trim).filter(str -> !str.isEmpty()).toList();
+              for (int i = 0; i < lines.size() - 2; ++i) {
+                Matcher name = AI_PROJECT_NAME.matcher(lines.get(i));
+                Matcher shortDescr = AI_PROJECT_SHORT_DESCR.matcher(lines.get(i + 1));
+                Matcher longDescr = AI_PROJECT_LONG_DESCR.matcher(lines.get(i + 2));
+                if (name.find() && shortDescr.find() && longDescr.find()) {
+                  db.getProjectRepository()
+                      .save(
+                          new Project()
+                              .setCreationTime(Instant.now())
+                              .setIkigaiInput(ikigaiInput)
+                              .setName(name.group(1))
+                              .setShortDescr(shortDescr.group(1))
+                              .setShortDescrQuill(
+                                  QuillInitializer.toQuillDelta(shortDescr.group(1)))
+                              .setLongDescr(longDescr.group(1))
+                              .setLongDescrQuill(
+                                  QuillInitializer.toQuillDelta(longDescr.group(1))));
+                  i += 2;
+                }
+              }
 
-    return response.build();
+              return response.build();
+            })
+        .finish();
   }
 
   @PostMapping(value = "/api/protos/ClassManagementService/GetProjects")
   @ResponseBody
   public GetProjectsResponse getProjects(@RequestBody Optional<GetProjectsRequest> optionalRequest)
-      throws IOException {
-    var request = optionalRequest.orElse(GetProjectsRequest.getDefaultInstance());
-    var response = GetProjectsResponse.newBuilder();
+      throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(GetProjectsRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              checkArgument(request.hasUserXId());
+              var response = GetProjectsResponse.newBuilder();
 
     response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, request.getUserXId()));
 
-    return response.build();
+              return response.build();
+            })
+        .finish();
   }
 }

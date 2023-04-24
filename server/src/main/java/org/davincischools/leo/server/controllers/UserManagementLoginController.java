@@ -9,6 +9,8 @@ import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.davincischools.leo.protos.user_management.LoginRequest;
 import org.davincischools.leo.protos.user_management.LoginResponse;
+import org.davincischools.leo.server.utils.LogUtils;
+import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +28,20 @@ public class UserManagementLoginController {
   // So, handlers need to accept this type of input.
   @PostMapping(value = "/api/protos/UserManagementService/Login")
   @ResponseBody
-  public LoginResponse getResource(@RequestBody Optional<LoginRequest> optionalRequest) {
-    var request = optionalRequest.orElse(LoginRequest.getDefaultInstance());
-    var response = LoginResponse.newBuilder();
+  public LoginResponse getResource(@RequestBody Optional<LoginRequest> optionalRequest)
+      throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(LoginRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              var response = LoginResponse.newBuilder();
 
-    checkLogin(request, response);
+              checkLogin(request, response);
 
-    return response.build();
+              return response.build();
+            })
+        .finish();
   }
 
   private void checkLogin(LoginRequest request, LoginResponse.Builder response) {

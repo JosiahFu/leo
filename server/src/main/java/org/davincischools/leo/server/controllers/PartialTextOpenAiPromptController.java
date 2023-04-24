@@ -1,7 +1,6 @@
 package org.davincischools.leo.server.controllers;
 
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +8,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
+import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.protos.open_ai.OpenAiMessage;
 import org.davincischools.leo.protos.open_ai.OpenAiRequest;
 import org.davincischools.leo.protos.open_ai.OpenAiResponse;
@@ -16,6 +16,8 @@ import org.davincischools.leo.protos.open_ai.OpenAiResponse.CreateCompletionChoi
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRequest;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
 import org.davincischools.leo.protos.partial_text_openai_prompt.GetSuggestionsResponse;
+import org.davincischools.leo.server.utils.LogUtils;
+import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,7 @@ public class PartialTextOpenAiPromptController {
           .build();
 
   @Autowired OpenAiUtils openAiUtils;
+  @Autowired Database db;
 
   // If the client sends an empty GetSuggestionsRequest then the body of the
   // request will have no bytes. Spring will then send either an optional
@@ -53,45 +56,52 @@ public class PartialTextOpenAiPromptController {
   // So, handlers need to accept this type of input.
   @PostMapping(value = "/api/protos/PartialTextOpenAiPromptService/GetSuggestions")
   @ResponseBody
-  public GetSuggestionsResponse getResource(@RequestBody Optional<GetSuggestionsRequest> request)
-      throws IOException {
-    request = Optional.of(request.orElse(GetSuggestionsRequest.getDefaultInstance()));
+  public GetSuggestionsResponse getResource(
+      @RequestBody Optional<GetSuggestionsRequest> optionalRequest) throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            Optional.empty(),
+            optionalRequest.orElse(GetSuggestionsRequest.getDefaultInstance()),
+            (request, logEntry) -> {
+              if (!PROMPTS.containsKey(request.getPrompt())) {
+                throw new IllegalArgumentException("Invalid prompt: " + request.getPrompt());
+              }
 
-    if (!PROMPTS.containsKey(request.get().getPrompt())) {
-      throw new IllegalArgumentException("Invalid prompt: " + request.get().getPrompt());
-    }
+              OpenAiRequest aiRequest =
+                  OpenAiRequest.newBuilder()
+                      .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
+                      .addMessages(
+                          OpenAiMessage.newBuilder()
+                              .setRole("user")
+                              .setContent(
+                                  PROMPT_VARIABLE
+                                      .matcher(
+                                          Objects.requireNonNull(PROMPTS.get(request.getPrompt())))
+                                      .replaceAll(
+                                          "\""
+                                              + StringEscapeUtils.escapeJava(
+                                                  request.getPartialText())
+                                              + "\"")))
+                      .build();
 
-    OpenAiRequest aiRequest =
-        OpenAiRequest.newBuilder()
-            .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
-            .addMessages(
-                OpenAiMessage.newBuilder()
-                    .setRole("user")
-                    .setContent(
-                        PROMPT_VARIABLE
-                            .matcher(Objects.requireNonNull(PROMPTS.get(request.get().getPrompt())))
-                            .replaceAll(
-                                "\""
-                                    + StringEscapeUtils.escapeJava(request.get().getPartialText())
-                                    + "\"")))
-            .build();
+              OpenAiResponse aiResponse =
+                  openAiUtils
+                      .sendOpenAiRequest(
+                          aiRequest, OpenAiResponse.newBuilder(), Optional.of(request.getUserXId()))
+                      .build();
 
-    OpenAiResponse aiResponse =
-        openAiUtils
-            .sendOpenAiRequest(
-                aiRequest, OpenAiResponse.newBuilder(), Optional.of(request.get().getUserXId()))
-            .build();
+              List<String> suggestions =
+                  aiResponse.getChoicesList().stream()
+                      .map(CreateCompletionChoice::getMessage)
+                      .map(OpenAiMessage::getContent)
+                      .flatMap(content -> parseContentIntoList(content).stream())
+                      .distinct()
+                      .sorted()
+                      .toList();
 
-    List<String> suggestions =
-        aiResponse.getChoicesList().stream()
-            .map(CreateCompletionChoice::getMessage)
-            .map(OpenAiMessage::getContent)
-            .flatMap(content -> parseContentIntoList(content).stream())
-            .distinct()
-            .sorted()
-            .toList();
-
-    return GetSuggestionsResponse.newBuilder().addAllSuggestions(suggestions).build();
+              return GetSuggestionsResponse.newBuilder().addAllSuggestions(suggestions).build();
+            })
+        .finish();
   }
 
   public static List<String> parseContentIntoList(String content) {
