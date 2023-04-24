@@ -54,7 +54,7 @@ public class SchoolManagementService {
                               .orElseThrow())
                       .setId(request.getSchool().hasId() ? request.getSchool().getId() : null)
                       .setName(request.getSchool().getName())
-                      .setCity(request.getSchool().getCity());
+                      .setAddress(request.getSchool().getAddress());
               db.getSchoolRepository().save(school);
 
               return getAllSchools(school.getDistrict().getId(), school.getId());

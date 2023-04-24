@@ -110,49 +110,49 @@ public class TestData {
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Communications High School " + count)
-                .setCity("El Segundo, CA")
+                .setAddress("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Connect (TK-8) " + count)
-                .setCity("Hawthorne, CA")
+                .setAddress("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Connect High School " + count)
-                .setCity("El Segundo, CA")
+                .setAddress("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Extension " + count)
-                .setCity("El Segundo, CA")
+                .setAddress("El Segundo, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-Richstone " + count)
-                .setCity("Hawthorne, CA")
+                .setAddress("Hawthorne, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-APCH " + count)
-                .setCity("Los Angeles, CA")
+                .setAddress("Los Angeles, CA")
                 .setDistrict(district));
     db.getSchoolRepository()
         .save(
             new School()
                 .setCreationTime(Instant.now())
                 .setName("Da Vinci Rise High, RISE-New Earth " + count)
-                .setCity("Culver City, CA")
+                .setAddress("Culver City, CA")
                 .setDistrict(district));
     School school =
         db.getSchoolRepository()
@@ -160,7 +160,7 @@ public class TestData {
                 new School()
                     .setCreationTime(Instant.now())
                     .setName("Da Vinci Science High School " + count)
-                    .setCity("El Segundo, CA")
+                    .setAddress("El Segundo, CA")
                     .setDistrict(district));
 
     admin =

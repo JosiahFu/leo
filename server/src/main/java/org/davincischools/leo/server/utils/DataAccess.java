@@ -41,7 +41,7 @@ public class DataAccess {
         .setId(school.getId())
         .setDistrictId(school.getDistrict().getId())
         .setName(school.getName())
-        .setCity(school.getCity())
+        .setAddress(school.getAddress())
         .build();
   }
 

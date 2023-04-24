@@ -36,7 +36,7 @@ export function SelectSchoolFromList(props: {
     stringToKey: Number,
     compareValues: (a, b) =>
       (a.name || '').localeCompare(b.name || '') ||
-      (a.city || '').localeCompare(b.city || ''),
+      (a.address || '').localeCompare(b.address || ''),
     onSelect: props.onSelect,
     renderValue: schoolId => {
       const school = props.schools.get(schoolId);
@@ -45,7 +45,7 @@ export function SelectSchoolFromList(props: {
           <>
             <span className="school">
               <span className="school-name">{school.name}</span>,&nbsp;
-              <span className="school-city">{school.city}</span>
+              <span className="school-address">{school.address}</span>
             </span>
           </>
         );
@@ -72,7 +72,7 @@ export function SelectMultipleSchoolsFromList(props: {
     stringToKey: Number,
     compareValues: (a, b) =>
       (a.name || '').localeCompare(b.name || '') ||
-      (a.city || '').localeCompare(b.city || ''),
+      (a.address || '').localeCompare(b.address || ''),
     onSelect: props.onSelect,
     renderValue: schoolId => {
       const school = props.schools.get(schoolId);
@@ -81,7 +81,7 @@ export function SelectMultipleSchoolsFromList(props: {
           <>
             <span className="school">
               <span className="school-name">{school.name}</span>,&nbsp;
-              <span className="school-city">{school.city}</span>
+              <span className="school-address">{school.address}</span>
             </span>
           </>
         );
@@ -99,7 +99,7 @@ export function EditSchools() {
   const [schools, setSchools] = useState(new Map<number, ISchool>());
   const [schoolId, setSchoolId] = useState(-1);
   const [name, setName] = useState('');
-  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
 
   const districtManagementService = createService(
     DistrictManagementService,
@@ -133,7 +133,7 @@ export function EditSchools() {
           districtId: districtId,
           id: schoolId !== -1 ? schoolId : undefined,
           name: name,
-          city: city,
+          address: address,
         },
       })
       .then(processSchoolInformationResponse);
@@ -190,10 +190,10 @@ export function EditSchools() {
                       const school = schools.get(schoolId);
                       if (school != null) {
                         setName(school.name!);
-                        setCity(school.city!);
+                        setAddress(school.address!);
                       } else {
                         setName('');
-                        setCity('');
+                        setAddress('');
                       }
                     }}
                     defaultText="[Create New School]"
@@ -214,15 +214,15 @@ export function EditSchools() {
                 </td>
               </tr>
               <tr hidden={districtId === -1}>
-                <th>City:</th>
+                <th>Address:</th>
                 <td>
                   <input
                     type="text"
-                    placeholder="New School City"
+                    placeholder="New School Address"
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      setCity(e.target.value);
+                      setAddress(e.target.value);
                     }}
-                    value={city}
+                    value={address}
                   />
                 </td>
               </tr>

@@ -20,7 +20,7 @@ public class School {
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
-  public static final String COLUMN_CITY_NAME = "city";
+  public static final String COLUMN_ADDRESS_NAME = "address";
 
   private Integer id;
 
@@ -28,7 +28,7 @@ public class School {
 
   private String name;
 
-  private String city;
+  private String address;
 
   private District district;
 
@@ -64,13 +64,13 @@ public class School {
     return this;
   }
 
-  @Column(name = COLUMN_CITY_NAME, nullable = false)
-  public String getCity() {
-    return city;
+  @Column(name = COLUMN_ADDRESS_NAME, nullable = false)
+  public String getAddress() {
+    return address;
   }
 
-  public School setCity(String city) {
-    this.city = city;
+  public School setAddress(String address) {
+    this.address = address;
     return this;
   }
 

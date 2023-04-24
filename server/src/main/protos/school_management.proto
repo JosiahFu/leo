@@ -15,7 +15,7 @@ message School {
   optional int32 id = 1;
   optional int32 district_id = 2;
   optional string name = 3 ;
-  optional string city = 4 ;
+  optional string address = 4 ;
 }
 
 message GetSchoolsRequest {
