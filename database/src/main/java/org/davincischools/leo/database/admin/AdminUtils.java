@@ -39,52 +39,39 @@ public class AdminUtils {
   private static final Logger log = LogManager.getLogger();
 
   private record Error(String value, Exception e) {}
-  ;
 
   @Autowired ApplicationContext context;
 
-  @Value("${createDistrict:false}")
+  @Value("${createDistrict:}")
   String createDistrict;
 
-  @Value("${createAdmin:false}")
+  @Value("${createAdmin:}")
   String createAdmin;
 
-  @Value("${upsertStudents:false}")
-  String upsertStudents;
-
-  @Value("${districtName:}")
-  String districtName;
-
-  @Value("${emailAddress:}")
-  String emailAddress;
-
-  @Value("${filename:}")
-  String filename;
+  @Value("${importStudents:}")
+  String importStudents;
 
   @Value("${delimiter:[\\t,]}")
   String delimiter;
 
   public void createDistrict() {
     Database db = context.getBean(Database.class);
-    checkArgument(districtName != null, "--districtName required.");
 
-    log.atInfo().log("Creating district: " + districtName);
+    log.atInfo().log("Creating district: " + createDistrict);
 
     db.getDistrictRepository()
-        .save(new District().setCreationTime(Instant.now()).setName(districtName));
+        .save(new District().setCreationTime(Instant.now()).setName(createDistrict));
 
     log.atInfo().log("Done.");
   }
 
   public void createAdmin() {
     Database db = context.getBean(Database.class);
-    checkArgument(districtName != null, "--districtName required.");
-    checkArgument(emailAddress != null, "--emailAddress required.");
+    checkArgument(createDistrict != null, "--createDistrict required.");
+    District district = db.getDistrictRepository().findByName(createDistrict);
+    checkArgument(district != null, "District doesn't exist: {}", createDistrict);
 
-    District district = db.getDistrictRepository().findByName(districtName);
-    checkArgument(district != null, "--districtName doesn't exist.");
-
-    log.atInfo().log("Creating admin user: {}", emailAddress);
+    log.atInfo().log("Creating admin user: {}", createAdmin);
 
     String password =
         new RandomStringGenerator.Builder()
@@ -92,7 +79,7 @@ public class AdminUtils {
             .build()
             .generate(20);
 
-    Optional<UserX> user = db.getUserXRepository().findFullUserXByEmailAddress(emailAddress);
+    Optional<UserX> user = db.getUserXRepository().findFullUserXByEmailAddress(createAdmin);
     db.getUserXRepository()
         .save(
             UserUtils.setPassword(
@@ -106,37 +93,34 @@ public class AdminUtils {
                         db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())))
                     .setFirstName("NEW ADMIN")
                     .setLastName("NEW ADMIN")
-                    .setEmailAddress(emailAddress),
+                    .setEmailAddress(createAdmin),
                 password));
 
     log.atWarn()
         .log(
             "IMPORTANT! Log in and change the temporary password: login: \"{}\", temporary"
                 + " password: \"{}\"",
-            emailAddress,
+            createAdmin,
             password);
     log.atInfo().log("Done.");
   }
 
-  public void upsertStudents() throws IOException {
+  public void importStudents() throws IOException {
     Database db = context.getBean(Database.class);
-    checkArgument(districtName != null, "--districtName required.");
-    checkArgument(filename != null, "--filename required.");
+    checkArgument(createDistrict != null, "--createDistrict required.");
+    District district = db.getDistrictRepository().findByName(createDistrict);
+    checkArgument(district != null, "District doesn't exist: {}", createDistrict);
+    checkArgument(importStudents != null, "--importStudents required.");
 
-    District district = db.getDistrictRepository().findByName(districtName);
-    checkArgument(district != null, "--districtName doesn't exist.");
-
-    log.atInfo().log("Importing students: {}", filename);
+    log.atInfo().log("Imported students: {}", importStudents);
 
     JpaTransactionManager transactionManager = new JpaTransactionManager();
     transactionManager.setEntityManagerFactory(transactionManager.getEntityManagerFactory());
 
     List<Error> errors = Collections.synchronizedList(new ArrayList<>());
 
-    // TODO: Make this a single operation with .parallel(). But, have to address lazy loading
-    // exception first.
     List<UserX> userXs =
-        Files.readLines(new File(filename), StandardCharsets.UTF_8).stream()
+        Files.readLines(new File(importStudents), StandardCharsets.UTF_8).stream()
             .<UserX>map(
                 line -> {
                   try {
@@ -204,14 +188,14 @@ public class AdminUtils {
 
   @Transactional
   public void processCommands() throws IOException {
-    if (!createDistrict.equals("false")) {
+    if (!createDistrict.isEmpty()) {
       createDistrict();
     }
-    if (!createAdmin.equals("false")) {
+    if (!createAdmin.isEmpty()) {
       createAdmin();
     }
-    if (!upsertStudents.equals("false")) {
-      upsertStudents();
+    if (!importStudents.isEmpty()) {
+      importStudents();
     }
   }
 
