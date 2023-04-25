@@ -25,6 +25,9 @@ public class Project {
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
+  public static final String COLUMN_STATE_NAME = "state";
+  public static final String COLUMN_NEEDSREVIEW_NAME = "needs_review";
+  public static final String COLUMN_WAITINGFORRESULTSTIMEOUT_NAME = "waiting_for_results_timeout";
 
   private Integer id;
 
@@ -39,6 +42,12 @@ public class Project {
   private String longDescr;
 
   private String longDescrQuill;
+
+  private String state;
+
+  private Byte needsReview;
+
+  private Instant waitingForResultsTimeout;
 
   private IkigaiInput ikigaiInput;
 
@@ -115,6 +124,36 @@ public class Project {
 
   public Project setLongDescrQuill(String longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
+    return this;
+  }
+
+  @Column(name = COLUMN_STATE_NAME, length = 11)
+  public String getState() {
+    return state;
+  }
+
+  public Project setState(String state) {
+    this.state = state;
+    return this;
+  }
+
+  @Column(name = COLUMN_NEEDSREVIEW_NAME)
+  public Byte getNeedsReview() {
+    return needsReview;
+  }
+
+  public Project setNeedsReview(Byte needsReview) {
+    this.needsReview = needsReview;
+    return this;
+  }
+
+  @Column(name = COLUMN_WAITINGFORRESULTSTIMEOUT_NAME)
+  public Instant getWaitingForResultsTimeout() {
+    return waitingForResultsTimeout;
+  }
+
+  public Project setWaitingForResultsTimeout(Instant waitingForResultsTimeout) {
+    this.waitingForResultsTimeout = waitingForResultsTimeout;
     return this;
   }
 

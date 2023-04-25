@@ -1,15 +1,18 @@
 CREATE TABLE project
 (
-    id                INT PRIMARY KEY AUTO_INCREMENT,
-    creation_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id                          INT PRIMARY KEY AUTO_INCREMENT,
+    creation_time               DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    name              VARCHAR(255) NOT NULL,
-    short_descr       TEXT         NOT NULL,
-    short_descr_quill TEXT         NOT NULL,
-    long_descr        TEXT         NOT NULL,
-    long_descr_quill  TEXT         NOT NULL,
+    name                        VARCHAR(255) NOT NULL,
+    short_descr                 TEXT         NOT NULL,
+    short_descr_quill           TEXT         NOT NULL,
+    long_descr                  TEXT         NOT NULL,
+    long_descr_quill            TEXT         NOT NULL,
+    state                       ENUM('UNDECIDED', 'THUMBS_UP', 'THUMBS_DOWN'),
+    needs_review                TINYINT,  -- Boolean 0 = false.
 
-    ikigai_input_id   INT,
+    waiting_for_results_timeout DATETIME,
+    ikigai_input_id             INT,
     CONSTRAINT project__ikigai_input_id
         FOREIGN KEY (ikigai_input_id)
             REFERENCES ikigai_input (id)
