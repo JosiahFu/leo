@@ -108,7 +108,7 @@ export function DefaultPageNav() {
             <Footer>
               <Menu mode="inline" className="top-menu">
                 <Menu.Item key={MenuKeys.MY_ACCOUNT} icon={<UserOutlined />}>
-                  My Account
+                  <Link to="/profiles/my-account">My Account</Link>
                 </Menu.Item>
               </Menu>
             </Footer>
