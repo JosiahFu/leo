@@ -27,6 +27,9 @@ import org.springframework.stereotype.Component;
 public class TestData {
 
   public static final String PASSWORD = "password";
+  // This is random in order to avoid collisions with other test instances.
+  public static final AtomicInteger counter =
+      new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE - 1000));
 
   private final Database db;
 

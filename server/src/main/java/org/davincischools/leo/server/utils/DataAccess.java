@@ -16,12 +16,13 @@ import org.davincischools.leo.database.utils.Database;
 
 public class DataAccess {
 
-  public static <T> T firstNonNull(Callable<Object>... values) throws NullPointerException {
+  @SafeVarargs
+  public static <T> T firstNonNull(Callable<T>... values) throws NullPointerException {
     return Stream.of(values)
         .map(
             value -> {
               try {
-                return (T) value.call();
+                return value.call();
               } catch (Exception e) {
                 return null;
               }
@@ -34,34 +35,39 @@ public class DataAccess {
   public static String getShortDescr(Object daoWithNameAndShortDescAndLongDescr) {
     return firstNonNull(
         () ->
-            daoWithNameAndShortDescAndLongDescr
-                .getClass()
-                .getMethod("getShortDescr")
-                .invoke(daoWithNameAndShortDescAndLongDescr),
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getShortDescr")
+                    .invoke(daoWithNameAndShortDescAndLongDescr),
         () ->
-            daoWithNameAndShortDescAndLongDescr
-                .getClass()
-                .getMethod("getName")
-                .invoke(daoWithNameAndShortDescAndLongDescr));
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getName")
+                    .invoke(daoWithNameAndShortDescAndLongDescr));
   }
 
   public static String getLongDescr(Object daoWithNameAndShortDescAndLongDescr) {
     return firstNonNull(
         () ->
-            daoWithNameAndShortDescAndLongDescr
-                .getClass()
-                .getMethod("getLongDescr")
-                .invoke(daoWithNameAndShortDescAndLongDescr),
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getLongDescr")
+                    .invoke(daoWithNameAndShortDescAndLongDescr),
         () ->
-            daoWithNameAndShortDescAndLongDescr
-                .getClass()
-                .getMethod("getShortDescr")
-                .invoke(daoWithNameAndShortDescAndLongDescr),
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getShortDescr")
+                    .invoke(daoWithNameAndShortDescAndLongDescr),
         () ->
-            daoWithNameAndShortDescAndLongDescr
-                .getClass()
-                .getMethod("getName")
-                .invoke(daoWithNameAndShortDescAndLongDescr));
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getName")
+                    .invoke(daoWithNameAndShortDescAndLongDescr));
   }
 
   public static org.davincischools.leo.protos.user_management.User convertFullUserXToProto(

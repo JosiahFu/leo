@@ -94,9 +94,11 @@ public class AdminUtils {
                     .setAdminX(
                         db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())))
                     .setStudent(
-                        db.getStudentRepository().save(new Student().setCreationTime(Instant.now()).setStudentId(-1)))
+                        db.getStudentRepository()
+                            .save(new Student().setCreationTime(Instant.now()).setStudentId(-1)))
                     .setTeacher(
-                        db.getTeacherRepository().save(new Teacher().setCreationTime(Instant.now())))
+                        db.getTeacherRepository()
+                            .save(new Teacher().setCreationTime(Instant.now())))
                     .setDistrict(district)
                     .setFirstName("NEW ADMIN")
                     .setLastName("NEW ADMIN")
@@ -204,7 +206,8 @@ public class AdminUtils {
             Lists.transform(
                 userXs,
                 userX ->
-                    db.getTeacherSchoolRepository().createTeacherSchool(userX.getTeacher(), school)
+                    db.getTeacherSchoolRepository()
+                        .createTeacherSchool(userX.getTeacher(), school)
                         .setCreationTime(Instant.now())));
 
     ClassX math = td.createClassX(db, school, "Math");
