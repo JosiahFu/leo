@@ -19,9 +19,13 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.AdminX;
+import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
+import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.UserX;
+import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +35,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
-@SpringBootApplication(scanBasePackageClasses = Database.class)
+@SpringBootApplication(scanBasePackageClasses = {Database.class, TestData.class})
 public class AdminUtils {
 
   private static final Joiner ERROR_JOINER = Joiner.on("\n - ");
@@ -41,6 +45,7 @@ public class AdminUtils {
   private record Error(String value, Exception e) {}
 
   @Autowired ApplicationContext context;
+  @Autowired TestData td;
 
   @Value("${createDistrict:}")
   String createDistrict;
@@ -88,9 +93,11 @@ public class AdminUtils {
                     .setCreationTime(user.map(UserX::getCreationTime).orElse(Instant.now()))
                     .setAdminX(
                         db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())))
+                    .setStudent(
+                        db.getStudentRepository().save(new Student().setCreationTime(Instant.now()).setStudentId(-1)))
+                    .setTeacher(
+                        db.getTeacherRepository().save(new Teacher().setCreationTime(Instant.now())))
                     .setDistrict(district)
-                    .setAdminX(
-                        db.getAdminXRepository().save(new AdminX().setCreationTime(Instant.now())))
                     .setFirstName("NEW ADMIN")
                     .setLastName("NEW ADMIN")
                     .setEmailAddress(createAdmin),
@@ -106,6 +113,7 @@ public class AdminUtils {
   }
 
   public void importStudents() throws IOException {
+
     Database db = context.getBean(Database.class);
     checkArgument(createDistrict != null, "--createDistrict required.");
     District district = db.getDistrictRepository().findByName(createDistrict);
@@ -152,6 +160,9 @@ public class AdminUtils {
                             .orElse(new Student().setCreationTime(Instant.now()))
                             .setStudentId(id)
                             .setGrade(grade));
+                    userX.setTeacher(
+                        Optional.ofNullable(userX.getTeacher())
+                            .orElse(new Teacher().setCreationTime(Instant.now())));
 
                     log.atTrace().log("Imported: {}", line);
 
@@ -174,7 +185,63 @@ public class AdminUtils {
             .toList();
 
     db.getStudentRepository().saveAllAndFlush(Lists.transform(userXs, UserX::getStudent));
+    db.getTeacherRepository().saveAllAndFlush(Lists.transform(userXs, UserX::getTeacher));
     db.getUserXRepository().saveAll(userXs);
+
+    // TODO Remove creating test data.
+    userXs = new ArrayList<>(userXs);
+    userXs.add(db.getUserXRepository().findFullUserXByEmailAddress(createAdmin).get());
+    School school =
+        db.getSchoolRepository()
+            .save(
+                new School()
+                    .setCreationTime(Instant.now())
+                    .setName("Da Vinci Design High School")
+                    .setAddress("201 N. Douglas St., El Segundo, CA 90245")
+                    .setDistrict(district));
+    db.getTeacherSchoolRepository()
+        .saveAll(
+            Lists.transform(
+                userXs,
+                userX ->
+                    db.getTeacherSchoolRepository().createTeacherSchool(userX.getTeacher(), school)
+                        .setCreationTime(Instant.now())));
+
+    ClassX math = td.createClassX(db, school, "Math");
+    td.addStudentsToClassX(db.getStudentClassXRepository(), math, userXs.toArray(UserX[]::new));
+    td.createAssignment(
+        db,
+        math,
+        "Learn about fractions",
+        td.createKnowledgeAndSkill(db, math, "I know how to add fractions"),
+        td.createKnowledgeAndSkill(db, math, "I know how to subtract fractions"),
+        td.createKnowledgeAndSkill(db, math, "I know how to multiply fractions"),
+        td.createKnowledgeAndSkill(db, math, "I know how to divide fractions"));
+    td.addTeachersToClassX(db.getTeacherClassXRepository(), math, userXs.toArray(UserX[]::new));
+
+    ClassX chemistry = td.createClassX(db, school, "Chemistry");
+    td.addStudentsToClassX(
+        db.getStudentClassXRepository(), chemistry, userXs.toArray(UserX[]::new));
+    td.createAssignment(
+        db,
+        chemistry,
+        "Learn about Valence Electrons",
+        td.createKnowledgeAndSkill(
+            db, chemistry, "I know how many valence electrons elements have"),
+        td.createKnowledgeAndSkill(
+            db, chemistry, "I know how to connect elements using valence electrons"));
+    td.addTeachersToClassX(
+        db.getTeacherClassXRepository(), chemistry, userXs.toArray(UserX[]::new));
+
+    ClassX english = td.createClassX(db, school, "English");
+    td.addStudentsToClassX(db.getStudentClassXRepository(), english, userXs.toArray(UserX[]::new));
+    td.createAssignment(
+        db,
+        english,
+        "Learn about Shakespeare and his plays",
+        td.createKnowledgeAndSkill(db, english, "I understand 3 Shakespeare plays"),
+        td.createKnowledgeAndSkill(db, english, "I know three common jokes of Shakespeare plays"));
+    td.addTeachersToClassX(db.getTeacherClassXRepository(), english, userXs.toArray(UserX[]::new));
 
     if (!errors.isEmpty()) {
       log.atError()

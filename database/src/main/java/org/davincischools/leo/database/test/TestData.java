@@ -28,9 +28,6 @@ public class TestData {
 
   public static final String PASSWORD = "password";
 
-  public static final AtomicInteger counter =
-      new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE - 1000));
-
   private final Database db;
 
   private UserX teacher;
@@ -204,56 +201,41 @@ public class TestData {
     addStudentPermission(db, admin, teacher, student);
     addTeachersToSchool(db.getTeacherSchoolRepository(), school, teacher);
 
-    chemistryClassX =
-        createClassX(db, school, "Chemistry I " + count, "Intro to general chemistry.");
+    chemistryClassX = createClassX(db, school, "Intro to general chemistry.");
     addTeachersToClassX(db.getTeacherClassXRepository(), chemistryClassX, teacher);
     addStudentsToClassX(db.getStudentClassXRepository(), chemistryClassX, admin, teacher, student);
 
     chemistryEks1 =
         createKnowledgeAndSkill(
-            db,
-            chemistryClassX,
-            "Periodic Table " + count,
-            "I can recognize the basic elements on a periodic table.");
+            db, chemistryClassX, "I can recognize the basic elements on a periodic table.");
     chemistryEks2 =
         createKnowledgeAndSkill(
             db,
             chemistryClassX,
-            "Valence Electrons " + count,
             "I can determine the number of valence electrons for each element.");
 
     chemistryAssignment =
         createAssignment(
             db,
             chemistryClassX,
-            "Valence Electrons " + count,
             "Show that you understand valence electrons.",
             chemistryEks1,
             chemistryEks2);
 
-    programmingClassX =
-        createClassX(db, school, "Computer Science I " + count, "Intro to Programming.");
+    programmingClassX = createClassX(db, school, "Intro to Programming.");
     addTeachersToClassX(db.getTeacherClassXRepository(), programmingClassX, teacher);
     addStudentsToClassX(
         db.getStudentClassXRepository(), programmingClassX, admin, teacher, student);
 
     programmingEks1 =
         createKnowledgeAndSkill(
-            db,
-            programmingClassX,
-            "Sort Functions " + count,
-            "I understand and can implement different sort functions.");
+            db, programmingClassX, "I understand and can implement different sort functions.");
     programmingEks2 =
-        createKnowledgeAndSkill(
-            db, programmingClassX, "Collections " + count, "I can use Lists, Sets, and Maps.");
+        createKnowledgeAndSkill(db, programmingClassX, "I can use Lists, Sets, and Maps.");
 
     programmingAssignment =
         createAssignment(
-            db,
-            programmingClassX,
-            "Sort Algorithms " + count,
-            "Show that you can implement sort algorithms.",
-            programmingEks1);
+            db, programmingClassX, "Show that you can implement sort algorithms.", programmingEks1);
   }
 
   public static UserX createUser(Database db, UserX template) {
@@ -290,14 +272,13 @@ public class TestData {
   public static void addStudentPermission(Database db, UserX... students) {
     for (var student : students) {
       if (student.getStudent() == null) {
-        int idNum = counter.incrementAndGet();
         student.setStudent(
             db.getStudentRepository()
                 .save(
                     new Student()
                         .setCreationTime(Instant.now())
-                        .setGrade(idNum)
-                        .setStudentId(idNum)));
+                        .setGrade(9)
+                        .setStudentId(student.getId())));
         db.getUserXRepository().save(student);
       }
     }
@@ -319,51 +300,50 @@ public class TestData {
         .forEach(student -> repo.save(repo.createStudentClassX(student.getStudent(), classX)));
   }
 
-  private ClassX createClassX(Database db, School school, String name, String descr) {
+  public ClassX createClassX(Database db, School school, String descr) {
     return db.getClassXRepository()
         .save(
             new ClassX()
                 .setCreationTime(Instant.now())
                 .setSchool(school)
-                .setName(name)
+                .setName(descr)
                 .setShortDescr(descr)
                 .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
                 .setLongDescr(descr)
                 .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
   }
 
-  private Assignment createAssignment(
-      Database db,
-      ClassX classX,
-      String name,
-      String descr,
-      KnowledgeAndSkill... knowledgeAndSkills) {
+  public Assignment createAssignment(
+      Database db, ClassX classX, String descr, KnowledgeAndSkill... knowledgeAndSkills) {
     Assignment assignment =
         db.getAssignmentRepository()
             .save(
                 new Assignment()
                     .setCreationTime(Instant.now())
                     .setClassX(classX)
-                    .setName(name)
+                    .setName(descr)
                     .setShortDescr(descr)
                     .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
                     .setLongDescr(descr)
                     .setLongDescrQuill(QuillInitializer.toQuillDelta(descr)));
 
-    var ksaRepo = db.getKnowledgeAndSkillAssignmentRepository();
     Arrays.asList(knowledgeAndSkills)
-        .forEach(ks -> ksaRepo.save(ksaRepo.createKnowledgeAndSkillAssignment(ks, assignment)));
+        .forEach(
+            ks ->
+                db.getKnowledgeAndSkillAssignmentRepository()
+                    .save(
+                        db.getKnowledgeAndSkillAssignmentRepository()
+                            .createKnowledgeAndSkillAssignment(ks, assignment)));
     return assignment;
   }
 
-  public KnowledgeAndSkill createKnowledgeAndSkill(
-      Database db, ClassX classX, String name, String descr) {
+  public KnowledgeAndSkill createKnowledgeAndSkill(Database db, ClassX classX, String descr) {
     return db.getKnowledgeAndSkillRepository()
         .save(
             new KnowledgeAndSkill()
                 .setCreationTime(Instant.now())
                 .setClassX(classX)
-                .setName(name)
+                .setName(descr)
                 .setShortDescr(descr)
                 .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
                 .setLongDescr(descr)

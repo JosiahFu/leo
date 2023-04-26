@@ -29,7 +29,7 @@ public class TestDataTest {
 
   @Before
   public void setUp() {
-    testData.addTestData(TestData.counter.incrementAndGet());
+    testData.addTestData(1);
   }
 
   @Test
