@@ -68,16 +68,38 @@
             </testResource>
         </testResources>
         <plugins>
+
+            <!-- Create an executable JAR. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>copy maven dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/dbadmin-dependencies
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <finalName>dbadmin</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>org.davincischools.leo.database.test.TestApplication</mainClass>
+                            <mainClass>org.davincischools.leo.database.admin.AdminUtils</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>org/davincischools/libs/</classpathPrefix>
+                            <classpathPrefix>dbadmin-dependencies/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                         <manifestEntries>

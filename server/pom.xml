@@ -370,13 +370,13 @@
                 <executions>
                     <execution>
                         <id>copy maven dependencies</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/org/davincischools/libs
+                                ${project.build.directory}/server-dependencies
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -387,11 +387,12 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <finalName>server</finalName>
                     <archive>
                         <manifest>
                             <mainClass>org.davincischools.leo.server.ServerApplication</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>org/davincischools/libs/</classpathPrefix>
+                            <classpathPrefix>server-dependencies/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                         <manifestEntries>
