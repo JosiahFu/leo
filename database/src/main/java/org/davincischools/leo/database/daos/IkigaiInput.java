@@ -61,7 +61,7 @@ public class IkigaiInput {
   }
 
   @Lob
-  @Column(name = COLUMN_SOMETHINGYOULOVE_NAME, nullable = false)
+  @Column(name = COLUMN_SOMETHINGYOULOVE_NAME)
   public String getSomethingYouLove() {
     return somethingYouLove;
   }
@@ -72,7 +72,7 @@ public class IkigaiInput {
   }
 
   @Lob
-  @Column(name = COLUMN_WHATYOUAREGOODAT_NAME, nullable = false)
+  @Column(name = COLUMN_WHATYOUAREGOODAT_NAME)
   public String getWhatYouAreGoodAt() {
     return whatYouAreGoodAt;
   }

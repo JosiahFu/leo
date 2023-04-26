@@ -3,8 +3,8 @@ CREATE TABLE ikigai_input
     id                   INT PRIMARY KEY AUTO_INCREMENT,
     creation_time        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    something_you_love   TEXT     NOT NULL,
-    what_you_are_good_at TEXT     NOT NULL,
+    something_you_love   TEXT,
+    what_you_are_good_at TEXT,
     pending_completion   DATETIME,
 
     assignment_id        INT      NOT NULL,

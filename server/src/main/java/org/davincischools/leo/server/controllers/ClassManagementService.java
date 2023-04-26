@@ -117,9 +117,7 @@ public class ClassManagementService {
                       Lists.transform(
                           knowledgeAndSkills,
                           knowledgeAndSkill ->
-                              ("\""
-                                  + StringEscapeUtils.escapeJava(knowledgeAndSkill.getShortDescr())
-                                  + "\"")));
+                              ("\"" + DataAccess.getShortDescr(knowledgeAndSkill) + "\"")));
 
               // Query OpenAI for projects.
               OpenAiRequest aiRequest =

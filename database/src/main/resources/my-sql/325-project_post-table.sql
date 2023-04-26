@@ -4,10 +4,10 @@ CREATE TABLE project_post
     creation_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name              VARCHAR(255) NOT NULL,
-    short_descr       TEXT         NOT NULL,
-    short_descr_quill TEXT         NOT NULL,
-    long_descr        TEXT         NOT NULL,
-    long_descr_quill  TEXT         NOT NULL,
+    short_descr       TEXT,
+    short_descr_quill TEXT,
+    long_descr        TEXT,
+    long_descr_quill  TEXT,
 
     user_x_id         INT          NOT NULL,
     CONSTRAINT project_post__user_x_id

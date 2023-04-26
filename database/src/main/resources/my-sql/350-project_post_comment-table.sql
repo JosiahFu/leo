@@ -3,8 +3,8 @@ CREATE TABLE project_post_comment
     id              INT PRIMARY KEY AUTO_INCREMENT,
     creation_time   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    comment         TEXT     NOT NULL,
-    comment_quill   TEXT     NOT NULL,
+    comment         TEXT,
+    comment_quill   TEXT,
 
     user_x_id       INT      NOT NULL,
     CONSTRAINT project_post_comment__user_x_id

@@ -58,7 +58,7 @@ public class ProjectPostComment {
   }
 
   @Lob
-  @Column(name = COLUMN_COMMENT_NAME, nullable = false)
+  @Column(name = COLUMN_COMMENT_NAME)
   public String getComment() {
     return comment;
   }
@@ -69,7 +69,7 @@ public class ProjectPostComment {
   }
 
   @Lob
-  @Column(name = COLUMN_COMMENTQUILL_NAME, nullable = false)
+  @Column(name = COLUMN_COMMENTQUILL_NAME)
   public String getCommentQuill() {
     return commentQuill;
   }

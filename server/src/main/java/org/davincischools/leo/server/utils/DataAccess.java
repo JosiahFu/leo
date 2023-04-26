@@ -1,7 +1,11 @@
 package org.davincischools.leo.server.utils;
 
+import com.google.common.base.Strings;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.ClassX;
@@ -11,6 +15,54 @@ import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 
 public class DataAccess {
+
+  public static <T> T firstNonNull(Callable<Object>... values) throws NullPointerException {
+    return Stream.of(values)
+        .map(
+            value -> {
+              try {
+                return (T) value.call();
+              } catch (Exception e) {
+                return null;
+              }
+            })
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElseThrow(NullPointerException::new);
+  }
+
+  public static String getShortDescr(Object daoWithNameAndShortDescAndLongDescr) {
+    return firstNonNull(
+        () ->
+            daoWithNameAndShortDescAndLongDescr
+                .getClass()
+                .getMethod("getShortDescr")
+                .invoke(daoWithNameAndShortDescAndLongDescr),
+        () ->
+            daoWithNameAndShortDescAndLongDescr
+                .getClass()
+                .getMethod("getName")
+                .invoke(daoWithNameAndShortDescAndLongDescr));
+  }
+
+  public static String getLongDescr(Object daoWithNameAndShortDescAndLongDescr) {
+    return firstNonNull(
+        () ->
+            daoWithNameAndShortDescAndLongDescr
+                .getClass()
+                .getMethod("getLongDescr")
+                .invoke(daoWithNameAndShortDescAndLongDescr),
+        () ->
+            daoWithNameAndShortDescAndLongDescr
+                .getClass()
+                .getMethod("getShortDescr")
+                .invoke(daoWithNameAndShortDescAndLongDescr),
+        () ->
+            daoWithNameAndShortDescAndLongDescr
+                .getClass()
+                .getMethod("getName")
+                .invoke(daoWithNameAndShortDescAndLongDescr));
+  }
 
   public static org.davincischools.leo.protos.user_management.User convertFullUserXToProto(
       UserX user) {
@@ -41,7 +93,7 @@ public class DataAccess {
         .setId(school.getId())
         .setDistrictId(school.getDistrict().getId())
         .setName(school.getName())
-        .setAddress(school.getAddress())
+        .setAddress(Strings.nullToEmpty(school.getAddress()))
         .build();
   }
 
@@ -58,8 +110,8 @@ public class DataAccess {
     return org.davincischools.leo.protos.class_management.ClassX.newBuilder()
         .setId(classX.getId())
         .setName(classX.getName())
-        .setShortDescr(classX.getShortDescr())
-        .setLongDescr(classX.getLongDescr())
+        .setShortDescr(getShortDescr(classX))
+        .setLongDescr(getLongDescr(classX))
         .build();
   }
 
@@ -68,8 +120,8 @@ public class DataAccess {
     return org.davincischools.leo.protos.class_management.Assignment.newBuilder()
         .setId(assignment.getId())
         .setName(assignment.getName())
-        .setShortDescr(assignment.getShortDescr())
-        .setLongDescr(assignment.getLongDescr())
+        .setShortDescr(getShortDescr(assignment))
+        .setLongDescr(getLongDescr(assignment))
         .setClassX(convertClassToProto(class_))
         .build();
   }
@@ -79,8 +131,8 @@ public class DataAccess {
     return org.davincischools.leo.protos.class_management.Project.newBuilder()
         .setId(project.getId())
         .setName(project.getName())
-        .setShortDescr(project.getShortDescr())
-        .setLongDescr(project.getLongDescr())
+        .setShortDescr(getShortDescr(project))
+        .setLongDescr(getLongDescr(project))
         .build();
   }
 

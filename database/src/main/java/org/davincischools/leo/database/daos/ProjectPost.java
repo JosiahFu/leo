@@ -77,7 +77,7 @@ public class ProjectPost {
   }
 
   @Lob
-  @Column(name = COLUMN_SHORTDESCR_NAME, nullable = false)
+  @Column(name = COLUMN_SHORTDESCR_NAME)
   public String getShortDescr() {
     return shortDescr;
   }
@@ -88,7 +88,7 @@ public class ProjectPost {
   }
 
   @Lob
-  @Column(name = COLUMN_SHORTDESCRQUILL_NAME, nullable = false)
+  @Column(name = COLUMN_SHORTDESCRQUILL_NAME)
   public String getShortDescrQuill() {
     return shortDescrQuill;
   }
@@ -99,7 +99,7 @@ public class ProjectPost {
   }
 
   @Lob
-  @Column(name = COLUMN_LONGDESCR_NAME, nullable = false)
+  @Column(name = COLUMN_LONGDESCR_NAME)
   public String getLongDescr() {
     return longDescr;
   }
@@ -110,7 +110,7 @@ public class ProjectPost {
   }
 
   @Lob
-  @Column(name = COLUMN_LONGDESCRQUILL_NAME, nullable = false)
+  @Column(name = COLUMN_LONGDESCRQUILL_NAME)
   public String getLongDescrQuill() {
     return longDescrQuill;
   }

@@ -64,7 +64,7 @@ public class School {
     return this;
   }
 
-  @Column(name = COLUMN_ADDRESS_NAME, nullable = false)
+  @Column(name = COLUMN_ADDRESS_NAME)
   public String getAddress() {
     return address;
   }
