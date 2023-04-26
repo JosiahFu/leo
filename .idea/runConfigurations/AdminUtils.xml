@@ -2,13 +2,10 @@
   <configuration default="false" name="AdminUtils" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <module name="project-leo-database" />
     <option name="PROGRAM_PARAMETERS" value="$Prompt$" />
+    <selectedOptions>
+      <option name="spring.boot.profiles" visible="false" />
+    </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.davincischools.leo.database.admin.AdminUtils" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="org.davincischools.leo.database.admin.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
