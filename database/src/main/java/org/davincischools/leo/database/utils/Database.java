@@ -63,11 +63,11 @@ public class Database {
         "SELECT ks FROM KnowledgeAndSkill ks "
             + "INNER JOIN FETCH Assignment a "
             + "INNER JOIN FETCH KnowledgeAndSkillAssignment ksa "
-            + "WHERE a.id = (:assignment_id) "
+            + "WHERE a.id = (:assignmentId) "
             + "AND a.id = ksa.assignment.id "
             + "AND ksa.knowledgeAndSkill.id = ks.id")
     public List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(
-        @Param("assignment_id") int assignment_id);
+        @Param("assignmentId") int assignmentId);
   }
 
   @Repository
@@ -120,9 +120,9 @@ public class Database {
         "SELECT p FROM Project p "
             + "INNER JOIN IkigaiInput ii "
             + "INNER JOIN UserX u "
-            + "WHERE u.id = (:user_x_id) "
+            + "WHERE u.id = (:userXId) "
             + "ORDER BY p.creationTime DESC")
-    List<Project> findAllByUserXId(@Param("user_x_id") int userXId);
+    List<Project> findAllByUserXId(@Param("userXId") int userXId);
   }
 
   @Repository
@@ -138,7 +138,7 @@ public class Database {
   @Repository
   public interface SchoolRepository extends JpaRepository<School, Integer> {
 
-    Iterable<School> findAllByDistrictId(Integer district_id);
+    Iterable<School> findAllByDistrictId(Integer districtId);
   }
 
   @Repository
@@ -150,13 +150,13 @@ public class Database {
             + "INNER JOIN FETCH StudentClassX sc "
             + "INNER JOIN FETCH ClassX c "
             + "INNER JOIN FETCH Assignment a "
-            + "WHERE u.id = (:user_x_id) "
+            + "WHERE u.id = (:userXId) "
             + "AND u.student.id = s.id "
             + "AND s.id = sc.student.id "
             + "AND sc.classX.id = c.id "
             + "AND c.id = a.classX.id")
     public List<Object[]> _internal_findAllAssignmentsByStudentUserXId(
-        @Param("user_x_id") int userXId);
+        @Param("userXId") int userXId);
 
     public record StudentAssignment(
         UserX user, Student student, ClassX classX, Assignment assignment) {}
@@ -223,19 +223,19 @@ public class Database {
             + "INNER JOIN FETCH TeacherSchool ts "
             + "INNER JOIN FETCH Teacher t "
             + "INNER JOIN FETCH UserX u "
-            + "WHERE u.id = (:user_x_id) "
+            + "WHERE u.id = (:userXId) "
             + "AND t.id = u.teacher.id "
             + "AND ts.teacher.id = t.id "
             + "AND ts.school.id = s.id ")
-    List<School> findSchoolsByUserXId(@Param("user_x_id") int userXId);
+    List<School> findSchoolsByUserXId(@Param("userXId") int userXId);
 
     @Modifying
     @Query(
         "DELETE TeacherSchool ts "
-            + "WHERE ts.teacher.id = (:teacher_id) "
-            + "AND NOT ts.school.id IN (:school_ids)")
+            + "WHERE ts.teacher.id = (:teacherId) "
+            + "AND NOT ts.school.id IN (:schoolIds)")
     void keepSchoolsByTeacherId(
-        @Param("teacher_id") int teacherId, @Param("school_ids") Iterable<Integer> schoolIdsToKeep);
+        @Param("teacherId") int teacherId, @Param("schoolIds") Iterable<Integer> schoolIdsToKeep);
   }
 
   @Repository
@@ -247,8 +247,8 @@ public class Database {
             + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
-            + "WHERE u.emailAddress = (:email_address) ")
-    Optional<UserX> findFullUserXByEmailAddress(@Param("email_address") String emailAddress);
+            + "WHERE u.emailAddress = (:emailAddress) ")
+    Optional<UserX> findFullUserXByEmailAddress(@Param("emailAddress") String emailAddress);
 
     @Query(
         "SELECT u "
@@ -257,8 +257,8 @@ public class Database {
             + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
-            + "WHERE d.id = (:district_id) ")
-    List<UserX> findAllFullUserXsByDistrictId(@Param("district_id") int districtId);
+            + "WHERE d.id = (:districtId) ")
+    List<UserX> findAllFullUserXsByDistrictId(@Param("districtId") int districtId);
 
     @Query(
         "SELECT u "
@@ -266,8 +266,8 @@ public class Database {
             + "LEFT JOIN FETCH AdminX a "
             + "LEFT JOIN FETCH Teacher t "
             + "LEFT JOIN FETCH Student s "
-            + "WHERE u.id = (:user_x_id) ")
-    Optional<UserX> findFullUserXByUserXId(@Param("user_x_id") int userXId);
+            + "WHERE u.id = (:userXId) ")
+    Optional<UserX> findFullUserXByUserXId(@Param("userXId") int userXId);
   }
 
   @Autowired private AdminXRepository adminRepository;
