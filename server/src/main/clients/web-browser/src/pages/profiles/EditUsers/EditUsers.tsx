@@ -18,8 +18,7 @@ import IDistrict = district_management.IDistrict;
 import IUserInformationResponse = user_management.IUserInformationResponse;
 import ISchool = school_management.ISchool;
 import SchoolManagementService = school_management.SchoolManagementService;
-import {Layout} from 'antd';
-const {Content} = Layout;
+import {PageHeader} from '../../../libs/PageHeader/PageHeader';
 
 export function SelectUserFromList(props: {
   id: string;
@@ -194,205 +193,200 @@ export function EditUsers() {
 
   return (
     <>
-      <Layout style={{height: '100%'}}>
-        <Content style={{borderRight: '#F0781F solid 1px', padding: '0.5em'}}>
-          <div className="subtitle">Edit Users</div>
-          <div className="brief-instructions">Add and remove users.</div>
-          <table className="form-table">
-            <tbody>
-              <tr>
-                <th>District:</th>
-                <td>
-                  <SelectDistrictFromList
-                    id="districts"
-                    display={Display.DROP_DOWN}
-                    districts={districts}
-                    districtId={districtId}
-                    onSelect={setDistrictId}
-                    defaultText="- Select District -"
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>Users:</th>
-                <td>
-                  <SelectUserFromList
-                    id="users"
-                    display={Display.RADIO_BUTTONS}
-                    users={users}
-                    userXId={userXId}
-                    onSelect={loadUser}
-                    defaultText="[Create New User]"
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="first_name">First Name:</label>
-                </th>
-                <td>
-                  <FieldWithError
-                    id="first_name"
-                    value={firstName}
-                    setValue={setFirstName}
-                    autoComplete="given-name"
-                    type="text"
-                    maxLength={255}
-                    error={firstNameError}
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="last_name">Last Name:</label>
-                </th>
-                <td>
-                  <FieldWithError
-                    id="last_name"
-                    value={lastName}
-                    setValue={setLastName}
-                    autoComplete="family-name"
-                    type="text"
-                    maxLength={255}
-                    error={lastNameError}
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="email_address">Email Address:</label>
-                </th>
-                <td>
-                  <FieldWithError
-                    id="email_address"
-                    value={emailAddress}
-                    setValue={setEmailAddress}
-                    autoComplete="username"
-                    type="email"
-                    maxLength={254}
-                    error={emailAddressError}
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="password">Password:</label>
-                </th>
-                <td>
-                  <FieldWithError
-                    id="password"
-                    value={password}
-                    setValue={setPassword}
-                    autoComplete="new-password"
-                    type="password"
-                    maxLength={128}
-                    error={passwordError}
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="verify_password">Verify Password:</label>
-                </th>
-                <td>
-                  <FieldWithError
-                    id="verify_password"
-                    value={verifyPassword}
-                    setValue={setVerifyPassword}
-                    autoComplete="new-password"
-                    type="password"
-                    maxLength={128}
-                    error={verifyPasswordError}
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="is_admin">Admin:</label>
-                </th>
-                <td>
-                  <input
-                    id="is_admin"
-                    type="checkbox"
-                    checked={isAdmin}
-                    onChange={() => setIsAdmin(!isAdmin)}
-                    className="checkbox"
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="is_teacher">Teacher:</label>
-                </th>
-                <td>
-                  <input
-                    id="is_teacher"
-                    type="checkbox"
-                    checked={isTeacher}
-                    onChange={() => setIsTeacher(!isTeacher)}
-                    className="checkbox"
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1 || !isTeacher}>
-                <th></th>
-                <td>
-                  <table className="form-table" style={{width: '100%'}}>
-                    <tbody>
-                      <tr>
-                        <th>
-                          <label htmlFor="is_teacher_schools">Schools:</label>
-                        </th>
-                        <td>
-                          <SelectMultipleSchoolsFromList
-                            id="is_teacher_schools"
-                            display={MultipleDisplay.CHECK_BOXES}
-                            schools={schools}
-                            schoolIds={schoolIds}
-                            onSelect={setSchoolIds}
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th>
-                  <label htmlFor="is_student">Student:</label>
-                </th>
-                <td>
-                  <input
-                    id="is_student"
-                    type="checkbox"
-                    checked={isStudent}
-                    onChange={() => setIsStudent(!isStudent)}
-                    className="checkbox"
-                  />
-                </td>
-              </tr>
-              <tr hidden={districtId === -1}>
-                <th></th>
-                <td className="form-buttons">
-                  <div hidden={userXId !== -1} onClick={upsertUser}>
-                    Add
-                  </div>
-                  <div hidden={userXId === -1} onClick={upsertUser}>
-                    Update
-                  </div>
-                  <div
-                    className="delete-button"
-                    hidden={userXId === -1}
-                    onClick={removeUser}
-                  >
-                    Delete
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Content>
-      </Layout>
+      <PageHeader title="Edit Users" />
+      <table className="form-table">
+        <tbody>
+          <tr>
+            <th>District:</th>
+            <td>
+              <SelectDistrictFromList
+                id="districts"
+                display={Display.DROP_DOWN}
+                districts={districts}
+                districtId={districtId}
+                onSelect={setDistrictId}
+                defaultText="- Select District -"
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>Users:</th>
+            <td>
+              <SelectUserFromList
+                id="users"
+                display={Display.RADIO_BUTTONS}
+                users={users}
+                userXId={userXId}
+                onSelect={loadUser}
+                defaultText="[Create New User]"
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="first_name">First Name:</label>
+            </th>
+            <td>
+              <FieldWithError
+                id="first_name"
+                value={firstName}
+                setValue={setFirstName}
+                autoComplete="given-name"
+                type="text"
+                maxLength={255}
+                error={firstNameError}
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="last_name">Last Name:</label>
+            </th>
+            <td>
+              <FieldWithError
+                id="last_name"
+                value={lastName}
+                setValue={setLastName}
+                autoComplete="family-name"
+                type="text"
+                maxLength={255}
+                error={lastNameError}
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="email_address">Email Address:</label>
+            </th>
+            <td>
+              <FieldWithError
+                id="email_address"
+                value={emailAddress}
+                setValue={setEmailAddress}
+                autoComplete="username"
+                type="email"
+                maxLength={254}
+                error={emailAddressError}
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="password">Password:</label>
+            </th>
+            <td>
+              <FieldWithError
+                id="password"
+                value={password}
+                setValue={setPassword}
+                autoComplete="new-password"
+                type="password"
+                maxLength={128}
+                error={passwordError}
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="verify_password">Verify Password:</label>
+            </th>
+            <td>
+              <FieldWithError
+                id="verify_password"
+                value={verifyPassword}
+                setValue={setVerifyPassword}
+                autoComplete="new-password"
+                type="password"
+                maxLength={128}
+                error={verifyPasswordError}
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="is_admin">Admin:</label>
+            </th>
+            <td>
+              <input
+                id="is_admin"
+                type="checkbox"
+                checked={isAdmin}
+                onChange={() => setIsAdmin(!isAdmin)}
+                className="checkbox"
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="is_teacher">Teacher:</label>
+            </th>
+            <td>
+              <input
+                id="is_teacher"
+                type="checkbox"
+                checked={isTeacher}
+                onChange={() => setIsTeacher(!isTeacher)}
+                className="checkbox"
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1 || !isTeacher}>
+            <th></th>
+            <td>
+              <table className="form-table" style={{width: '100%'}}>
+                <tbody>
+                  <tr>
+                    <th>
+                      <label htmlFor="is_teacher_schools">Schools:</label>
+                    </th>
+                    <td>
+                      <SelectMultipleSchoolsFromList
+                        id="is_teacher_schools"
+                        display={MultipleDisplay.CHECK_BOXES}
+                        schools={schools}
+                        schoolIds={schoolIds}
+                        onSelect={setSchoolIds}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th>
+              <label htmlFor="is_student">Student:</label>
+            </th>
+            <td>
+              <input
+                id="is_student"
+                type="checkbox"
+                checked={isStudent}
+                onChange={() => setIsStudent(!isStudent)}
+                className="checkbox"
+              />
+            </td>
+          </tr>
+          <tr hidden={districtId === -1}>
+            <th></th>
+            <td className="form-buttons">
+              <div hidden={userXId !== -1} onClick={upsertUser}>
+                Add
+              </div>
+              <div hidden={userXId === -1} onClick={upsertUser}>
+                Update
+              </div>
+              <div
+                className="delete-button"
+                hidden={userXId === -1}
+                onClick={removeUser}
+              >
+                Delete
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </>
   );
 }

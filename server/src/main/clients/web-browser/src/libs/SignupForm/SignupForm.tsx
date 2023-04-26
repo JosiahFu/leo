@@ -87,11 +87,11 @@ export function SignupForm() {
             />
           </div>
         </Form.Item>
-        <Form.Item name="verifyPassword">
+        <Form.Item name="verify_password">
           <div>
             <LockOutlined />
             <Input
-              name="verifyPassword"
+              name="verify_password"
               placeholder="Re-enter Password"
               maxLength={255}
               type="password"

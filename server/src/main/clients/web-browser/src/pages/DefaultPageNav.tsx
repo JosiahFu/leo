@@ -9,7 +9,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import {getCurrentUser, logout, Role} from '../utils/authentication';
+import {getCurrentUser, Role} from '../utils/authentication';
 import {Link} from 'react-router-dom';
 import {Footer} from 'antd/es/layout/layout';
 import {useState} from 'react';

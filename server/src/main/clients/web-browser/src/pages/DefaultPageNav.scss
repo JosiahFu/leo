@@ -1,5 +1,29 @@
 @use '../color';
 
+.page-header {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  border: lightgrey solid;
+  border-width: 0 0 1px 0;
+  padding: 0.5em;
+  gap: 1em;
+}
+
+.profile-icon {
+  font-size: x-large;
+}
+
+.page-title {
+  text-align: left;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.5em;
+  padding: 0.5em;
+}
+
 // Color the background white.
 .ant-layout {
   background-color: white;
@@ -34,9 +58,7 @@
 }
 
 .ant-layout-sider.left-menu {
-  border-color: lightgrey;
-  border-style: solid;
-  border-width: 0 2px 0 0;
+  box-shadow: 0 0 4px black;
 
   padding: 0;
   width: 100%;

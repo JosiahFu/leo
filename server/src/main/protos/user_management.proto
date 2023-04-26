@@ -21,7 +21,7 @@ message User {
   optional string last_name = 4;
   optional string email_address = 5;
   optional string password = 6;
-  optional string verifyPassword = 7;
+  optional string verify_password = 7;
 
   optional bool is_admin = 8;
   optional bool is_teacher = 9;

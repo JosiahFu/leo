@@ -5,8 +5,7 @@ import DistrictManagementService = district_management.DistrictManagementService
 import DistrictInformationResponse = district_management.DistrictInformationResponse;
 import IDistrict = district_management.IDistrict;
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
-import {Layout} from 'antd';
-const {Content} = Layout;
+import {PageHeader} from '../../../libs/PageHeader/PageHeader';
 
 export function SelectDistrictFromList(props: {
   id: string;
@@ -76,65 +75,60 @@ export function EditDistricts() {
 
   return (
     <>
-      <Layout style={{height: '100%'}}>
-        <Content style={{borderRight: '#F0781F solid 1px', padding: '0.5em'}}>
-          <div className="subtitle">Edit Districts</div>
-          <div className="brief-instructions">Add and remove districts.</div>
-          <table className="form-table">
-            <tbody>
-              <tr>
-                <th>District:</th>
-                <td>
-                  <SelectDistrictFromList
-                    id="districts"
-                    display={Display.RADIO_BUTTONS}
-                    districts={districts}
-                    districtId={districtId}
-                    onSelect={districtId => {
-                      setDistrictId(districtId);
-                      setDistrictName(
-                        (districts.get(districtId) || {name: ''}).name!
-                      );
-                    }}
-                    defaultText="[Create New District]"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Name:</th>
-                <td>
-                  <input
-                    type="text"
-                    placeholder="New District Name"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      setDistrictName(e.target.value);
-                    }}
-                    value={districtName}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th></th>
-                <td className="form-buttons">
-                  <div hidden={districtId !== -1} onClick={addDistrict}>
-                    Add
-                  </div>
-                  <div hidden={districtId === -1} onClick={updateDistrict}>
-                    Update
-                  </div>
-                  <div
-                    className="delete-button"
-                    hidden={districtId === -1}
-                    onClick={removeDistrict}
-                  >
-                    Delete
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Content>
-      </Layout>
+      <PageHeader title="Edit Districts" />
+      <table className="form-table">
+        <tbody>
+          <tr>
+            <th>District:</th>
+            <td>
+              <SelectDistrictFromList
+                id="districts"
+                display={Display.RADIO_BUTTONS}
+                districts={districts}
+                districtId={districtId}
+                onSelect={districtId => {
+                  setDistrictId(districtId);
+                  setDistrictName(
+                    (districts.get(districtId) || {name: ''}).name!
+                  );
+                }}
+                defaultText="[Create New District]"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>Name:</th>
+            <td>
+              <input
+                type="text"
+                placeholder="New District Name"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setDistrictName(e.target.value);
+                }}
+                value={districtName}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th></th>
+            <td className="form-buttons">
+              <div hidden={districtId !== -1} onClick={addDistrict}>
+                Add
+              </div>
+              <div hidden={districtId === -1} onClick={updateDistrict}>
+                Update
+              </div>
+              <div
+                className="delete-button"
+                hidden={districtId === -1}
+                onClick={removeDistrict}
+              >
+                Delete
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </>
   );
 }
