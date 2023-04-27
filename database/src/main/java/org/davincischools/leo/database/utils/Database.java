@@ -14,6 +14,7 @@ import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
 import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
 import org.davincischools.leo.database.daos.Log;
+import org.davincischools.leo.database.daos.LogReference;
 import org.davincischools.leo.database.daos.Portfolio;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
@@ -66,8 +67,7 @@ public class Database {
             + "WHERE a.id = (:assignmentId) "
             + "AND a.id = ksa.assignment.id "
             + "AND ksa.knowledgeAndSkill.id = ks.id")
-    public List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(
-        @Param("assignmentId") int assignmentId);
+    List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(@Param("assignmentId") int assignmentId);
   }
 
   @Repository
@@ -75,7 +75,7 @@ public class Database {
 
   @Repository
   public interface DistrictRepository extends JpaRepository<District, Integer> {
-    public District findByName(String name);
+    District findByName(String name);
   }
 
   @Repository
@@ -110,6 +110,9 @@ public class Database {
 
   @Repository
   public interface LogRepository extends JpaRepository<Log, Integer> {}
+
+  @Repository
+  public interface LogReferenceRepository extends JpaRepository<LogReference, Integer> {}
 
   @Repository
   public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
@@ -155,11 +158,9 @@ public class Database {
             + "AND s.id = sc.student.id "
             + "AND sc.classX.id = c.id "
             + "AND c.id = a.classX.id")
-    public List<Object[]> _internal_findAllAssignmentsByStudentUserXId(
-        @Param("userXId") int userXId);
+    List<Object[]> _internal_findAllAssignmentsByStudentUserXId(@Param("userXId") int userXId);
 
-    public record StudentAssignment(
-        UserX user, Student student, ClassX classX, Assignment assignment) {}
+    record StudentAssignment(UserX user, Student student, ClassX classX, Assignment assignment) {}
 
     default List<StudentAssignment> findAllAssignmentsByStudentUserXId(int userXId) {
       List<StudentAssignment> studentAssignments = new ArrayList<>();
@@ -279,6 +280,7 @@ public class Database {
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
   @Autowired private LogRepository logRepository;
+  @Autowired private LogReferenceRepository logReferenceRepository;
   @Autowired private PortfolioRepository portfolioRepository;
   @Autowired private ProjectRepository projectRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
@@ -328,6 +330,10 @@ public class Database {
 
   public LogRepository getLogRepository() {
     return logRepository;
+  }
+
+  public LogReferenceRepository getLogReferenceRepository() {
+    return logReferenceRepository;
   }
 
   public PortfolioRepository getPortfolioRepository() {
