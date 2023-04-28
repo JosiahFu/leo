@@ -12,8 +12,11 @@ import java.net.URI;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.server.utils.HttpServletProxy;
+import org.davincischools.leo.server.utils.LogUtils;
 import org.davincischools.leo.server.utils.URIBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ReactResourceController {
 
-  private static final Logger log = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   // Optional port of running React web development server.
   @Value("${react_port:0}")
@@ -40,6 +43,7 @@ public class ReactResourceController {
           .put("css", MediaType.CSS_UTF_8)
           .put("html", MediaType.HTML_UTF_8)
           .put("ico", MediaType.ICO)
+          .put("jpg", MediaType.JPEG)
           .put("js", MediaType.JAVASCRIPT_UTF_8)
           .put("json", MediaType.JSON_UTF_8)
           .put("map", MediaType.JSON_UTF_8)
@@ -47,6 +51,8 @@ public class ReactResourceController {
           .put("svg", MediaType.SVG_UTF_8)
           .put("txt", MediaType.PLAIN_TEXT_UTF_8)
           .build();
+
+  @Autowired private Database db;
 
   @RequestMapping({
     "/",
@@ -61,29 +67,36 @@ public class ReactResourceController {
     "/robots.txt",
     "/static/**"
   })
-  public void getResource(HttpServletRequest request, HttpServletResponse response)
+  public void getResource(HttpServletRequest originalRequest, HttpServletResponse response)
       throws IOException {
-    log.atInfo().log("Request for: {}", request.getRequestURI());
+    LogUtils.executeAndLog(
+            db,
+            originalRequest,
+            (request, log) -> {
+              log.setOnlyLogOnFailure(true);
 
-    URI uri = getUri(request);
-    Optional<MediaType> mediaType = getResponseMimeType(uri);
-    if (reactPort > 0) {
-      // Forward the request to the React server running locally.
-      HttpServletProxy.sendRequestToReact(uri, reactPort, mediaType, request, response);
-    } else {
-      // Get and copy a resource from the classpath.
-      getResponseMimeType(uri).map(Object::toString).ifPresent(response::setContentType);
-      try (InputStream in = getSystemResourceAsStreamOrIndex(uri)) {
-        if (in == null) {
-          log.atError().log("Resource not found: {}", uri.getPath());
-          response.sendError(HttpServletResponse.SC_NOT_FOUND, uri.getPath());
-          return;
-        }
-        ByteStreams.copy(in, response.getOutputStream());
-        response.getOutputStream().flush();
-        response.getOutputStream().close();
-      }
-    }
+              URI uri = getUri(request);
+              Optional<MediaType> mediaType = getResponseMimeType(uri);
+              if (reactPort > 0) {
+                // Forward the request to the React server running locally.
+                HttpServletProxy.sendRequestToReact(uri, reactPort, mediaType, request, response);
+              } else {
+                // Get and copy a resource from the classpath.
+                mediaType.map(Object::toString).ifPresent(response::setContentType);
+                try (InputStream in = getSystemResourceAsStreamOrIndex(uri)) {
+                  if (in == null) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, uri.getPath());
+                    throw new IOException("Resource not found: " + uri.getPath());
+                  }
+                  ByteStreams.copy(in, response.getOutputStream());
+                  response.getOutputStream().flush();
+                  response.getOutputStream().close();
+                }
+              }
+
+              return response;
+            })
+        .finish();
   }
 
   private InputStream getSystemResourceAsStreamOrIndex(URI uri) {

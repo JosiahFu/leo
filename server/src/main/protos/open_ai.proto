@@ -153,6 +153,19 @@ message OpenAiResponse {
   // The ID of the GPT model used to generate the completion.
   optional string model = 5;
 
+  // Usage token information.
+  message Usage {
+    optional int64 prompt_tokens = 1;
+    optional int64 completion_tokens = 2;
+    optional int64 total_tokens = 3;
+  }
+
+  // For users who belong to multiple organizations, you can pass a header
+  // to specify which organization is used for an API request. Usage from
+  // these API requests will count against the specified organization's
+  // subscription quota.
+  optional Usage usage = 6;
+
   // Each completion object typically includes:
   message CreateCompletionChoice {
     // The generated text completion.
@@ -172,15 +185,18 @@ message OpenAiResponse {
   // An array of possible completions (only populated if n > 1)
   // A list of completion objects, where each object represents a potential
   // continuation of the input prompt.
-  repeated CreateCompletionChoice choices = 6;
+  repeated CreateCompletionChoice choices = 7;
 
   // An array of probabilities for each choice (only populated if n > 1)
-  repeated float probabilities = 7;
+  repeated float probabilities = 8;
 
   // Whether the API has finished generating the completion
-  bool finished = 8;
+  bool finished = 9;
+  optional string finished_reason = 10;
 
   // The text prompt used to generate the completion.
-  optional string prompt = 9;
+  optional string prompt = 11;
+
+  optional int64 index = 12;
 }
 

@@ -20,39 +20,60 @@ public class Log {
   public static final String TABLE_NAME = "log";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
-  public static final String COLUMN_OPERATION_NAME = "operation";
-  public static final String COLUMN_REQUEST_NAME = "request";
-  public static final String COLUMN_INITIALRESPONSE_NAME = "initial_response";
-  public static final String COLUMN_INITIALRESPONSETIME_NAME = "initial_response_time";
-  public static final String COLUMN_FINALRESPONSE_NAME = "final_response";
-  public static final String COLUMN_FINALRESPONSETIME_NAME = "final_response_time";
-  public static final String COLUMN_STACKTRACE_NAME = "stack_trace";
   public static final String COLUMN_STATUS_NAME = "status";
   public static final String COLUMN_NOTES_NAME = "notes";
+  public static final String COLUMN_CALLER_NAME = "caller";
+  public static final String COLUMN_REQUEST_NAME = "request";
+  public static final String COLUMN_REQUESTTYPE_NAME = "request_type";
+  public static final String COLUMN_REQUESTTIME_NAME = "request_time";
+  public static final String COLUMN_INITIALRESPONSE_NAME = "initial_response";
+  public static final String COLUMN_INITIALRESPONSETYPE_NAME = "initial_response_type";
+  public static final String COLUMN_INITIALRESPONSETIME_NAME = "initial_response_time";
+  public static final String COLUMN_FINALRESPONSE_NAME = "final_response";
+  public static final String COLUMN_FINALRESPONSETYPE_NAME = "final_response_type";
+  public static final String COLUMN_FINALRESPONSETIME_NAME = "final_response_time";
+  public static final String COLUMN_STACKTRACE_NAME = "stack_trace";
+  public static final String COLUMN_LASTINPUT_NAME = "last_input";
+  public static final String COLUMN_LASTINPUTTYPE_NAME = "last_input_type";
+  public static final String COLUMN_LASTINPUTTIME_NAME = "last_input_time";
 
   private Integer id;
 
   private Instant creationTime;
 
-  private String operation;
-
-  private String request;
-
-  private byte[] initialResponse;
-
-  private Instant initialResponseTime;
-
-  private String finalResponse;
-
-  private Instant finalResponseTime;
-
-  private String stackTrace;
+  private UserX userX;
 
   private String status;
 
   private String notes;
 
-  private UserX userX;
+  private String caller;
+
+  private String request;
+
+  private String requestType;
+
+  private Instant requestTime;
+
+  private byte[] initialResponse;
+
+  private String initialResponseType;
+
+  private Instant initialResponseTime;
+
+  private String finalResponse;
+
+  private String finalResponseType;
+
+  private Instant finalResponseTime;
+
+  private String stackTrace;
+
+  private String lastInput;
+
+  private String lastInputType;
+
+  private Instant lastInputTime;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,76 +97,14 @@ public class Log {
     return this;
   }
 
-  @Column(name = COLUMN_OPERATION_NAME, nullable = false, length = 511)
-  public String getOperation() {
-    return operation;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_x_id")
+  public UserX getUserX() {
+    return userX;
   }
 
-  public Log setOperation(String operation) {
-    this.operation = operation;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_REQUEST_NAME, nullable = false)
-  public String getRequest() {
-    return request;
-  }
-
-  public Log setRequest(String request) {
-    this.request = request;
-    return this;
-  }
-
-  @Column(name = COLUMN_INITIALRESPONSE_NAME)
-  public byte[] getInitialResponse() {
-    return initialResponse;
-  }
-
-  public Log setInitialResponse(byte[] initialResponse) {
-    this.initialResponse = initialResponse;
-    return this;
-  }
-
-  @Column(name = COLUMN_INITIALRESPONSETIME_NAME)
-  public Instant getInitialResponseTime() {
-    return initialResponseTime;
-  }
-
-  public Log setInitialResponseTime(Instant initialResponseTime) {
-    this.initialResponseTime = initialResponseTime;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_FINALRESPONSE_NAME)
-  public String getFinalResponse() {
-    return finalResponse;
-  }
-
-  public Log setFinalResponse(String finalResponse) {
-    this.finalResponse = finalResponse;
-    return this;
-  }
-
-  @Column(name = COLUMN_FINALRESPONSETIME_NAME)
-  public Instant getFinalResponseTime() {
-    return finalResponseTime;
-  }
-
-  public Log setFinalResponseTime(Instant finalResponseTime) {
-    this.finalResponseTime = finalResponseTime;
-    return this;
-  }
-
-  @Lob
-  @Column(name = COLUMN_STACKTRACE_NAME)
-  public String getStackTrace() {
-    return stackTrace;
-  }
-
-  public Log setStackTrace(String stackTrace) {
-    this.stackTrace = stackTrace;
+  public Log setUserX(UserX userX) {
+    this.userX = userX;
     return this;
   }
 
@@ -170,14 +129,152 @@ public class Log {
     return this;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_x_id")
-  public UserX getUserX() {
-    return userX;
+  @Lob
+  @Column(name = COLUMN_CALLER_NAME)
+  public String getCaller() {
+    return caller;
   }
 
-  public Log setUserX(UserX userX) {
-    this.userX = userX;
+  public Log setCaller(String caller) {
+    this.caller = caller;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_REQUEST_NAME, nullable = false)
+  public String getRequest() {
+    return request;
+  }
+
+  public Log setRequest(String request) {
+    this.request = request;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_REQUESTTYPE_NAME, nullable = false)
+  public String getRequestType() {
+    return requestType;
+  }
+
+  public Log setRequestType(String requestType) {
+    this.requestType = requestType;
+    return this;
+  }
+
+  @Column(name = COLUMN_REQUESTTIME_NAME, nullable = false)
+  public Instant getRequestTime() {
+    return requestTime;
+  }
+
+  public Log setRequestTime(Instant requestTime) {
+    this.requestTime = requestTime;
+    return this;
+  }
+
+  @Column(name = COLUMN_INITIALRESPONSE_NAME)
+  public byte[] getInitialResponse() {
+    return initialResponse;
+  }
+
+  public Log setInitialResponse(byte[] initialResponse) {
+    this.initialResponse = initialResponse;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_INITIALRESPONSETYPE_NAME)
+  public String getInitialResponseType() {
+    return initialResponseType;
+  }
+
+  public Log setInitialResponseType(String initialResponseType) {
+    this.initialResponseType = initialResponseType;
+    return this;
+  }
+
+  @Column(name = COLUMN_INITIALRESPONSETIME_NAME)
+  public Instant getInitialResponseTime() {
+    return initialResponseTime;
+  }
+
+  public Log setInitialResponseTime(Instant initialResponseTime) {
+    this.initialResponseTime = initialResponseTime;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_FINALRESPONSE_NAME)
+  public String getFinalResponse() {
+    return finalResponse;
+  }
+
+  public Log setFinalResponse(String finalResponse) {
+    this.finalResponse = finalResponse;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_FINALRESPONSETYPE_NAME)
+  public String getFinalResponseType() {
+    return finalResponseType;
+  }
+
+  public Log setFinalResponseType(String finalResponseType) {
+    this.finalResponseType = finalResponseType;
+    return this;
+  }
+
+  @Column(name = COLUMN_FINALRESPONSETIME_NAME, nullable = false)
+  public Instant getFinalResponseTime() {
+    return finalResponseTime;
+  }
+
+  public Log setFinalResponseTime(Instant finalResponseTime) {
+    this.finalResponseTime = finalResponseTime;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_STACKTRACE_NAME)
+  public String getStackTrace() {
+    return stackTrace;
+  }
+
+  public Log setStackTrace(String stackTrace) {
+    this.stackTrace = stackTrace;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_LASTINPUT_NAME)
+  public String getLastInput() {
+    return lastInput;
+  }
+
+  public Log setLastInput(String lastInput) {
+    this.lastInput = lastInput;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_LASTINPUTTYPE_NAME)
+  public String getLastInputType() {
+    return lastInputType;
+  }
+
+  public Log setLastInputType(String lastInputType) {
+    this.lastInputType = lastInputType;
+    return this;
+  }
+
+  @Column(name = COLUMN_LASTINPUTTIME_NAME)
+  public Instant getLastInputTime() {
+    return lastInputTime;
+  }
+
+  public Log setLastInputTime(Instant lastInputTime) {
+    this.lastInputTime = lastInputTime;
     return this;
   }
 }

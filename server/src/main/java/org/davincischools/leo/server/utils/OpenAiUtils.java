@@ -67,9 +67,8 @@ public class OpenAiUtils {
       Message request, T responseBuilder, Optional<Integer> user_id) throws IOException {
     return LogUtils.executeAndLog(
             db,
-            user_id,
             request,
-            (unused, logEntry) -> {
+            (unused, log) -> {
               // The OPENAI_API_KEY is required.
               if (openAiKey.isEmpty()) {
                 logger
@@ -135,7 +134,7 @@ public class OpenAiUtils {
               return Bytes.concat(Objects.requireNonNull(streamedBytes).toArray(byte[][]::new));
             })
         .andThen(
-            (bytes, logEntry) -> {
+            (bytes, log) -> {
               JsonFormat.parser()
                   .ignoringUnknownFields()
                   .merge(new String(bytes, StandardCharsets.UTF_8), responseBuilder);

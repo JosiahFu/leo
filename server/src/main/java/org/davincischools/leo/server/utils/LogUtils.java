@@ -1,94 +1,61 @@
 package org.davincischools.leo.server.utils;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serial;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.Log;
+import org.davincischools.leo.database.daos.LogReference;
+import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 
-/**
- * This is an aid for logging processes execution. It is used as:
- *
- * <pre>{@code
- * Database db = ...;
- * ProtoMessage request = ...;
- *
- * try {
- *   // LogUtils will automatically created a log entry and set the request and
- *   // timestamp. So, no need to do this manually.
- *   return LogUtils.executeAndLog(db, Optional.empty(), request,
- *       (input, logEntry) -> {
- *     // LogUtils will record the request and creation time automatically. But,
- *     // you can overwrite those here, if needed.
- *
- *     // This first consumer should actually do the work and return the raw
- *     // response.
- *
- *     return Integer.valueOf(input);
- *   }).andThen(input, logEntry) -> {
- *     // This will only be called if there were no exceptions so far.
- *
- *     // LogUtils will automatically record the timestamp when this method
- *     // is called as the response time in the log entry.
- *
- *     // The second consumer should set the unprocessed_response with the raw
- *     // response from the first consumer. The input should probably be a
- *     // byte array. (But, we used an Integer in this example).
- *     logEntry.setUnprocessedResponse(toByteArray(input));
- *
- *     // This time the input is an Integer, from the previous andThen()
- *     // operation.
- *     return input.floatValue();
- *   }).onError((error, logEntry) -> {
- *     // This will only be called if there was a previous exception.
- *
- *     // LogUtils will automatically record the stack trace, status, and
- *     // last input as the response in the finish() consumer is executed. So,
- *     // no need to set those here.
- *
- *     // Do something here with the input and exception in the error
- *     // parameter. The input will be the output of the last successful
- *     // previous step.
- *     logEntry.setNotes("There was an error.");
- *
- *     // The log isn't written until finish(). So, throwing an exception here
- *     // is okay.
- *   }).finish((error) -> {
- *     // This is called only if finish() was unable to save the log entry.
- *     // Note that an error has already been logged to the console, and the
- *     // processed response will still be returned.
- *   });
- * } catch (ExecutionError e) {
- *   // The log entry was written. Now handle any exception that occurred.
- *   // E.g., return some error value.
- * }</pre>
- */
 public class LogUtils {
 
-  private static final Logger log = LogManager.getLogger();
+  private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
+  private static final String ADDITIONAL_ERROR_MESSAGE =
+      "While processing that error an additional error occurred:\n";
+  private static final Joiner ADDITIONAL_ERROR_JOINER =
+      Joiner.on("\n\n" + ADDITIONAL_ERROR_MESSAGE);
+  private static final Joiner EOL_JOINER = Joiner.on("\n");
 
   public enum Status {
     ERROR,
     SUCCESS
   }
 
-  public record Error<R>(R originalRequest, Object lastInput, Throwable throwable) {}
+  public record Error<R>(
+      R originalRequest, Object lastInput, ImmutableList<Throwable> throwables) {}
 
   public static class LogExecutionError extends IOException {
-    private static final long serialVersionUID = 1164992147965935071L;
+
+    @Serial private static final long serialVersionUID = 1164992147965935071L;
 
     private final transient Error<?> error;
 
     public LogExecutionError(Error<?> error) {
-      super(error.throwable);
+      super(error.throwables.get(0));
       this.error = error;
     }
 
@@ -98,187 +65,298 @@ public class LogUtils {
     }
   }
 
-  public interface LogConsumer<I, O> {
+  public interface LogOperations {
 
-    O accept(I input, Log logEntry) throws Throwable;
+    Log getLogEntry();
+
+    void setOnlyLogOnFailure(boolean onlyLogOnFailure);
+
+    void setUserX(UserX userX);
+
+    void addNote(String pattern, Object... args);
+
+    void addIkigaiInput(IkigaiInput ikigaiInput);
+
+    void addProject(Project project);
+
+    void setStatus(Status status);
   }
 
-  public interface LogErrorConsumer<R> {
+  public interface InputConsumer<I, O> {
 
-    void accept(Error<R> error, Log logEntry) throws Throwable;
+    O accept(I input, LogOperations log) throws Throwable;
   }
 
-  public interface SaveErrorConsumer {
+  public interface ErrorConsumer<R> {
 
-    void accept(Throwable t);
+    void accept(Error<R> error, LogOperations log) throws Throwable;
   }
 
-  public static class LogConsumerResponse<R, I> {
+  public interface SaveErrorConsumer<R> {
 
-    private final Database db;
-    private final R originalRequest;
-    private final I input;
-    private final Log logEntry;
+    void accept(Error<R> error, LogOperations log);
+  }
+
+  public static class Logger<R, I> implements LogOperations {
+    final Database db;
+    final R originalRequest;
+    final Log logEntry;
+    final List<LogReference> logReferenceEntries;
+    boolean onlyLogOnFailure;
+    Object lastSuccessfulInput;
+    Instant lastSuccessfulInputTime;
+    Object input;
     /**
      * True if we've handled the error with an onError(). It causes any future functionality to be
      * skipped until the final writes the log entry before it returns from finish().
      */
-    private final boolean skipToFinish;
+    boolean skipToFinish = false;
 
-    private Error<R> error;
+    final List<Throwable> throwables = new ArrayList<>();
 
-    public LogConsumerResponse(
-        Database db,
-        R originalRequest,
-        I input,
-        Log logEntry,
-        boolean skipToFinish,
-        Error<R> error) {
-      this.db = db;
-      this.originalRequest = originalRequest;
-      this.input = input;
-      this.logEntry = logEntry;
-      this.skipToFinish = skipToFinish;
-      this.error = error;
+    public Logger(Database db, R originalRequest, Log logEntry) {
+      this.db = checkNotNull(db);
+      this.originalRequest = checkNotNull(originalRequest);
+      this.logEntry = checkNotNull(logEntry);
+      this.logReferenceEntries = new ArrayList<>();
+      this.onlyLogOnFailure = false;
+      this.lastSuccessfulInput = originalRequest;
+      this.lastSuccessfulInputTime = Instant.now();
+      this.input = originalRequest;
     }
 
-    /** The chain of andThen() will continue to be called as long as no exceptions have occurred. */
+    @Override
+    public Log getLogEntry() {
+      return logEntry;
+    }
+
+    @Override
+    public void setOnlyLogOnFailure(boolean onlyLogOnFailure) {
+      this.onlyLogOnFailure = onlyLogOnFailure;
+    }
+
+    @Override
+    public void setUserX(UserX userX) {
+      logEntry.setUserX(userX);
+    }
+
+    @Override
+    public void addNote(String pattern, Object... args) {
+      logEntry.setNotes(
+          Optional.ofNullable(logEntry.getNotes()).orElse("")
+              + String.format(pattern, args)
+              + "\n");
+    }
+
+    @Override
+    public void addIkigaiInput(IkigaiInput ikigaiInput) {
+      logReferenceEntries.add(
+          new LogReference()
+              .setCreationTime(Instant.now())
+              .setLog(logEntry)
+              .setIkigaiInput(ikigaiInput));
+    }
+
+    @Override
+    public void addProject(Project project) {
+      logReferenceEntries.add(
+          new LogReference().setCreationTime(Instant.now()).setLog(logEntry).setProject(project));
+    }
+
+    @Override
+    public void setStatus(Status status) {
+      logEntry.setStatus(status.name());
+    }
+
     @CheckReturnValue
-    public <O> LogConsumerResponse<R, O> andThen(LogConsumer<I, O> inputConsumer) {
-      if (!skipToFinish && error == null) {
+    @SuppressWarnings("unchecked")
+    public <O> Logger<R, O> andThen(InputConsumer<I, O> inputConsumer) {
+      if (!skipToFinish && throwables.isEmpty()) {
         try {
-          return new LogConsumerResponse<>(
-              db, originalRequest, inputConsumer.accept(input, logEntry), logEntry, false, null);
+          lastSuccessfulInput = input;
+          lastSuccessfulInputTime = Instant.now();
+          input = inputConsumer.accept((I) input, this);
         } catch (Throwable t) {
-          error = new Error<>(originalRequest, input, t);
+          input = null;
+          throwables.add(t);
         }
       }
-      return new LogConsumerResponse<>(db, originalRequest, null, logEntry, skipToFinish, error);
+      return (Logger<R, O>) this;
     }
 
-    /**
-     * When there's an exception, the first onError in the chain will be called with the last
-     * successful output value from a previous andThen() (or, otherwise, the initial input to
-     * executeAndLog()).
-     *
-     * <p>Once an onError() is called, no further consumers will be called before finish() writes
-     * the log entry and returns the error.
-     */
     @CheckReturnValue
-    public LogConsumerResponse<R, I> onError(LogErrorConsumer<R> errorConsumer) {
-      if (skipToFinish || error == null) {
-        return this;
+    public Logger<R, I> onError(ErrorConsumer<R> errorConsumer) {
+      if (!skipToFinish && !throwables.isEmpty()) {
+        try {
+          skipToFinish = true;
+          errorConsumer.accept(
+              new Error<>(originalRequest, lastSuccessfulInput, ImmutableList.copyOf(throwables)),
+              this);
+        } catch (Throwable t) {
+          throwables.add(t);
+        }
       }
-
-      try {
-        errorConsumer.accept(error, logEntry);
-      } catch (Throwable t) {
-        error =
-            new Error<>(
-                originalRequest,
-                error.lastInput,
-                new RuntimeException("Error occurred while processing in the error handler.", t)
-                    .initCause(error.throwable));
-      }
-      return new LogConsumerResponse<>(db, originalRequest, null, logEntry, true, error);
+      return this;
     }
 
-    /**
-     * Runs the final consumer if there have been no exceptions.
-     *
-     * <p>And finally, it will write the log entry to the database. Before doing so, it will set the
-     * status, stack trace, and response to the last input if the response is unset.
-     *
-     * <p>Returns an error if it fails to write the logEntry to the database.
-     */
     @CheckReturnValue
-    public I finish(SaveErrorConsumer saveErrorConsumer) throws LogExecutionError {
+    @SuppressWarnings("unchecked")
+    public I finish(ErrorConsumer<R> errorConsumer) throws LogExecutionError {
       try {
         if (logEntry.getFinalResponseTime() == null) {
           logEntry.setFinalResponseTime(Instant.now());
         }
-        if (logEntry.getFinalResponse() == null) {
-          logEntry.setFinalResponse(ioToString(input));
-        }
-        if (error == null) {
-          try {
-            logEntry.setStatus(Status.SUCCESS.name());
-            db.getLogRepository().save(logEntry);
-          } catch (Throwable t) {
-            log.atError()
-                .withThrowable(t)
-                .log(
-                    "An error occurred while saving the log entry. Returning the result anyway."
-                        + " Request: {}, Response: {}",
-                    logEntry.getRequest(),
-                    logEntry.getFinalResponse());
-            saveErrorConsumer.accept(t);
+        if (throwables.isEmpty()) {
+          if (input != null) {
+            if (logEntry.getFinalResponseType() == null) {
+              logEntry.setFinalResponseType(input.getClass().getName());
+            }
+            if (logEntry.getFinalResponse() == null) {
+              logEntry.setFinalResponse(ioToString(input));
+            }
           }
-          return input;
+
+          if (Strings.isNullOrEmpty(logEntry.getStatus())) {
+            logEntry.setStatus(Status.SUCCESS.name());
+          }
+
+          if (!onlyLogOnFailure) {
+            db.getLogRepository().save(logEntry);
+            db.getLogReferenceRepository().saveAll(logReferenceEntries);
+          }
+
+          return (I) input;
+        } else {
+          logEntry.setLastInputTime(lastSuccessfulInputTime);
+          if (lastSuccessfulInput != null) {
+            logEntry.setLastInputType(lastSuccessfulInput.getClass().getName());
+            logEntry.setLastInput(ioToString(lastSuccessfulInput));
+          }
+          logEntry.setStatus(Status.ERROR.name());
+
+          errorConsumer.accept(
+              new Error<>(originalRequest, lastSuccessfulInput, ImmutableList.copyOf(throwables)),
+              this);
         }
-        logEntry.setStatus(Status.ERROR.name());
-        logEntry.setStackTrace(Throwables.getStackTraceAsString(error.throwable));
-        db.getLogRepository().save(logEntry);
       } catch (Throwable t) {
-        log.atError()
-            .withThrowable(t)
-            .log(
-                "An error occurred while saving the log entry. There was also an error during"
-                    + " processing. Request: {}, Last Input: {}",
-                logEntry.getRequest(),
-                logEntry.getFinalResponse());
-        saveErrorConsumer.accept(t);
+        throwables.add(t);
       }
-      throw new LogExecutionError(error);
+
+      logEntry.setStackTrace(
+          ADDITIONAL_ERROR_JOINER.join(
+              Lists.transform(throwables, Throwables::getStackTraceAsString)));
+      try {
+        db.getLogRepository().save(logEntry);
+        db.getLogReferenceRepository().saveAll(logReferenceEntries);
+      } catch (Throwable t) {
+        throwables.add(t);
+        logEntry.setStackTrace(
+            ADDITIONAL_ERROR_JOINER.join(
+                Lists.transform(throwables, Throwables::getStackTraceAsString)));
+      }
+
+      logger.atError()
+          .withThrowable(throwables.get(0))
+          .log("An error occurred while processing request: {}", ioToString(originalRequest));
+      if (throwables.size() >= 2) {
+        logger.atError()
+            .log(
+                "{}{}",
+                ADDITIONAL_ERROR_MESSAGE,
+                ADDITIONAL_ERROR_JOINER.join(
+                    Lists.transform(
+                        throwables.subList(1, throwables.size()),
+                        Throwables::getStackTraceAsString)));
+      }
+      throw new LogExecutionError(
+          new Error<>(originalRequest, lastSuccessfulInput, ImmutableList.copyOf(throwables)));
     }
 
     public I finish() throws LogExecutionError {
-      return finish(error -> {});
+      return finish((error, throwable) -> {});
     }
   }
 
   @CheckReturnValue
-  public static <I, O> LogConsumerResponse<I, O> executeAndLog(
-      Database db,
-      String operation,
-      Optional<Integer> user_id,
-      I request,
-      LogConsumer<I, O> consumer) {
-    LogConsumerResponse<I, O> response =
-        new LogConsumerResponse<>(
-                db,
-                request,
-                request,
-                new Log()
-                    .setCreationTime(Instant.now())
-                    .setOperation(operation)
-                    .setRequest(ioToString(request))
-                    .setUserX(user_id.map(id -> new UserX().setId(id)).orElse(null)),
-                false,
-                null)
-            .andThen(consumer);
+  public static <I, O> Logger<I, O> executeAndLog(
+      Database db, I request, InputConsumer<I, O> inputConsumer) {
+    checkNotNull(db);
+    checkNotNull(request);
+    checkNotNull(inputConsumer);
 
-    // Assume that the first consumer waited for external resources.
-    if (response.logEntry.getInitialResponseTime() == null) {
-      response.logEntry.setInitialResponseTime(Instant.now());
+    Log logEntry = new Log().setCreationTime(Instant.now());
+
+    StackWalker.StackFrame callerFrame =
+        StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+            .walk(fnStream -> fnStream.skip(1).findFirst().orElse(null));
+    if (callerFrame != null) {
+      logEntry.setCaller(callerFrame.toStackTraceElement().toString());
     }
-    if (response.input instanceof byte[] && response.logEntry.getInitialResponse() == null) {
-      response.logEntry.setInitialResponse((byte[]) response.input);
+    logEntry
+        .setRequest(ioToString(request))
+        .setRequestType(request.getClass().getName())
+        .setRequestTime(Instant.now());
+
+    Logger<I, O> log = new Logger<I, I>(db, request, logEntry).andThen(inputConsumer);
+
+    if (logEntry.getInitialResponseTime() == null) {
+      logEntry.setInitialResponseTime(Instant.now());
+    }
+    if (log.input != null) {
+      if (logEntry.getInitialResponseType() == null) {
+        logEntry.setInitialResponseType(log.input.getClass().getName());
+      }
+      if (log.logEntry.getInitialResponse() == null && log.input instanceof byte[]) {
+        logEntry.setInitialResponse((byte[]) log.input);
+      }
     }
 
-    return response;
-  }
-
-  @CheckReturnValue
-  public static <I extends Message, O> LogConsumerResponse<I, O> executeAndLog(
-      Database db, Optional<Integer> user_id, I request, LogConsumer<I, O> consumer) {
-    return executeAndLog(db, request.getClass().getName(), user_id, request, consumer);
+    return log;
   }
 
   @Nullable
   private static String ioToString(@Nullable Object o) {
-    return o instanceof Message
-        ? TextFormat.printer().printToString((Message) o)
-        : o != null ? o.toString() : null;
+    // TODO: Make this Annotation based so that we can add more types.
+    if (o == null) {
+      return "null";
+    } else if (o instanceof Message) {
+      return TextFormat.printer().printToString((Message) o);
+    } else if (o instanceof HttpServletRequest) {
+      HttpServletRequest r = (HttpServletRequest) o;
+      Enumeration<String> e1 = r.getHeaderNames();
+      return EOL_JOINER.join(
+          ImmutableList.builder()
+              .add("URI: " + r.getRequestURI())
+              .addAll(
+                  stream(e1)
+                      .limit(150)
+                      .sorted()
+                      .map(
+                          name -> {
+                            Enumeration<String> e = r.getHeaders(name);
+                            return "HEADER: " + name + ": " + stream(e).sorted().toList();
+                          })
+                      .toList())
+              .build());
+    } else if (o instanceof HttpServletResponse) {
+      HttpServletResponse r = (HttpServletResponse) o;
+      return EOL_JOINER.join(
+          ImmutableList.builder()
+              .add("STATUS: " + r.getStatus())
+              .add("CONTENT_TYPE: " + r.getContentType())
+              .addAll(
+                  r.getHeaderNames().stream()
+                      .sorted()
+                      .map(name -> "HEADER: " + name + ": " + r.getHeaders(name))
+                      .toList())
+              .build());
+    } else {
+      return o.toString();
+    }
+  }
+
+  private static <T> Stream<T> stream(Enumeration<T> enumeration) {
+    return StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(enumeration.asIterator(), 0), false);
   }
 }

@@ -56,7 +56,9 @@ message GenerateAssignmentProjectsRequest {
   optional int32 assignment_id = 4;
 }
 
-message GenerateAssignmentProjectsResponse {}
+message GenerateAssignmentProjectsResponse {
+  repeated Project projects = 1;
+}
 
 message GetProjectsRequest {
   optional int32 user_x_id = 1;

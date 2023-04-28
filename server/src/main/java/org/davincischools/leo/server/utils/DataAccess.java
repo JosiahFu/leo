@@ -74,8 +74,8 @@ public class DataAccess {
       UserX user) {
     var userProto =
         org.davincischools.leo.protos.user_management.User.newBuilder()
-            .setId(user.getId())
-            .setDistrictId(user.getDistrict().getId())
+            .setId(firstNonNull(user::getId, () -> -1))
+            .setDistrictId(firstNonNull(user.getDistrict()::getId, () -> -1))
             .setFirstName(user.getFirstName())
             .setLastName(user.getLastName())
             .setEmailAddress(user.getEmailAddress())
@@ -96,8 +96,8 @@ public class DataAccess {
   public static org.davincischools.leo.protos.school_management.School convertSchoolToProto(
       School school) {
     return org.davincischools.leo.protos.school_management.School.newBuilder()
-        .setId(school.getId())
-        .setDistrictId(school.getDistrict().getId())
+        .setId(firstNonNull(school::getId, () -> -1))
+        .setDistrictId(firstNonNull(school.getDistrict()::getId, () -> -1))
         .setName(school.getName())
         .setAddress(Strings.nullToEmpty(school.getAddress()))
         .build();
@@ -114,7 +114,7 @@ public class DataAccess {
   public static org.davincischools.leo.protos.class_management.ClassX convertClassToProto(
       ClassX classX) {
     return org.davincischools.leo.protos.class_management.ClassX.newBuilder()
-        .setId(classX.getId())
+        .setId(firstNonNull(classX::getId, () -> -1))
         .setName(classX.getName())
         .setShortDescr(getShortDescr(classX))
         .setLongDescr(getLongDescr(classX))
@@ -124,7 +124,7 @@ public class DataAccess {
   public static org.davincischools.leo.protos.class_management.Assignment convertAssignmentToProto(
       ClassX class_, Assignment assignment) {
     return org.davincischools.leo.protos.class_management.Assignment.newBuilder()
-        .setId(assignment.getId())
+        .setId(firstNonNull(assignment::getId, () -> -1))
         .setName(assignment.getName())
         .setShortDescr(getShortDescr(assignment))
         .setLongDescr(getLongDescr(assignment))
@@ -135,7 +135,7 @@ public class DataAccess {
   public static org.davincischools.leo.protos.class_management.Project convertProjectToProto(
       Project project) {
     return org.davincischools.leo.protos.class_management.Project.newBuilder()
-        .setId(project.getId())
+        .setId(firstNonNull(project::getId, () -> -1))
         .setName(project.getName())
         .setShortDescr(getShortDescr(project))
         .setLongDescr(getLongDescr(project))

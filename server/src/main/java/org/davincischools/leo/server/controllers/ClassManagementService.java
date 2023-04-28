@@ -3,8 +3,10 @@ package org.davincischools.leo.server.controllers;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import org.davincischools.leo.database.utils.Database.StudentRepository.StudentA
 import org.davincischools.leo.database.utils.QuillInitializer;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsRequest;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
+import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse.Builder;
 import org.davincischools.leo.protos.class_management.GetProjectsRequest;
 import org.davincischools.leo.protos.class_management.GetProjectsResponse;
 import org.davincischools.leo.protos.class_management.GetStudentAssignmentsRequest;
@@ -33,6 +36,7 @@ import org.davincischools.leo.protos.open_ai.OpenAiResponse;
 import org.davincischools.leo.server.utils.DataAccess;
 import org.davincischools.leo.server.utils.LogUtils;
 import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
+import org.davincischools.leo.server.utils.LogUtils.LogOperations;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,10 +49,9 @@ public class ClassManagementService {
 
   private static final Joiner COMMA_AND_JOINER = Joiner.on(", and ");
 
-  private static final Pattern AI_PROJECT_NAME =
-      Pattern.compile("^[^:]+:\\s*[\"“]?([^\"“]+)[\"“]?");
-  private static final Pattern AI_PROJECT_SHORT_DESCR = Pattern.compile("^[^:]+:\\s*(.+)");
-  private static final Pattern AI_PROJECT_LONG_DESCR = Pattern.compile("^[^:]+:\\s*(.+)");
+  private static final Pattern AI_PROJECT_LABEL = Pattern.compile("([0-9]+[.])?[^:]{0,18}[:]");
+  private static final Pattern AI_REMOVE_LABEL_AND_QUOTES =
+      Pattern.compile("([0-9]+[.])?([^:.]{0,18}[:.])?\\s*[\"“]?(?<text>[^\"“]+)[\"“]?|.*");
 
   @Autowired Database db;
   @Autowired OpenAiUtils openAiUtils;
@@ -60,9 +63,8 @@ public class ClassManagementService {
       throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetStudentAssignmentsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasUserXId());
               var response = GetStudentAssignmentsResponse.newBuilder();
 
@@ -86,9 +88,8 @@ public class ClassManagementService {
       throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GenerateAssignmentProjectsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasUserXId());
               var response = GenerateAssignmentProjectsResponse.newBuilder();
 
@@ -107,6 +108,7 @@ public class ClassManagementService {
                               .setAssignment(new Assignment().setId(request.getAssignmentId()))
                               .setSomethingYouLove(request.getSomethingYouLove())
                               .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
+              log.addIkigaiInput(ikigaiInput);
 
               // Get knowledge and skill contribution.
               List<KnowledgeAndSkill> knowledgeAndSkills =
@@ -120,6 +122,7 @@ public class ClassManagementService {
                               ("\"" + DataAccess.getShortDescr(knowledgeAndSkill) + "\"")));
 
               // Query OpenAI for projects.
+              // TODO: Is there an asynchronous way to do this?
               OpenAiRequest aiRequest =
                   OpenAiRequest.newBuilder()
                       .setModel(OpenAiUtils.GPT_3_5_TURBO_MODEL)
@@ -138,9 +141,9 @@ public class ClassManagementService {
                           OpenAiMessage.newBuilder()
                               .setRole("user")
                               .setContent(
-                                  "Generate 5 projects that would fit the criteria. Place a title,"
-                                      + " a short description, and a full description on separate"
-                                      + " lines."))
+                                  "Generate 5 projects that would fit the criteria. For each"
+                                      + " project, return a title, a short description, and a full"
+                                      + " description on separate lines."))
                       .build();
 
               OpenAiResponse aiResponse =
@@ -149,42 +152,91 @@ public class ClassManagementService {
                           aiRequest, OpenAiResponse.newBuilder(), Optional.of(user.getId()))
                       .build();
 
-              // Parse the result into separate lines.
-              List<String> lines = new ArrayList<>();
-              BufferedReader reader =
-                  new BufferedReader(
-                      new StringReader(aiResponse.getChoices(0).getMessage().getContent()));
-              String line;
-              while ((line = reader.readLine()) != null) {
-                lines.add(line);
-              }
-
-              // Process the lines and extract projects.
-              lines = lines.stream().map(String::trim).filter(str -> !str.isEmpty()).toList();
-              for (int i = 0; i < lines.size() - 2; ++i) {
-                Matcher name = AI_PROJECT_NAME.matcher(lines.get(i));
-                Matcher shortDescr = AI_PROJECT_SHORT_DESCR.matcher(lines.get(i + 1));
-                Matcher longDescr = AI_PROJECT_LONG_DESCR.matcher(lines.get(i + 2));
-                if (name.find() && shortDescr.find() && longDescr.find()) {
-                  db.getProjectRepository()
-                      .save(
-                          new Project()
-                              .setCreationTime(Instant.now())
-                              .setIkigaiInput(ikigaiInput)
-                              .setName(name.group(1))
-                              .setShortDescr(shortDescr.group(1))
-                              .setShortDescrQuill(
-                                  QuillInitializer.toQuillDelta(shortDescr.group(1)))
-                              .setLongDescr(longDescr.group(1))
-                              .setLongDescrQuill(
-                                  QuillInitializer.toQuillDelta(longDescr.group(1))));
-                  i += 2;
-                }
-              }
+              List<Project> projects =
+                  extractProjects(
+                      log,
+                      response,
+                      ikigaiInput,
+                      aiResponse.getChoices(0).getMessage().getContent());
+              db.getProjectRepository().saveAll(projects);
+              projects.forEach(log::addProject);
 
               return response.build();
             })
         .finish();
+  }
+
+  public static List<Project> extractProjects(
+      LogOperations log, Builder response, IkigaiInput ikigaiInput, String aiResponse)
+      throws IOException {
+    List<Project> projects = new ArrayList<>();
+
+    // Parse the result into separate lines.
+    List<String> lines = new ArrayList<>();
+    BufferedReader reader = new BufferedReader(new StringReader(aiResponse));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      lines.add(line);
+    }
+
+    // Process the lines and extract projects.
+    lines =
+        lines.stream()
+            .map(String::trim)
+            .filter(str -> !str.isEmpty())
+            .filter(str -> !AI_PROJECT_LABEL.matcher(str).matches())
+            .toList();
+    for (int i = 0; i < lines.size() - 2; i += 3) {
+      boolean addedNotes = false;
+      Matcher nameMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i));
+      Matcher shortDescrMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i + 1));
+      Matcher longDescrMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i + 2));
+
+      checkArgument(nameMatcher.matches());
+      checkArgument(shortDescrMatcher.matches());
+      checkArgument(longDescrMatcher.matches());
+
+      String name = lines.get(i);
+      if (!Strings.isNullOrEmpty(nameMatcher.group("text"))) {
+        name = nameMatcher.group("text");
+      } else {
+        log.addNote("Name failed to match: %s", lines.get(i));
+        addedNotes = true;
+      }
+
+      String shortDescr = lines.get(i + 1);
+      if (!Strings.isNullOrEmpty(shortDescrMatcher.group("text"))) {
+        shortDescr = shortDescrMatcher.group("text");
+      } else {
+        log.addNote("Short description failed to match: %s", lines.get(i + 1));
+        addedNotes = true;
+      }
+
+      String longDescr = lines.get(i + 2);
+      if (!Strings.isNullOrEmpty(longDescrMatcher.group("text"))) {
+        longDescr = longDescrMatcher.group("text");
+      } else {
+        log.addNote("Long description failed to match: %s", lines.get(i + 2));
+        addedNotes = true;
+      }
+
+      Project project =
+          new Project()
+              .setCreationTime(Instant.now())
+              .setIkigaiInput(ikigaiInput)
+              .setName(name)
+              .setShortDescr(shortDescr)
+              .setShortDescrQuill(QuillInitializer.toQuillDelta(shortDescr))
+              .setLongDescr(longDescr)
+              .setLongDescrQuill(QuillInitializer.toQuillDelta(longDescr));
+      projects.add(project);
+      response.addProjects(DataAccess.convertProjectToProto(project));
+      if (addedNotes) {
+        log.addNote("");
+      }
+    }
+
+    return projects;
   }
 
   @PostMapping(value = "/api/protos/ClassManagementService/GetProjects")
@@ -193,9 +245,8 @@ public class ClassManagementService {
       throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetProjectsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasUserXId());
               var response = GetProjectsResponse.newBuilder();
 

@@ -48,9 +48,8 @@ public class UserManagementService {
       throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetUsersRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasDistrictId());
               var response = UserInformationResponse.newBuilder();
 
@@ -68,9 +67,8 @@ public class UserManagementService {
       @RequestBody Optional<GetUserDetailsRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetUserDetailsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasUserXId());
               var response = GetUserDetailsResponse.newBuilder();
 
@@ -96,9 +94,8 @@ public class UserManagementService {
       @RequestBody Optional<UpsertUserRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(UpsertUserRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               var response = UserInformationResponse.newBuilder();
 
               Optional<UserX> existingUserX = Optional.empty();
@@ -315,9 +312,8 @@ public class UserManagementService {
       @RequestBody Optional<RemoveUserRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(RemoveUserRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasUserXId());
               var response = UserInformationResponse.newBuilder();
 

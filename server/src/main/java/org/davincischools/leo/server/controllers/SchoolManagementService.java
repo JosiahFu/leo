@@ -28,9 +28,8 @@ public class SchoolManagementService {
       @RequestBody Optional<GetSchoolsRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetSchoolsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               return getAllSchools(request.getDistrictId(), -1);
             })
         .finish();
@@ -42,9 +41,8 @@ public class SchoolManagementService {
       @RequestBody Optional<UpsertSchoolRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(UpsertSchoolRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               School school =
                   new School()
                       .setCreationTime(Instant.now())
@@ -68,9 +66,8 @@ public class SchoolManagementService {
       @RequestBody Optional<RemoveSchoolRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(RemoveSchoolRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               db.getSchoolRepository().deleteById(request.getSchoolId());
               return getAllSchools(request.getDistrictId(), -1);
             })

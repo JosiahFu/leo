@@ -1,5 +1,7 @@
 package org.davincischools.leo.server.controllers;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +62,9 @@ public class PartialTextOpenAiPromptController {
       @RequestBody Optional<GetSuggestionsRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetSuggestionsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
+              checkArgument(request.hasUserXId());
               if (!PROMPTS.containsKey(request.getPrompt())) {
                 throw new IllegalArgumentException("Invalid prompt: " + request.getPrompt());
               }

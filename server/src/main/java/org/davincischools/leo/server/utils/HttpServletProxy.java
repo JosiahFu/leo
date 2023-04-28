@@ -184,7 +184,7 @@ public class HttpServletProxy {
                   })
               .collect(ImmutableList.toImmutableList())
               .block();
-      byte[] reactBody = Bytes.concat(streamedBytes.toArray(size -> new byte[size][]));
+      byte[] reactBody = Bytes.concat(streamedBytes.toArray(byte[][]::new));
 
       // If the response is in text format, we need to replace reactHostPort with
       // originalHostPort.

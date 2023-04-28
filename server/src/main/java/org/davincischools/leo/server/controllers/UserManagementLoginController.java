@@ -11,6 +11,7 @@ import org.davincischools.leo.protos.user_management.LoginRequest;
 import org.davincischools.leo.protos.user_management.LoginResponse;
 import org.davincischools.leo.server.utils.LogUtils;
 import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
+import org.davincischools.leo.server.utils.LogUtils.LogOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,19 +33,18 @@ public class UserManagementLoginController {
       throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(LoginRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               var response = LoginResponse.newBuilder();
 
-              checkLogin(request, response);
+              checkLogin(request, response, log);
 
               return response.build();
             })
         .finish();
   }
 
-  private void checkLogin(LoginRequest request, LoginResponse.Builder response) {
+  private void checkLogin(LoginRequest request, LoginResponse.Builder response, LogOperations log) {
     if (setFieldErrors(request, response)) {
       response.setSuccess(false);
       return;
@@ -64,6 +64,7 @@ public class UserManagementLoginController {
       response.setLoginFailure(true);
       return;
     }
+    log.setUserX(user.get());
 
     response.setSuccess(true);
     response.setUser(

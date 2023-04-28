@@ -32,9 +32,8 @@ public class DistrictManagementService {
       @RequestBody Optional<GetDistrictsRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(GetDistrictsRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               return getAllDistricts(-1);
             })
         .finish();
@@ -46,9 +45,8 @@ public class DistrictManagementService {
       @RequestBody Optional<AddDistrictRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(AddDistrictRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               if (request.hasDistrict()) {
                 District district =
                     new District()
@@ -69,9 +67,8 @@ public class DistrictManagementService {
       @RequestBody Optional<UpdateDistrictRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(UpdateDistrictRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               if (request.getDistrict().hasId()) {
                 db.getDistrictRepository()
                     .save(
@@ -93,9 +90,8 @@ public class DistrictManagementService {
       @RequestBody Optional<RemoveDistrictRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(RemoveDistrictRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               checkArgument(request.hasDistrictId());
 
               db.getDistrictRepository().deleteById(request.getDistrictId());

@@ -25,9 +25,8 @@ public class InterestService {
       @RequestBody Optional<RegisterInterestRequest> optionalRequest) throws LogExecutionError {
     return LogUtils.executeAndLog(
             db,
-            Optional.empty(),
             optionalRequest.orElse(RegisterInterestRequest.getDefaultInstance()),
-            (request, logEntry) -> {
+            (request, log) -> {
               var response = RegisterInterestResponse.newBuilder();
 
               db.getInterestRepository()
