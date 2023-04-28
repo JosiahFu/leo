@@ -8,7 +8,7 @@ CREATE TABLE user_x
     last_name        VARCHAR(255)        NOT NULL,
     -- https://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
     email_address    VARCHAR(254) UNIQUE NOT NULL,
-    INDEX user_x__email_address USING HASH (email_address),
+    INDEX            user_x__email_address USING HASH (email_address),
 
     -- From org.springframework.security.crypto.factory.PasswordEncoderFactories.
     encoded_password TEXT                NOT NULL,
