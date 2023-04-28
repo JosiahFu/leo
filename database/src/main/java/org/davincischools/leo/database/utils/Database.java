@@ -245,9 +245,9 @@ public class Database {
     @Query(
         "SELECT u "
             + "FROM UserX u "
-            + "LEFT JOIN FETCH AdminX a "
-            + "LEFT JOIN FETCH Teacher t "
-            + "LEFT JOIN FETCH Student s "
+            + "LEFT JOIN FETCH AdminX a ON u.adminX.id = a.id "
+            + "LEFT JOIN FETCH Teacher t ON u.teacher.id = t.id "
+            + "LEFT JOIN FETCH Student s ON u.student.id = s.id "
             + "WHERE u.emailAddress = (:emailAddress) ")
     Optional<UserX> findFullUserXByEmailAddress(@Param("emailAddress") String emailAddress);
 
@@ -264,9 +264,9 @@ public class Database {
     @Query(
         "SELECT u "
             + "FROM UserX u "
-            + "LEFT JOIN FETCH AdminX a "
-            + "LEFT JOIN FETCH Teacher t "
-            + "LEFT JOIN FETCH Student s "
+            + "LEFT JOIN FETCH AdminX a ON u.adminX.id = a.id "
+            + "LEFT JOIN FETCH Teacher t ON u.teacher.id = t.id "
+            + "LEFT JOIN FETCH Student s ON u.student.id = s.id "
             + "WHERE u.id = (:userXId) ")
     Optional<UserX> findFullUserXByUserXId(@Param("userXId") int userXId);
   }

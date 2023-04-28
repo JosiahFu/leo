@@ -57,13 +57,6 @@ public class UserManagementLoginController {
       response.setLoginFailure(true);
       return;
     }
-
-    user = db.getUserXRepository().findFullUserXByUserXId(user.get().getId());
-    if (!user.isPresent()) {
-      response.setSuccess(false);
-      response.setLoginFailure(true);
-      return;
-    }
     log.setUserX(user.get());
 
     response.setSuccess(true);
