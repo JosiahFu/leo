@@ -1,12 +1,13 @@
 import './MyAccount.scss';
 import {SignupForm} from '../../../libs/SignupForm/SignupForm';
-import {PageHeader} from '../../../libs/PageHeader/PageHeader';
+import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 
 export function MyAccount() {
   return (
     <>
-      <PageHeader title="My Account" />
-      <SignupForm />
+      <DefaultPage title="My Account">
+        <SignupForm />
+      </DefaultPage>
     </>
   );
 }

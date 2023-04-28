@@ -1,4 +1,4 @@
-import './DefaultPageNav.scss';
+import './DefaultPage.scss';
 import {Outlet} from 'react-router';
 import {Layout, Menu} from 'antd';
 import {
@@ -9,7 +9,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import {getCurrentUser, Role} from '../utils/authentication';
+import {getCurrentUser, Role} from '../../utils/authentication';
 import {Link} from 'react-router-dom';
 import {Footer} from 'antd/es/layout/layout';
 import {useState} from 'react';

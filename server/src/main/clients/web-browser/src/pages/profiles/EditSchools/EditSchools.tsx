@@ -16,7 +16,7 @@ import {
   MultipleDisplay,
   SelectMultipleFromList,
 } from '../../../SelectMultipleFromList/SelectMultipleFromList';
-import {PageHeader} from '../../../libs/PageHeader/PageHeader';
+import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 
 export function SelectSchoolFromList(props: {
   id: string;
@@ -157,91 +157,92 @@ export function EditSchools() {
 
   return (
     <>
-      <PageHeader title="Edit Schools" />
-      <table className="form-table">
-        <tbody>
-          <tr>
-            <th>District:</th>
-            <td>
-              <SelectDistrictFromList
-                id="districts"
-                display={Display.DROP_DOWN}
-                districts={districts}
-                districtId={districtId}
-                onSelect={setDistrictId}
-                defaultText="- Select District -"
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>School:</th>
-            <td>
-              <SelectSchoolFromList
-                id="schools"
-                display={Display.RADIO_BUTTONS}
-                schools={schools}
-                schoolId={schoolId}
-                onSelect={schoolId => {
-                  setSchoolId(schoolId);
-                  const school = schools.get(schoolId);
-                  if (school != null) {
-                    setName(school.name!);
-                    setAddress(school.address!);
-                  } else {
-                    setName('');
-                    setAddress('');
-                  }
-                }}
-                defaultText="[Create New School]"
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>Name:</th>
-            <td>
-              <input
-                type="text"
-                placeholder="New School Name"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setName(e.target.value);
-                }}
-                value={name}
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th>Address:</th>
-            <td>
-              <input
-                type="text"
-                placeholder="New School Address"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setAddress(e.target.value);
-                }}
-                value={address}
-              />
-            </td>
-          </tr>
-          <tr hidden={districtId === -1}>
-            <th></th>
-            <td className="form-buttons">
-              <div hidden={schoolId !== -1} onClick={upsertSchool}>
-                Add
-              </div>
-              <div hidden={schoolId === -1} onClick={upsertSchool}>
-                Update
-              </div>
-              <div
-                className="delete-button"
-                hidden={schoolId === -1}
-                onClick={removeSchool}
-              >
-                Delete
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <DefaultPage title="Edit Schools">
+        <table className="form-table">
+          <tbody>
+            <tr>
+              <th>District:</th>
+              <td>
+                <SelectDistrictFromList
+                  id="districts"
+                  display={Display.DROP_DOWN}
+                  districts={districts}
+                  districtId={districtId}
+                  onSelect={setDistrictId}
+                  defaultText="- Select District -"
+                />
+              </td>
+            </tr>
+            <tr hidden={districtId === -1}>
+              <th>School:</th>
+              <td>
+                <SelectSchoolFromList
+                  id="schools"
+                  display={Display.RADIO_BUTTONS}
+                  schools={schools}
+                  schoolId={schoolId}
+                  onSelect={schoolId => {
+                    setSchoolId(schoolId);
+                    const school = schools.get(schoolId);
+                    if (school != null) {
+                      setName(school.name!);
+                      setAddress(school.address!);
+                    } else {
+                      setName('');
+                      setAddress('');
+                    }
+                  }}
+                  defaultText="[Create New School]"
+                />
+              </td>
+            </tr>
+            <tr hidden={districtId === -1}>
+              <th>Name:</th>
+              <td>
+                <input
+                  type="text"
+                  placeholder="New School Name"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setName(e.target.value);
+                  }}
+                  value={name}
+                />
+              </td>
+            </tr>
+            <tr hidden={districtId === -1}>
+              <th>Address:</th>
+              <td>
+                <input
+                  type="text"
+                  placeholder="New School Address"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setAddress(e.target.value);
+                  }}
+                  value={address}
+                />
+              </td>
+            </tr>
+            <tr hidden={districtId === -1}>
+              <th></th>
+              <td className="form-buttons">
+                <div hidden={schoolId !== -1} onClick={upsertSchool}>
+                  Add
+                </div>
+                <div hidden={schoolId === -1} onClick={upsertSchool}>
+                  Update
+                </div>
+                <div
+                  className="delete-button"
+                  hidden={schoolId === -1}
+                  onClick={removeSchool}
+                >
+                  Delete
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </DefaultPage>{' '}
     </>
   );
 }

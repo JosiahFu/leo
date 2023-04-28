@@ -13,7 +13,7 @@ import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
 import Login from './pages/login/Login';
 import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
-import {DefaultPageNav} from './pages/DefaultPageNav';
+import {DefaultPageNav} from './libs/DefaultPage/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
 import {MyProjects} from './pages/projects/MyProjects/MyProjects';
 import {MyAccount} from './pages/profiles/MyProfile/MyAccount';
