@@ -192,7 +192,6 @@ public class AdminUtils {
 
     // TODO Remove creating test data.
     userXs = new ArrayList<>(userXs);
-    userXs.add(db.getUserXRepository().findFullUserXByEmailAddress(createAdmin).get());
     School school =
         db.getSchoolRepository()
             .save(
@@ -261,11 +260,11 @@ public class AdminUtils {
     if (!createDistrict.isEmpty()) {
       createDistrict();
     }
-    if (!createAdmin.isEmpty()) {
-      createAdmin();
-    }
     if (!importStudents.isEmpty()) {
       importStudents();
+    }
+    if (!createAdmin.isEmpty()) {
+      createAdmin();
     }
   }
 
