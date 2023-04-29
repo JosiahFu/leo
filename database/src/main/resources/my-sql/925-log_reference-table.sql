@@ -10,10 +10,10 @@ CREATE TABLE log_reference
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    ikigai_input_id INT,
-    CONSTRAINT log_reference__ikigai_input_id
-        FOREIGN KEY (ikigai_input_id)
-            REFERENCES ikigai_input (id)
+    project_input_id INT,
+    CONSTRAINT log_reference__project_input_id
+        FOREIGN KEY (project_input_id)
+            REFERENCES project_input (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 

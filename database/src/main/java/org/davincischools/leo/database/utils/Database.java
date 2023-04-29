@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Optional;
 import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.Assignment;
+import org.davincischools.leo.database.daos.AssignmentKnowledgeAndSkill;
+import org.davincischools.leo.database.daos.AssignmentKnowledgeAndSkillId;
 import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
-import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.Interest;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
-import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignment;
-import org.davincischools.leo.database.daos.KnowledgeAndSkillAssignmentId;
 import org.davincischools.leo.database.daos.Log;
 import org.davincischools.leo.database.daos.LogReference;
 import org.davincischools.leo.database.daos.Portfolio;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectCycle;
+import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.database.daos.ProjectPost;
 import org.davincischools.leo.database.daos.ProjectPostComment;
 import org.davincischools.leo.database.daos.School;
@@ -59,13 +59,34 @@ public class Database {
   public interface AdminXRepository extends JpaRepository<AdminX, Integer> {}
 
   @Repository
+  public interface AssignmentKnowledgeAndSkillRepository
+      extends JpaRepository<AssignmentKnowledgeAndSkill, AssignmentKnowledgeAndSkillId> {
+
+    default AssignmentKnowledgeAndSkillId createAssignmentKnowledgeAndSkillId(
+        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
+      return new AssignmentKnowledgeAndSkillId()
+          .setKnowledgeAndSkillId(knowledgeAndSkill.getId())
+          .setAssignmentId(assignment.getId());
+    }
+
+    default AssignmentKnowledgeAndSkill createAssignmentKnowledgeAndSkill(
+        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
+      return new AssignmentKnowledgeAndSkill()
+          .setCreationTime(Instant.now())
+          .setId(createAssignmentKnowledgeAndSkillId(knowledgeAndSkill, assignment))
+          .setKnowledgeAndSkill(knowledgeAndSkill)
+          .setAssignment(assignment);
+    }
+  }
+
+  @Repository
   public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
     @Query(
         "SELECT ks FROM KnowledgeAndSkill ks"
-            + " INNER JOIN FETCH KnowledgeAndSkillAssignment ksa"
-            + " ON ksa.knowledgeAndSkill.id = ks.id"
+            + " INNER JOIN FETCH AssignmentKnowledgeAndSkill aks"
+            + " ON aks.knowledgeAndSkill.id = ks.id"
             + " INNER JOIN FETCH Assignment a"
-            + " ON a.id = ksa.assignment.id"
+            + " ON a.id = aks.assignment.id"
             + " WHERE a.id = (:assignmentId)")
     List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(@Param("assignmentId") int assignmentId);
   }
@@ -79,50 +100,39 @@ public class Database {
   }
 
   @Repository
-  public interface IkigaiInputRepository extends JpaRepository<IkigaiInput, Integer> {}
-
-  @Repository
   public interface InterestRepository extends JpaRepository<Interest, Integer> {}
 
   @Repository
   public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
 
   @Repository
-  public interface KnowledgeAndSkillAssignmentRepository
-      extends JpaRepository<KnowledgeAndSkillAssignment, KnowledgeAndSkillAssignmentId> {
-
-    default KnowledgeAndSkillAssignmentId createKnowledgeAndSkillAssignmentId(
-        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-      return new KnowledgeAndSkillAssignmentId()
-          .setKnowledgeAndSkillId(knowledgeAndSkill.getId())
-          .setAssignmentId(assignment.getId());
-    }
-
-    default KnowledgeAndSkillAssignment createKnowledgeAndSkillAssignment(
-        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-      return new KnowledgeAndSkillAssignment()
-          .setCreationTime(Instant.now())
-          .setId(createKnowledgeAndSkillAssignmentId(knowledgeAndSkill, assignment))
-          .setKnowledgeAndSkill(knowledgeAndSkill)
-          .setAssignment(assignment);
-    }
-  }
+  public interface LogReferenceRepository extends JpaRepository<LogReference, Integer> {}
 
   @Repository
   public interface LogRepository extends JpaRepository<Log, Integer> {}
 
   @Repository
-  public interface LogReferenceRepository extends JpaRepository<LogReference, Integer> {}
+  public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
 
   @Repository
-  public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
+  public interface ProjectCycleRepository extends JpaRepository<ProjectCycle, Integer> {}
+
+  @Repository
+  public interface ProjectInputRepository extends JpaRepository<ProjectInput, Integer> {}
+
+  @Repository
+  public interface ProjectPostCommentRepository
+      extends JpaRepository<ProjectPostComment, Integer> {}
+
+  @Repository
+  public interface ProjectPostRepository extends JpaRepository<ProjectPost, Integer> {}
 
   @Repository
   public interface ProjectRepository extends JpaRepository<Project, Integer> {
     @Query(
         "SELECT p FROM Project p"
-            + " INNER JOIN IkigaiInput ii"
-            + " ON ii.id = p.ikigaiInput.id"
+            + " INNER JOIN ProjectInput ii"
+            + " ON ii.id = p.projectInput.id"
             + " INNER JOIN UserX u"
             + " ON u.id = ii.userX.id"
             + " WHERE u.id = (:userXId)"
@@ -131,19 +141,21 @@ public class Database {
   }
 
   @Repository
-  public interface ProjectCycleRepository extends JpaRepository<ProjectCycle, Integer> {}
-
-  @Repository
-  public interface ProjectPostRepository extends JpaRepository<ProjectPost, Integer> {}
-
-  @Repository
-  public interface ProjectPostCommentRepository
-      extends JpaRepository<ProjectPostComment, Integer> {}
-
-  @Repository
   public interface SchoolRepository extends JpaRepository<School, Integer> {
 
     Iterable<School> findAllByDistrictId(Integer districtId);
+  }
+
+  @Repository
+  public interface StudentClassXRepository extends JpaRepository<StudentClassX, StudentClassXId> {
+
+    default StudentClassX createStudentClassX(Student student, ClassX classX) {
+      return new StudentClassX()
+          .setCreationTime(Instant.now())
+          .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
+          .setStudent(student)
+          .setClassX(classX);
+    }
   }
 
   @Repository
@@ -179,21 +191,6 @@ public class Database {
   }
 
   @Repository
-  public interface StudentClassXRepository extends JpaRepository<StudentClassX, StudentClassXId> {
-
-    default StudentClassX createStudentClassX(Student student, ClassX classX) {
-      return new StudentClassX()
-          .setCreationTime(Instant.now())
-          .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
-          .setStudent(student)
-          .setClassX(classX);
-    }
-  }
-
-  @Repository
-  public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
-
-  @Repository
   public interface TeacherClassXRepository extends JpaRepository<TeacherClassX, TeacherClassXId> {
 
     default TeacherClassX createTeacherClassX(Teacher teacher, ClassX classX) {
@@ -204,6 +201,9 @@ public class Database {
           .setClassX(classX);
     }
   }
+
+  @Repository
+  public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
 
   @Repository
   public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, TeacherSchoolId> {
@@ -281,25 +281,25 @@ public class Database {
   }
 
   @Autowired private AdminXRepository adminRepository;
+  @Autowired private AssignmentKnowledgeAndSkillRepository assignmentKnowledgeAndSkillRepository;
   @Autowired private AssignmentRepository assignmentRepository;
   @Autowired private ClassXRepository classRepository;
   @Autowired private DistrictRepository districtRepository;
-  @Autowired private IkigaiInputRepository ikigaiInputRepository;
   @Autowired private InterestRepository interestRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
-  @Autowired private KnowledgeAndSkillAssignmentRepository knowledgeAndSkillAssignmentRepository;
-  @Autowired private LogRepository logRepository;
   @Autowired private LogReferenceRepository logReferenceRepository;
+  @Autowired private LogRepository logRepository;
   @Autowired private PortfolioRepository portfolioRepository;
-  @Autowired private ProjectRepository projectRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
-  @Autowired private ProjectPostRepository projectPostRepository;
+  @Autowired private ProjectInputRepository projectInputRepository;
   @Autowired private ProjectPostCommentRepository projectPostCommentRepository;
+  @Autowired private ProjectPostRepository projectPostRepository;
+  @Autowired private ProjectRepository projectRepository;
   @Autowired private SchoolRepository schoolRepository;
-  @Autowired private StudentRepository studentRepository;
   @Autowired private StudentClassXRepository studentClassXRepository;
-  @Autowired private TeacherRepository teacherRepository;
+  @Autowired private StudentRepository studentRepository;
   @Autowired private TeacherClassXRepository teacherClassXRepository;
+  @Autowired private TeacherRepository teacherRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
   @Autowired private UserXRepository userRepository;
 
@@ -307,6 +307,10 @@ public class Database {
 
   public AdminXRepository getAdminXRepository() {
     return adminRepository;
+  }
+
+  public AssignmentKnowledgeAndSkillRepository getAssignmentKnowledgeAndSkillRepository() {
+    return assignmentKnowledgeAndSkillRepository;
   }
 
   public AssignmentRepository getAssignmentRepository() {
@@ -321,10 +325,6 @@ public class Database {
     return districtRepository;
   }
 
-  public IkigaiInputRepository getIkigaiInputRepository() {
-    return ikigaiInputRepository;
-  }
-
   public InterestRepository getInterestRepository() {
     return interestRepository;
   }
@@ -333,56 +333,56 @@ public class Database {
     return knowledgeAndSkillRepository;
   }
 
-  public KnowledgeAndSkillAssignmentRepository getKnowledgeAndSkillAssignmentRepository() {
-    return knowledgeAndSkillAssignmentRepository;
+  public LogReferenceRepository getLogReferenceRepository() {
+    return logReferenceRepository;
   }
 
   public LogRepository getLogRepository() {
     return logRepository;
   }
 
-  public LogReferenceRepository getLogReferenceRepository() {
-    return logReferenceRepository;
-  }
-
   public PortfolioRepository getPortfolioRepository() {
     return portfolioRepository;
-  }
-
-  public ProjectRepository getProjectRepository() {
-    return projectRepository;
   }
 
   public ProjectCycleRepository getProjectCycleRepository() {
     return projectCycleRepository;
   }
 
-  public ProjectPostRepository getProjectPostRepository() {
-    return projectPostRepository;
+  public ProjectInputRepository getProjectInputRepository() {
+    return projectInputRepository;
   }
 
   public ProjectPostCommentRepository getProjectPostCommentRepository() {
     return projectPostCommentRepository;
   }
 
-  public SchoolRepository getSchoolRepository() {
-    return schoolRepository;
+  public ProjectPostRepository getProjectPostRepository() {
+    return projectPostRepository;
   }
 
-  public StudentRepository getStudentRepository() {
-    return studentRepository;
+  public ProjectRepository getProjectRepository() {
+    return projectRepository;
+  }
+
+  public SchoolRepository getSchoolRepository() {
+    return schoolRepository;
   }
 
   public StudentClassXRepository getStudentClassXRepository() {
     return studentClassXRepository;
   }
 
-  public TeacherRepository getTeacherRepository() {
-    return teacherRepository;
+  public StudentRepository getStudentRepository() {
+    return studentRepository;
   }
 
   public TeacherClassXRepository getTeacherClassXRepository() {
     return teacherClassXRepository;
+  }
+
+  public TeacherRepository getTeacherRepository() {
+    return teacherRepository;
   }
 
   public TeacherSchoolRepository getTeacherSchoolRepository() {

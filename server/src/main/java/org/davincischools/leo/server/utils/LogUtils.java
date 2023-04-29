@@ -24,10 +24,10 @@ import java.util.stream.StreamSupport;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
-import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.Log;
 import org.davincischools.leo.database.daos.LogReference;
 import org.davincischools.leo.database.daos.Project;
+import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 
@@ -75,7 +75,7 @@ public class LogUtils {
 
     void addNote(String pattern, Object... args);
 
-    void addIkigaiInput(IkigaiInput ikigaiInput);
+    void addProjectInput(ProjectInput projectInput);
 
     void addProject(Project project);
 
@@ -149,12 +149,12 @@ public class LogUtils {
     }
 
     @Override
-    public void addIkigaiInput(IkigaiInput ikigaiInput) {
+    public void addProjectInput(ProjectInput projectInput) {
       logReferenceEntries.add(
           new LogReference()
               .setCreationTime(Instant.now())
               .setLog(logEntry)
-              .setIkigaiInput(ikigaiInput));
+              .setProjectInput(projectInput));
     }
 
     @Override
@@ -255,11 +255,13 @@ public class LogUtils {
                 Lists.transform(throwables, Throwables::getStackTraceAsString)));
       }
 
-      logger.atError()
+      logger
+          .atError()
           .withThrowable(throwables.get(0))
           .log("An error occurred while processing request: {}", ioToString(originalRequest));
       if (throwables.size() >= 2) {
-        logger.atError()
+        logger
+            .atError()
             .log(
                 "{}{}",
                 ADDITIONAL_ERROR_MESSAGE,

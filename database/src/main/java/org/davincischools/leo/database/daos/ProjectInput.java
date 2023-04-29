@@ -12,12 +12,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = IkigaiInput.ENTITY_NAME)
-@Table(name = IkigaiInput.TABLE_NAME, schema = "leo_temp")
-public class IkigaiInput {
+@Entity(name = ProjectInput.ENTITY_NAME)
+@Table(name = ProjectInput.TABLE_NAME, schema = "leo_temp")
+public class ProjectInput {
 
-  public static final String ENTITY_NAME = "IkigaiInput";
-  public static final String TABLE_NAME = "ikigai_input";
+  public static final String ENTITY_NAME = "ProjectInput";
+  public static final String TABLE_NAME = "project_input";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_SOMETHINGYOULOVE_NAME = "something_you_love";
@@ -45,7 +45,7 @@ public class IkigaiInput {
     return id;
   }
 
-  public IkigaiInput setId(Integer id) {
+  public ProjectInput setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -55,7 +55,7 @@ public class IkigaiInput {
     return creationTime;
   }
 
-  public IkigaiInput setCreationTime(Instant creationTime) {
+  public ProjectInput setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }
@@ -66,7 +66,7 @@ public class IkigaiInput {
     return somethingYouLove;
   }
 
-  public IkigaiInput setSomethingYouLove(String somethingYouLove) {
+  public ProjectInput setSomethingYouLove(String somethingYouLove) {
     this.somethingYouLove = somethingYouLove;
     return this;
   }
@@ -77,7 +77,7 @@ public class IkigaiInput {
     return whatYouAreGoodAt;
   }
 
-  public IkigaiInput setWhatYouAreGoodAt(String whatYouAreGoodAt) {
+  public ProjectInput setWhatYouAreGoodAt(String whatYouAreGoodAt) {
     this.whatYouAreGoodAt = whatYouAreGoodAt;
     return this;
   }
@@ -87,7 +87,7 @@ public class IkigaiInput {
     return pendingCompletion;
   }
 
-  public IkigaiInput setPendingCompletion(Instant pendingCompletion) {
+  public ProjectInput setPendingCompletion(Instant pendingCompletion) {
     this.pendingCompletion = pendingCompletion;
     return this;
   }
@@ -98,7 +98,7 @@ public class IkigaiInput {
     return assignment;
   }
 
-  public IkigaiInput setAssignment(Assignment assignment) {
+  public ProjectInput setAssignment(Assignment assignment) {
     this.assignment = assignment;
     return this;
   }
@@ -109,7 +109,7 @@ public class IkigaiInput {
     return userX;
   }
 
-  public IkigaiInput setUserX(UserX userX) {
+  public ProjectInput setUserX(UserX userX) {
     this.userX = userX;
     return this;
   }

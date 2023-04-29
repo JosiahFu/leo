@@ -26,7 +26,7 @@ public class LogReference {
 
   private Log log;
 
-  private IkigaiInput ikigaiInput;
+  private ProjectInput projectInput;
 
   private Project project;
 
@@ -64,13 +64,13 @@ public class LogReference {
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ikigai_input_id")
-  public IkigaiInput getIkigaiInput() {
-    return ikigaiInput;
+  @JoinColumn(name = "project_input_id")
+  public ProjectInput getProjectInput() {
+    return projectInput;
   }
 
-  public LogReference setIkigaiInput(IkigaiInput ikigaiInput) {
-    this.ikigaiInput = ikigaiInput;
+  public LogReference setProjectInput(ProjectInput projectInput) {
+    this.projectInput = projectInput;
     return this;
   }
 

@@ -27,7 +27,6 @@ public class Project {
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
   public static final String COLUMN_STATE_NAME = "state";
   public static final String COLUMN_NEEDSREVIEW_NAME = "needs_review";
-  public static final String COLUMN_WAITINGFORRESULTSTIMEOUT_NAME = "waiting_for_results_timeout";
 
   private Integer id;
 
@@ -47,9 +46,7 @@ public class Project {
 
   private Byte needsReview;
 
-  private Instant waitingForResultsTimeout;
-
-  private IkigaiInput ikigaiInput;
+  private ProjectInput projectInput;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -147,24 +144,14 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_WAITINGFORRESULTSTIMEOUT_NAME)
-  public Instant getWaitingForResultsTimeout() {
-    return waitingForResultsTimeout;
-  }
-
-  public Project setWaitingForResultsTimeout(Instant waitingForResultsTimeout) {
-    this.waitingForResultsTimeout = waitingForResultsTimeout;
-    return this;
-  }
-
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ikigai_input_id")
-  public IkigaiInput getIkigaiInput() {
-    return ikigaiInput;
+  @JoinColumn(name = "project_input_id")
+  public ProjectInput getProjectInput() {
+    return projectInput;
   }
 
-  public Project setIkigaiInput(IkigaiInput ikigaiInput) {
-    this.ikigaiInput = ikigaiInput;
+  public Project setProjectInput(ProjectInput projectInput) {
+    this.projectInput = projectInput;
     return this;
   }
 }

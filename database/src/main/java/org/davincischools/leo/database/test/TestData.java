@@ -333,10 +333,10 @@ public class TestData {
     Arrays.asList(knowledgeAndSkills)
         .forEach(
             ks ->
-                db.getKnowledgeAndSkillAssignmentRepository()
+                db.getAssignmentKnowledgeAndSkillRepository()
                     .save(
-                        db.getKnowledgeAndSkillAssignmentRepository()
-                            .createKnowledgeAndSkillAssignment(ks, assignment)));
+                        db.getAssignmentKnowledgeAndSkillRepository()
+                            .createAssignmentKnowledgeAndSkill(ks, assignment)));
     return assignment;
   }
 

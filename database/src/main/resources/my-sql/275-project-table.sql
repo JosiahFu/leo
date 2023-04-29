@@ -8,14 +8,13 @@ CREATE TABLE project
     short_descr_quill           TEXT,
     long_descr                  TEXT,
     long_descr_quill            TEXT,
-    state                       ENUM('UNDECIDED', 'THUMBS_UP', 'THUMBS_DOWN'),
+    state                       ENUM('THUMBS_UP', 'THUMBS_DOWN'),
     needs_review                TINYINT,  -- Boolean 0 = false.
 
-    waiting_for_results_timeout DATETIME,
-    ikigai_input_id             INT,
-    CONSTRAINT project__ikigai_input_id
-        FOREIGN KEY (ikigai_input_id)
-            REFERENCES ikigai_input (id)
+    project_input_id             INT,
+    CONSTRAINT project__project_input_id
+        FOREIGN KEY (project_input_id)
+            REFERENCES project_input (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB

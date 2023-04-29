@@ -16,9 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
 import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.IkigaiInput;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Project;
+import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.StudentRepository.StudentAssignment;
@@ -98,17 +98,17 @@ public class ClassManagementService {
                       .findFullUserXByUserXId(request.getUserXId())
                       .orElseThrow();
 
-              // Save the Ikigai settings.
-              IkigaiInput ikigaiInput =
-                  db.getIkigaiInputRepository()
+              // Save the Project input settings.
+              ProjectInput projectInput =
+                  db.getProjectInputRepository()
                       .save(
-                          new IkigaiInput()
+                          new ProjectInput()
                               .setCreationTime(Instant.now())
                               .setUserX(user)
                               .setAssignment(new Assignment().setId(request.getAssignmentId()))
                               .setSomethingYouLove(request.getSomethingYouLove())
                               .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
-              log.addIkigaiInput(ikigaiInput);
+              log.addProjectInput(projectInput);
 
               // Get knowledge and skill contribution.
               List<KnowledgeAndSkill> knowledgeAndSkills =
@@ -156,7 +156,7 @@ public class ClassManagementService {
                   extractProjects(
                       log,
                       response,
-                      ikigaiInput,
+                      projectInput,
                       aiResponse.getChoices(0).getMessage().getContent());
               db.getProjectRepository().saveAll(projects);
               projects.forEach(log::addProject);
@@ -167,7 +167,7 @@ public class ClassManagementService {
   }
 
   public static List<Project> extractProjects(
-      LogOperations log, Builder response, IkigaiInput ikigaiInput, String aiResponse)
+      LogOperations log, Builder response, ProjectInput projectInput, String aiResponse)
       throws IOException {
     List<Project> projects = new ArrayList<>();
 
@@ -223,7 +223,7 @@ public class ClassManagementService {
       Project project =
           new Project()
               .setCreationTime(Instant.now())
-              .setIkigaiInput(ikigaiInput)
+              .setProjectInput(projectInput)
               .setName(name)
               .setShortDescr(shortDescr)
               .setShortDescrQuill(QuillInitializer.toQuillDelta(shortDescr))

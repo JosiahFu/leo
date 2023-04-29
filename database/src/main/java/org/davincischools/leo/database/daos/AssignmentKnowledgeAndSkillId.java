@@ -7,33 +7,33 @@ import java.util.Objects;
 import org.hibernate.Hibernate;
 
 @Embeddable
-public class KnowledgeAndSkillAssignmentId implements Serializable {
+public class AssignmentKnowledgeAndSkillId implements Serializable {
 
-  public static final String COLUMN_KNOWLEDGEANDSKILLID_NAME = "knowledge_and_skill_id";
   public static final String COLUMN_ASSIGNMENTID_NAME = "assignment_id";
-  private static final long serialVersionUID = 7542218027963944365L;
-
-  private Integer knowledgeAndSkillId;
+  public static final String COLUMN_KNOWLEDGEANDSKILLID_NAME = "knowledge_and_skill_id";
+  private static final long serialVersionUID = 5010769700601342204L;
 
   private Integer assignmentId;
 
-  @Column(name = COLUMN_KNOWLEDGEANDSKILLID_NAME, nullable = false)
-  public Integer getKnowledgeAndSkillId() {
-    return knowledgeAndSkillId;
-  }
-
-  public KnowledgeAndSkillAssignmentId setKnowledgeAndSkillId(Integer knowledgeAndSkillId) {
-    this.knowledgeAndSkillId = knowledgeAndSkillId;
-    return this;
-  }
+  private Integer knowledgeAndSkillId;
 
   @Column(name = COLUMN_ASSIGNMENTID_NAME, nullable = false)
   public Integer getAssignmentId() {
     return assignmentId;
   }
 
-  public KnowledgeAndSkillAssignmentId setAssignmentId(Integer assignmentId) {
+  public AssignmentKnowledgeAndSkillId setAssignmentId(Integer assignmentId) {
     this.assignmentId = assignmentId;
+    return this;
+  }
+
+  @Column(name = COLUMN_KNOWLEDGEANDSKILLID_NAME, nullable = false)
+  public Integer getKnowledgeAndSkillId() {
+    return knowledgeAndSkillId;
+  }
+
+  public AssignmentKnowledgeAndSkillId setKnowledgeAndSkillId(Integer knowledgeAndSkillId) {
+    this.knowledgeAndSkillId = knowledgeAndSkillId;
     return this;
   }
 
@@ -45,7 +45,7 @@ public class KnowledgeAndSkillAssignmentId implements Serializable {
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
       return false;
     }
-    KnowledgeAndSkillAssignmentId entity = (KnowledgeAndSkillAssignmentId) o;
+    AssignmentKnowledgeAndSkillId entity = (AssignmentKnowledgeAndSkillId) o;
     return Objects.equals(this.knowledgeAndSkillId, entity.knowledgeAndSkillId)
         && Objects.equals(this.assignmentId, entity.assignmentId);
   }
