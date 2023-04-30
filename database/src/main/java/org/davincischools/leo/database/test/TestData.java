@@ -16,10 +16,10 @@ import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
-import org.davincischools.leo.database.utils.Database.StudentClassXRepository;
-import org.davincischools.leo.database.utils.Database.TeacherClassXRepository;
-import org.davincischools.leo.database.utils.Database.TeacherSchoolRepository;
 import org.davincischools.leo.database.utils.QuillInitializer;
+import org.davincischools.leo.database.utils.repos.StudentClassXRepository;
+import org.davincischools.leo.database.utils.repos.TeacherClassXRepository;
+import org.davincischools.leo.database.utils.repos.TeacherSchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

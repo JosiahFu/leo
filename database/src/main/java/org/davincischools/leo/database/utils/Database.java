@@ -1,44 +1,33 @@
 package org.davincischools.leo.database.utils;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.davincischools.leo.database.daos.AdminX;
-import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.AssignmentKnowledgeAndSkill;
-import org.davincischools.leo.database.daos.AssignmentKnowledgeAndSkillId;
-import org.davincischools.leo.database.daos.ClassX;
-import org.davincischools.leo.database.daos.District;
-import org.davincischools.leo.database.daos.Interest;
-import org.davincischools.leo.database.daos.KnowledgeAndSkill;
-import org.davincischools.leo.database.daos.Log;
-import org.davincischools.leo.database.daos.LogReference;
-import org.davincischools.leo.database.daos.Portfolio;
-import org.davincischools.leo.database.daos.Project;
-import org.davincischools.leo.database.daos.ProjectCycle;
-import org.davincischools.leo.database.daos.ProjectInput;
-import org.davincischools.leo.database.daos.ProjectPost;
-import org.davincischools.leo.database.daos.ProjectPostComment;
-import org.davincischools.leo.database.daos.School;
-import org.davincischools.leo.database.daos.Student;
-import org.davincischools.leo.database.daos.StudentClassX;
-import org.davincischools.leo.database.daos.StudentClassXId;
-import org.davincischools.leo.database.daos.Teacher;
-import org.davincischools.leo.database.daos.TeacherClassX;
-import org.davincischools.leo.database.daos.TeacherClassXId;
-import org.davincischools.leo.database.daos.TeacherSchool;
-import org.davincischools.leo.database.daos.TeacherSchoolId;
 import org.davincischools.leo.database.daos.UserX;
+import org.davincischools.leo.database.utils.repos.AdminXRepository;
+import org.davincischools.leo.database.utils.repos.AssignmentKnowledgeAndSkillRepository;
+import org.davincischools.leo.database.utils.repos.AssignmentRepository;
+import org.davincischools.leo.database.utils.repos.ClassXRepository;
+import org.davincischools.leo.database.utils.repos.DistrictRepository;
+import org.davincischools.leo.database.utils.repos.InterestRepository;
+import org.davincischools.leo.database.utils.repos.KnowledgeAndSkillRepository;
+import org.davincischools.leo.database.utils.repos.LogReferenceRepository;
+import org.davincischools.leo.database.utils.repos.LogRepository;
+import org.davincischools.leo.database.utils.repos.PortfolioRepository;
+import org.davincischools.leo.database.utils.repos.ProjectCycleRepository;
+import org.davincischools.leo.database.utils.repos.ProjectInputRepository;
+import org.davincischools.leo.database.utils.repos.ProjectPostCommentRepository;
+import org.davincischools.leo.database.utils.repos.ProjectPostRepository;
+import org.davincischools.leo.database.utils.repos.ProjectRepository;
+import org.davincischools.leo.database.utils.repos.SchoolRepository;
+import org.davincischools.leo.database.utils.repos.StudentClassXRepository;
+import org.davincischools.leo.database.utils.repos.StudentRepository;
+import org.davincischools.leo.database.utils.repos.StudentSchoolRepository;
+import org.davincischools.leo.database.utils.repos.TeacherClassXRepository;
+import org.davincischools.leo.database.utils.repos.TeacherRepository;
+import org.davincischools.leo.database.utils.repos.TeacherSchoolRepository;
+import org.davincischools.leo.database.utils.repos.UserXRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 @Component
 @EnableJpaRepositories(
@@ -54,231 +43,6 @@ public class Database {
   public static final int USER_MAX_LAST_NAME_LENGTH =
       EntityUtils.getColumn(UserX.class, UserX.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
-
-  @Repository
-  public interface AdminXRepository extends JpaRepository<AdminX, Integer> {}
-
-  @Repository
-  public interface AssignmentKnowledgeAndSkillRepository
-      extends JpaRepository<AssignmentKnowledgeAndSkill, AssignmentKnowledgeAndSkillId> {
-
-    default AssignmentKnowledgeAndSkillId createAssignmentKnowledgeAndSkillId(
-        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-      return new AssignmentKnowledgeAndSkillId()
-          .setKnowledgeAndSkillId(knowledgeAndSkill.getId())
-          .setAssignmentId(assignment.getId());
-    }
-
-    default AssignmentKnowledgeAndSkill createAssignmentKnowledgeAndSkill(
-        KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-      return new AssignmentKnowledgeAndSkill()
-          .setCreationTime(Instant.now())
-          .setId(createAssignmentKnowledgeAndSkillId(knowledgeAndSkill, assignment))
-          .setKnowledgeAndSkill(knowledgeAndSkill)
-          .setAssignment(assignment);
-    }
-  }
-
-  @Repository
-  public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
-    @Query(
-        "SELECT ks FROM KnowledgeAndSkill ks"
-            + " INNER JOIN FETCH AssignmentKnowledgeAndSkill aks"
-            + " ON aks.knowledgeAndSkill.id = ks.id"
-            + " INNER JOIN FETCH Assignment a"
-            + " ON a.id = aks.assignment.id"
-            + " WHERE a.id = (:assignmentId)")
-    List<KnowledgeAndSkill> findAllKnowledgeAndSkillsById(@Param("assignmentId") int assignmentId);
-  }
-
-  @Repository
-  public interface ClassXRepository extends JpaRepository<ClassX, Integer> {}
-
-  @Repository
-  public interface DistrictRepository extends JpaRepository<District, Integer> {
-    District findByName(String name);
-  }
-
-  @Repository
-  public interface InterestRepository extends JpaRepository<Interest, Integer> {}
-
-  @Repository
-  public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {}
-
-  @Repository
-  public interface LogReferenceRepository extends JpaRepository<LogReference, Integer> {}
-
-  @Repository
-  public interface LogRepository extends JpaRepository<Log, Integer> {}
-
-  @Repository
-  public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {}
-
-  @Repository
-  public interface ProjectCycleRepository extends JpaRepository<ProjectCycle, Integer> {}
-
-  @Repository
-  public interface ProjectInputRepository extends JpaRepository<ProjectInput, Integer> {}
-
-  @Repository
-  public interface ProjectPostCommentRepository
-      extends JpaRepository<ProjectPostComment, Integer> {}
-
-  @Repository
-  public interface ProjectPostRepository extends JpaRepository<ProjectPost, Integer> {}
-
-  @Repository
-  public interface ProjectRepository extends JpaRepository<Project, Integer> {
-    @Query(
-        "SELECT p FROM Project p"
-            + " INNER JOIN ProjectInput ii"
-            + " ON ii.id = p.projectInput.id"
-            + " INNER JOIN UserX u"
-            + " ON u.id = ii.userX.id"
-            + " WHERE u.id = (:userXId)"
-            + " ORDER BY p.creationTime DESC")
-    List<Project> findAllByUserXId(@Param("userXId") int userXId);
-  }
-
-  @Repository
-  public interface SchoolRepository extends JpaRepository<School, Integer> {
-
-    Iterable<School> findAllByDistrictId(Integer districtId);
-  }
-
-  @Repository
-  public interface StudentClassXRepository extends JpaRepository<StudentClassX, StudentClassXId> {
-
-    default StudentClassX createStudentClassX(Student student, ClassX classX) {
-      return new StudentClassX()
-          .setCreationTime(Instant.now())
-          .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
-          .setStudent(student)
-          .setClassX(classX);
-    }
-  }
-
-  @Repository
-  public interface StudentRepository extends JpaRepository<Student, Integer> {
-
-    @Query(
-        "SELECT u, s, c, a FROM UserX u"
-            + " INNER JOIN FETCH Student s"
-            + " ON s.id = u.student.id"
-            + " INNER JOIN FETCH StudentClassX sc"
-            + " ON sc.student.id = s.id"
-            + " INNER JOIN FETCH ClassX c"
-            + " ON c.id = sc.classX.id"
-            + " INNER JOIN FETCH Assignment a"
-            + " ON a.classX.id = c.id"
-            + " WHERE u.id = (:userXId)")
-    List<Object[]> _internal_findAllAssignmentsByStudentUserXId(@Param("userXId") int userXId);
-
-    record StudentAssignment(UserX user, Student student, ClassX classX, Assignment assignment) {}
-
-    default List<StudentAssignment> findAllAssignmentsByStudentUserXId(int userXId) {
-      List<StudentAssignment> studentAssignments = new ArrayList<>();
-      for (var result : _internal_findAllAssignmentsByStudentUserXId(userXId)) {
-        studentAssignments.add(
-            new StudentAssignment(
-                (UserX) result[0],
-                (Student) result[1],
-                (ClassX) result[2],
-                (Assignment) result[3]));
-      }
-      return studentAssignments;
-    }
-  }
-
-  @Repository
-  public interface TeacherClassXRepository extends JpaRepository<TeacherClassX, TeacherClassXId> {
-
-    default TeacherClassX createTeacherClassX(Teacher teacher, ClassX classX) {
-      return new TeacherClassX()
-          .setCreationTime(Instant.now())
-          .setId(new TeacherClassXId().setTeacherId(teacher.getId()).setClassXId(classX.getId()))
-          .setTeacher(teacher)
-          .setClassX(classX);
-    }
-  }
-
-  @Repository
-  public interface TeacherRepository extends JpaRepository<Teacher, Integer> {}
-
-  @Repository
-  public interface TeacherSchoolRepository extends JpaRepository<TeacherSchool, TeacherSchoolId> {
-
-    default TeacherSchoolId createTeacherSchoolId(Teacher teacher, School school) {
-      return new TeacherSchoolId().setTeacherId(teacher.getId()).setSchoolId(school.getId());
-    }
-
-    default TeacherSchool createTeacherSchool(Teacher teacher, School school) {
-      return new TeacherSchool()
-          .setCreationTime(Instant.now())
-          .setCreationTime(Instant.now())
-          .setId(createTeacherSchoolId(teacher, school))
-          .setTeacher(teacher)
-          .setSchool(school);
-    }
-
-    @Query(
-        "SELECT s FROM School s"
-            + " INNER JOIN FETCH TeacherSchool ts"
-            + " ON ts.school.id = s.id"
-            + " INNER JOIN FETCH Teacher t"
-            + " ON t.id = ts.teacher.id"
-            + " INNER JOIN FETCH UserX u"
-            + " ON u.teacher.id = t.id"
-            + " WHERE u.id = (:userXId)")
-    List<School> findSchoolsByUserXId(@Param("userXId") int userXId);
-
-    @Modifying
-    @Query(
-        "DELETE TeacherSchool ts"
-            + " WHERE ts.teacher.id = (:teacherId)"
-            + " AND NOT ts.school.id IN (:schoolIds)")
-    void keepSchoolsByTeacherId(
-        @Param("teacherId") int teacherId, @Param("schoolIds") Iterable<Integer> schoolIdsToKeep);
-  }
-
-  @Repository
-  public interface UserXRepository extends JpaRepository<UserX, Integer> {
-
-    @Query(
-        "SELECT u, a, t, s FROM UserX u"
-            + " LEFT JOIN FETCH AdminX a"
-            + " ON a.id = u.adminX.id"
-            + " LEFT JOIN FETCH Teacher t"
-            + " ON t.id = u.teacher.id"
-            + " LEFT JOIN FETCH Student s"
-            + " ON s.id = u.student.id"
-            + " WHERE u.emailAddress = (:emailAddress)")
-    Optional<UserX> findFullUserXByEmailAddress(@Param("emailAddress") String emailAddress);
-
-    @Query(
-        "SELECT u, a, t, s FROM UserX u"
-            + " JOIN FETCH District d"
-            + " ON d.id = u.district.id"
-            + " LEFT JOIN FETCH AdminX a"
-            + " ON a.id = u.adminX.id"
-            + " LEFT JOIN FETCH Teacher t"
-            + " ON t.id = u.teacher.id"
-            + " LEFT JOIN FETCH Student s"
-            + " ON s.id = u.student.id"
-            + " WHERE d.id = (:districtId)")
-    List<UserX> findAllFullUserXsByDistrictId(@Param("districtId") int districtId);
-
-    @Query(
-        "SELECT u, a, t, s FROM UserX u"
-            + " LEFT JOIN FETCH AdminX a"
-            + " ON u.adminX.id = a.id"
-            + " LEFT JOIN FETCH Teacher t"
-            + " ON u.teacher.id = t.id"
-            + " LEFT JOIN FETCH Student s"
-            + " ON u.student.id = s.id"
-            + " WHERE u.id = (:userXId)")
-    Optional<UserX> findFullUserXByUserXId(@Param("userXId") int userXId);
-  }
 
   @Autowired private AdminXRepository adminRepository;
   @Autowired private AssignmentKnowledgeAndSkillRepository assignmentKnowledgeAndSkillRepository;
@@ -298,6 +62,7 @@ public class Database {
   @Autowired private SchoolRepository schoolRepository;
   @Autowired private StudentClassXRepository studentClassXRepository;
   @Autowired private StudentRepository studentRepository;
+  @Autowired private StudentSchoolRepository studentSchoolRepository;
   @Autowired private TeacherClassXRepository teacherClassXRepository;
   @Autowired private TeacherRepository teacherRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
@@ -375,6 +140,10 @@ public class Database {
 
   public StudentRepository getStudentRepository() {
     return studentRepository;
+  }
+
+  public StudentSchoolRepository getStudentSchoolRepository() {
+    return studentSchoolRepository;
   }
 
   public TeacherClassXRepository getTeacherClassXRepository() {

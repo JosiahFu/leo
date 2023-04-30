@@ -1,9 +1,9 @@
 CREATE TABLE log_reference
 (
-    id              INT PRIMARY KEY AUTO_INCREMENT,
-    creation_time   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id               INT PRIMARY KEY AUTO_INCREMENT,
+    creation_time    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    log_id          INT      NOT NULL,
+    log_id           INT      NOT NULL,
     CONSTRAINT log_reference__log_id
         FOREIGN KEY (log_id)
             REFERENCES log (id)
@@ -17,7 +17,7 @@ CREATE TABLE log_reference
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    project_id      INT,
+    project_id       INT,
     CONSTRAINT log_reference__project_id
         FOREIGN KEY (project_id)
             REFERENCES project (id)
