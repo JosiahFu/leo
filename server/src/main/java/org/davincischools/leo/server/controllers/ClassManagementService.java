@@ -64,16 +64,12 @@ public class ClassManagementService {
             optionalRequest.orElse(GetStudentAssignmentsRequest.getDefaultInstance()),
             (request, log) -> {
               checkArgument(request.hasUserXId());
+              UserX user = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
               var response = GetStudentAssignmentsResponse.newBuilder();
 
               for (Assignment assignment :
                   db.getAssignmentRepository()
-                      .findAllByStudentId(
-                          db.getUserXRepository()
-                              .findById(request.getUserXId())
-                              .get()
-                              .getStudent()
-                              .getId())) {
+                      .findAllByStudentId(user.getStudent().getId())) {
                 response.addAssignments(
                     DataAccess.convertAssignmentToProto(assignment.getClassX(), assignment));
               }

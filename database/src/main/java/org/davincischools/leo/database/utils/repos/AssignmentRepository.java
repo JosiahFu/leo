@@ -13,6 +13,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
   @Query(
       "SELECT a"
           + " FROM Assignment a"
+          + " JOIN FETCH a.classX"
           + " JOIN FETCH StudentClassX sc"
           + " ON sc.classX.id = a.classX.id"
           + " WHERE sc.student.id = (:studentId)")

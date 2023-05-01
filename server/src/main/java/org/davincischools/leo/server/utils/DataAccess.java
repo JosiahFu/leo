@@ -122,13 +122,13 @@ public class DataAccess {
   }
 
   public static org.davincischools.leo.protos.class_management.Assignment convertAssignmentToProto(
-      ClassX class_, Assignment assignment) {
+      ClassX classX, Assignment assignment) {
     return org.davincischools.leo.protos.class_management.Assignment.newBuilder()
         .setId(firstNonNull(assignment::getId, () -> -1))
         .setName(assignment.getName())
         .setShortDescr(getShortDescr(assignment))
         .setLongDescr(getLongDescr(assignment))
-        .setClassX(convertClassToProto(class_))
+        .setClassX(convertClassToProto(classX))
         .build();
   }
 
