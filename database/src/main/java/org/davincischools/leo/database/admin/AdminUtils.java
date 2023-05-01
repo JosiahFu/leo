@@ -79,6 +79,18 @@ public class AdminUtils {
         db.createUserX(district, createAdmin, userX -> UserUtils.setPassword(userX, password));
     db.addAdminXPermission(admin);
 
+    // TODO: Later we don't want to do this. But, for development for now...
+    db.addStudentPermission(userX -> userX.getStudent().setStudentId(-1).setGrade(-1), admin);
+    db.addTeacherPermission(admin);
+    for (School school : db.getSchoolRepository().findAll()) {
+      db.addTeachersToSchool(school, admin.getTeacher());
+      db.addStudentsToSchool(school, admin.getStudent());
+    }
+    for (ClassX classX : db.getClassXRepository().findAll()) {
+      db.addTeachersToClassX(classX, admin.getTeacher());
+      db.addStudentsToClassX(classX, admin.getStudent());
+    }
+
     log.atWarn()
         .log(
             "IMPORTANT! Log in and change the temporary password:"
