@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Strings;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -185,9 +184,12 @@ public class Database {
   public District createDistrict(String name) {
     checkArgument(!Strings.isNullOrEmpty(name));
 
-    return getDistrictRepository().findByName(name).orElseGet(() ->
-        getDistrictRepository()
-            .saveAndFlush(new District().setCreationTime(Instant.now()).setName(name)));
+    return getDistrictRepository()
+        .findByName(name)
+        .orElseGet(
+            () ->
+                getDistrictRepository()
+                    .saveAndFlush(new District().setCreationTime(Instant.now()).setName(name)));
   }
 
   public School createSchool(District district, String nickname) {
@@ -196,35 +198,36 @@ public class Database {
 
     return getSchoolRepository()
         .findByNickname(district.getId(), nickname)
-        .orElseGet(() -> 
-            getSchoolRepository()
-                .saveAndFlush(
-                    new School()
-                        .setCreationTime(Instant.now())
-                        .setDistrict(district)
-                        .setNickname(nickname)
-                        .setName(
-                            switch (nickname) {
-                              case "DVC" -> "Da Vinci Communications High School";
-                              case "DVConnect" -> "Da Vinci Connect High School";
-                              case "DVD" -> "Da Vinci Design High School";
-                              case "DVFlex" -> "Da Vinci Flex High School";
-                              case "DVRise" -> "Da Vinci Rise High School-Richstone";
-                              case "DVS" -> "Da Vinci Science High School";
-                              default -> throw new IllegalArgumentException(
-                                  "Unrecognized school nickname: " + nickname);
-                            })
-                        .setAddress(
-                            switch (nickname) {
-                              case "DVC",
-                                  "DVD",
-                                  "DVS" -> "201 N. Douglas St., El Segundo, CA 90245";
-                              case "DVConnect" -> "550 Continental Blvd., El Segundo, CA 90245";
-                              case "DVFlex" -> "Address TBD";
-                              case "DVRise" -> "13634 Cordary Avenue, Hawthorne, CA 90250";
-                              default -> throw new IllegalArgumentException(
-                                  "Unrecognized school nickname: " + nickname);
-                            })));
+        .orElseGet(
+            () ->
+                getSchoolRepository()
+                    .saveAndFlush(
+                        new School()
+                            .setCreationTime(Instant.now())
+                            .setDistrict(district)
+                            .setNickname(nickname)
+                            .setName(
+                                switch (nickname) {
+                                  case "DVC" -> "Da Vinci Communications High School";
+                                  case "DVConnect" -> "Da Vinci Connect High School";
+                                  case "DVD" -> "Da Vinci Design High School";
+                                  case "DVFlex" -> "Da Vinci Flex High School";
+                                  case "DVRise" -> "Da Vinci Rise High School-Richstone";
+                                  case "DVS" -> "Da Vinci Science High School";
+                                  default -> throw new IllegalArgumentException(
+                                      "Unrecognized school nickname: " + nickname);
+                                })
+                            .setAddress(
+                                switch (nickname) {
+                                  case "DVC",
+                                      "DVD",
+                                      "DVS" -> "201 N. Douglas St., El Segundo, CA 90245";
+                                  case "DVConnect" -> "550 Continental Blvd., El Segundo, CA 90245";
+                                  case "DVFlex" -> "Address TBD";
+                                  case "DVRise" -> "13634 Cordary Avenue, Hawthorne, CA 90250";
+                                  default -> throw new IllegalArgumentException(
+                                      "Unrecognized school nickname: " + nickname);
+                                })));
   }
 
   public UserX createUserX(District district, String emailAddress, Consumer<UserX> modifier) {
@@ -234,12 +237,13 @@ public class Database {
     UserX userX =
         getUserXRepository()
             .findByEmailAddress(emailAddress)
-            .orElseGet(() -> 
-                new UserX()
-                    .setCreationTime(Instant.now())
-                    .setFirstName("First Name")
-                    .setLastName("Last Name")
-                    .setEncodedPassword(INVALID_ENCODED_PASSWORD))
+            .orElseGet(
+                () ->
+                    new UserX()
+                        .setCreationTime(Instant.now())
+                        .setFirstName("First Name")
+                        .setLastName("Last Name")
+                        .setEncodedPassword(INVALID_ENCODED_PASSWORD))
             .setDistrict(district)
             .setEmailAddress(emailAddress);
 
@@ -296,7 +300,8 @@ public class Database {
     ClassX classX =
         getClassXRepository()
             .findByName(school.getId(), name)
-            .orElseGet(() -> new ClassX().setCreationTime(Instant.now()).setSchool(school).setName(name));
+            .orElseGet(
+                () -> new ClassX().setCreationTime(Instant.now()).setSchool(school).setName(name));
 
     modifier.accept(classX);
 
@@ -321,15 +326,16 @@ public class Database {
   public KnowledgeAndSkill createKnowledgeAndSkill(ClassX classX, String name, String descr) {
     return getKnowledgeAndSkillRepository()
         .findByName(classX.getId(), name)
-        .orElseGet(() -> 
-            getKnowledgeAndSkillRepository()
-                .saveAndFlush(
-                    new KnowledgeAndSkill()
-                        .setCreationTime(Instant.now())
-                        .setClassX(classX)
-                        .setName(name)
-                        .setShortDescr(descr)
-                        .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))));
+        .orElseGet(
+            () ->
+                getKnowledgeAndSkillRepository()
+                    .saveAndFlush(
+                        new KnowledgeAndSkill()
+                            .setCreationTime(Instant.now())
+                            .setClassX(classX)
+                            .setName(name)
+                            .setShortDescr(descr)
+                            .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))));
   }
 
   public Assignment createAssignment(
@@ -337,13 +343,14 @@ public class Database {
     Assignment assignment =
         getAssignmentRepository()
             .findByName(classX.getId(), name)
-            .orElseGet(() -> 
-                getAssignmentRepository()
-                    .saveAndFlush(
-                        new Assignment()
-                            .setCreationTime(Instant.now())
-                            .setClassX(classX)
-                            .setName(name)));
+            .orElseGet(
+                () ->
+                    getAssignmentRepository()
+                        .saveAndFlush(
+                            new Assignment()
+                                .setCreationTime(Instant.now())
+                                .setClassX(classX)
+                                .setName(name)));
 
     Arrays.asList(knowledgeAndSkills)
         .forEach(

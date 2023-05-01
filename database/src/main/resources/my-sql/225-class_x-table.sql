@@ -15,6 +15,9 @@ CREATE TABLE class_x
         FOREIGN KEY (school_id)
             REFERENCES school (id)
             ON DELETE RESTRICT
-            ON UPDATE RESTRICT
+            ON UPDATE RESTRICT,
+
+    CONSTRAINT class_x__name
+        UNIQUE (school_id, name)
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

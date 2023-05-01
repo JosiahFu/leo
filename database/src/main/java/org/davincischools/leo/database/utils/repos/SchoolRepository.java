@@ -15,6 +15,7 @@ public interface SchoolRepository extends JpaRepository<School, Integer> {
   @Query(
       "SELECT s"
           + " FROM School s"
+          + " INNER JOIN FETCH s.district"
           + " WHERE s.district.id = (:districtId)"
           + " AND s.nickname = (:nickname)")
   Optional<School> findByNickname(

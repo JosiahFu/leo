@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
@@ -13,7 +14,10 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity(name = ClassX.ENTITY_NAME)
-@Table(name = ClassX.TABLE_NAME, schema = "leo_temp")
+@Table(
+    name = ClassX.TABLE_NAME,
+    schema = "leo_temp",
+    indexes = {@Index(name = "class_x__name", columnList = "school_id, name", unique = true)})
 public class ClassX {
 
   public static final String ENTITY_NAME = "ClassX";
