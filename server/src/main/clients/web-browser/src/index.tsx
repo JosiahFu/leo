@@ -1,7 +1,7 @@
 import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import {Root} from './pages/Root';
@@ -22,36 +22,91 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <DefaultPageNav />,
+    children: [
+      {
+        path: '',
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    path: '/profiles',
+    element: <DefaultPageNav />,
+    children: [
+      {
+        path: 'edit-districts',
+        element: <EditDistricts />,
+      },
+      {
+        path: 'edit-schools',
+        element: <EditSchools />,
+      },
+      {
+        path: 'edit-users',
+        element: <EditUsers />,
+      },
+      {
+        path: 'my-account',
+        element: <MyAccount />,
+      },
+    ],
+  },
+  {
+    path: '/projects',
+    element: <DefaultPageNav />,
+    children: [
+      {
+        path: 'ikigai-builder',
+        element: <IkigaiBuilder />,
+      },
+      {
+        path: 'my-projects',
+        element: <MyProjects />,
+      },
+    ],
+  },
+  {
+    path: '/student',
+    element: <StudentNav />,
+    children: [
+      {
+        path: 'project-gen',
+        element: <StudentProjectGen />,
+      },
+      {
+        path: 'project-implementation',
+        element: <StudentProjectImplementation />,
+      },
+      {
+        path: 'upload',
+        element: <StudentUpload />,
+      },
+    ],
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: '',
+        element: <Root />,
+      },
+      {
+        path: '/',
+        element: <Root />,
+      },
+    ],
+  },
+]);
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" Component={DefaultPageNav}>
-          <Route path="" Component={Login} />
-        </Route>
-        <Route path="/profiles" Component={DefaultPageNav}>
-          <Route path="edit-districts" Component={EditDistricts} />
-          <Route path="edit-schools" Component={EditSchools} />
-          <Route path="edit-users" Component={EditUsers} />
-          <Route path="my-account" Component={MyAccount} />
-        </Route>
-        <Route path="/projects" Component={DefaultPageNav}>
-          <Route path="ikigai-builder" Component={IkigaiBuilder} />
-          <Route path="my-projects" Component={MyProjects} />
-        </Route>
-        <Route path="/student" Component={DefaultPageNav}>
-          <Route path="" Component={StudentNav} />
-          <Route path="project-gen" Component={StudentProjectGen} />
-          <Route
-            path="project-implement"
-            Component={StudentProjectImplementation}
-          />
-          <Route path="upload" Component={StudentUpload} />
-        </Route>
-        <Route path="/" Component={Root} />
-        <Route path="" Component={Root} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <RouterProvider router={router} />
+    </>
   </React.StrictMode>
 );
 
