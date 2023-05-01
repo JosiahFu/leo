@@ -4,6 +4,7 @@ CREATE TABLE school
     creation_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name          VARCHAR(255) NOT NULL,
+    nickname      VARCHAR(255),
     address       VARCHAR(255),
 
     district_id   INT          NOT NULL,

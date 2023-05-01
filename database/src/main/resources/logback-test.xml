@@ -22,4 +22,9 @@
     <logger name="org.testcontainers.containers" level="info" />
     <!-- TODO(https://github.com/spring-projects/spring-framework/issues/30103): Release 6.0.8? -->
     <logger name="org.springframework.core.LocalVariableTableParameterNameDiscoverer" level="error" />
+
+    <logger name="org.hibernate" level="info"/>
+    <logger name="org.hibernate.type" level="trace"/>
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>
 </configuration>

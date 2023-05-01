@@ -12,19 +12,16 @@ import org.springframework.stereotype.Repository;
 public interface AssignmentKnowledgeAndSkillRepository
     extends JpaRepository<AssignmentKnowledgeAndSkill, AssignmentKnowledgeAndSkillId> {
 
-  default AssignmentKnowledgeAndSkillId createAssignmentKnowledgeAndSkillId(
-      KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-    return new AssignmentKnowledgeAndSkillId()
-        .setKnowledgeAndSkillId(knowledgeAndSkill.getId())
-        .setAssignmentId(assignment.getId());
-  }
-
-  default AssignmentKnowledgeAndSkill createAssignmentKnowledgeAndSkill(
-      KnowledgeAndSkill knowledgeAndSkill, Assignment assignment) {
-    return new AssignmentKnowledgeAndSkill()
-        .setCreationTime(Instant.now())
-        .setId(createAssignmentKnowledgeAndSkillId(knowledgeAndSkill, assignment))
-        .setKnowledgeAndSkill(knowledgeAndSkill)
-        .setAssignment(assignment);
+  default AssignmentKnowledgeAndSkill saveAssignmentKnowledgeAndSkill(
+      Assignment assignment, KnowledgeAndSkill knowledgeAndSkill) {
+    return saveAndFlush(
+        new AssignmentKnowledgeAndSkill()
+            .setCreationTime(Instant.now())
+            .setId(
+                new AssignmentKnowledgeAndSkillId()
+                    .setAssignmentId(assignment.getId())
+                    .setKnowledgeAndSkillId(knowledgeAndSkill.getId()))
+            .setAssignment(assignment)
+            .setKnowledgeAndSkill(knowledgeAndSkill));
   }
 }

@@ -88,7 +88,7 @@ public class DataAccess {
   public static List<org.davincischools.leo.protos.user_management.User>
       getProtoFullUserXsByDistrictId(Database db, int districtId) {
     return StreamSupport.stream(
-            db.getUserXRepository().findAllFullUserXsByDistrictId(districtId).spliterator(), false)
+            db.getUserXRepository().findAllByDistrictId(districtId).spliterator(), false)
         .map(DataAccess::convertFullUserXToProto)
         .collect(Collectors.toList());
   }
@@ -143,9 +143,12 @@ public class DataAccess {
   }
 
   public static List<org.davincischools.leo.protos.class_management.Project>
-      getProtoProjectsByUserXId(Database db, int userXId) {
+      getProtoProjectsByUserXId(Database db, UserX userX) {
     return StreamSupport.stream(
-            db.getProjectRepository().findAllByUserXId(userXId).spliterator(), false)
+            db.getProjectRepository()
+                .findAllByStudentId(userX.getStudent().getStudentId())
+                .spliterator(),
+            false)
         .map(DataAccess::convertProjectToProto)
         .collect(Collectors.toList());
   }

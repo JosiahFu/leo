@@ -36,7 +36,7 @@ public class ProjectInput {
 
   private Assignment assignment;
 
-  private UserX userX;
+  private Student student;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,13 +104,13 @@ public class ProjectInput {
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_x_id", nullable = false)
-  public UserX getUserX() {
-    return userX;
+  @JoinColumn(name = "student_id", nullable = false)
+  public Student getStudent() {
+    return student;
   }
 
-  public ProjectInput setUserX(UserX userX) {
-    this.userX = userX;
+  public ProjectInput setStudent(Student student) {
+    this.student = student;
     return this;
   }
 }

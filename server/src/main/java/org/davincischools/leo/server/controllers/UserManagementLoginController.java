@@ -50,8 +50,7 @@ public class UserManagementLoginController {
       return;
     }
 
-    Optional<UserX> user =
-        db.getUserXRepository().findFullUserXByEmailAddress(request.getEmailAddress());
+    Optional<UserX> user = db.getUserXRepository().findByEmailAddress(request.getEmailAddress());
     if (!user.isPresent() || !UserUtils.checkPassword(user.get(), request.getPassword())) {
       response.setSuccess(false);
       response.setLoginFailure(true);

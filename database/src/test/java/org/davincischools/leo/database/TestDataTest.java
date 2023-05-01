@@ -35,8 +35,7 @@ public class TestDataTest {
   @Test
   public void usersAddedTest() {
     Optional<UserX> student =
-        db.getUserXRepository()
-            .findFullUserXByEmailAddress(testData.getStudent().getEmailAddress());
+        db.getUserXRepository().findByEmailAddress(testData.getStudent().getEmailAddress());
     assertThat(student).isPresent();
     assertThat(student.orElseThrow().getId()).isGreaterThan(0);
   }

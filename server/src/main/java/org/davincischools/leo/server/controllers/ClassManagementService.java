@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterables;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -16,13 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
 import org.davincischools.leo.database.daos.Assignment;
-import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.QuillInitializer;
-import org.davincischools.leo.database.utils.repos.StudentRepository.StudentAssignment;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsRequest;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse.Builder;
@@ -68,12 +66,16 @@ public class ClassManagementService {
               checkArgument(request.hasUserXId());
               var response = GetStudentAssignmentsResponse.newBuilder();
 
-              for (StudentAssignment assignment :
-                  db.getStudentRepository()
-                      .findAllAssignmentsByStudentUserXId(request.getUserXId())) {
+              for (Assignment assignment :
+                  db.getAssignmentRepository()
+                      .findAllByStudentId(
+                          db.getUserXRepository()
+                              .findById(request.getUserXId())
+                              .get()
+                              .getStudent()
+                              .getId())) {
                 response.addAssignments(
-                    DataAccess.convertAssignmentToProto(
-                        assignment.classX(), assignment.assignment()));
+                    DataAccess.convertAssignmentToProto(assignment.getClassX(), assignment));
               }
 
               return response.build();
@@ -93,10 +95,7 @@ public class ClassManagementService {
               checkArgument(request.hasUserXId());
               var response = GenerateAssignmentProjectsResponse.newBuilder();
 
-              UserX user =
-                  db.getUserXRepository()
-                      .findFullUserXByUserXId(request.getUserXId())
-                      .orElseThrow();
+              UserX user = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
 
               // Save the Project input settings.
               ProjectInput projectInput =
@@ -104,20 +103,17 @@ public class ClassManagementService {
                       .save(
                           new ProjectInput()
                               .setCreationTime(Instant.now())
-                              .setUserX(user)
                               .setAssignment(new Assignment().setId(request.getAssignmentId()))
                               .setSomethingYouLove(request.getSomethingYouLove())
                               .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
               log.addProjectInput(projectInput);
 
               // Get knowledge and skill contribution.
-              List<KnowledgeAndSkill> knowledgeAndSkills =
-                  db.getAssignmentRepository()
-                      .findAllKnowledgeAndSkillsById(request.getAssignmentId());
               String knowledgeAndSkillsTextList =
                   COMMA_AND_JOINER.join(
-                      Lists.transform(
-                          knowledgeAndSkills,
+                      Iterables.transform(
+                          db.getKnowledgeAndSkillRepository()
+                              .findAllByAssignmentId(request.getAssignmentId()),
                           knowledgeAndSkill ->
                               ("\"" + DataAccess.getShortDescr(knowledgeAndSkill) + "\"")));
 
@@ -247,11 +243,10 @@ public class ClassManagementService {
             db,
             optionalRequest.orElse(GetProjectsRequest.getDefaultInstance()),
             (request, log) -> {
-              checkArgument(request.hasUserXId());
+              UserX userX = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
               var response = GetProjectsResponse.newBuilder();
 
-              response.addAllProjects(
-                  DataAccess.getProtoProjectsByUserXId(db, request.getUserXId()));
+              response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, userX));
 
               return response.build();
             })

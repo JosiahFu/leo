@@ -15,10 +15,10 @@ CREATE TABLE project_input
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    user_x_id            INT      NOT NULL,
-    CONSTRAINT project_input__user_x_id
-        FOREIGN KEY (user_x_id)
-            REFERENCES user_x (id)
+    student_id           INT      NOT NULL,
+    CONSTRAINT project_input__student_id
+        FOREIGN KEY (student_id)
+            REFERENCES student (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
 ) ENGINE InnoDB

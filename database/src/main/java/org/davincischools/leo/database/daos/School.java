@@ -20,6 +20,7 @@ public class School {
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
+  public static final String COLUMN_NICKNAME_NAME = "nickname";
   public static final String COLUMN_ADDRESS_NAME = "address";
 
   private Integer id;
@@ -27,6 +28,8 @@ public class School {
   private Instant creationTime;
 
   private String name;
+
+  private String nickname;
 
   private String address;
 
@@ -61,6 +64,16 @@ public class School {
 
   public School setName(String name) {
     this.name = name;
+    return this;
+  }
+
+  @Column(name = COLUMN_NICKNAME_NAME)
+  public String getNickname() {
+    return nickname;
+  }
+
+  public School setNickname(String nickname) {
+    this.nickname = nickname;
     return this;
   }
 

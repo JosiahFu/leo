@@ -2,7 +2,6 @@ package org.davincischools.leo.server.controllers;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -48,11 +47,7 @@ public class DistrictManagementService {
             optionalRequest.orElse(AddDistrictRequest.getDefaultInstance()),
             (request, log) -> {
               if (request.hasDistrict()) {
-                District district =
-                    new District()
-                        .setCreationTime(Instant.now())
-                        .setName(request.getDistrict().getName());
-                db.getDistrictRepository().save(district);
+                District district = db.createDistrict(request.getDistrict().getName());
                 return getAllDistricts(district.getId());
               }
 
@@ -69,16 +64,7 @@ public class DistrictManagementService {
             db,
             optionalRequest.orElse(UpdateDistrictRequest.getDefaultInstance()),
             (request, log) -> {
-              if (request.getDistrict().hasId()) {
-                db.getDistrictRepository()
-                    .save(
-                        new District()
-                            .setCreationTime(Instant.now())
-                            .setId(request.getDistrict().getId())
-                            .setName(request.getDistrict().getName()));
-                return getAllDistricts(request.getDistrict().getId());
-              }
-
+              db.createDistrict(request.getDistrict().getName());
               return getAllDistricts(-1);
             })
         .finish();

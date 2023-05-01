@@ -1,5 +1,23 @@
 package org.davincischools.leo.database.utils;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Strings;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Consumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.davincischools.leo.database.daos.AdminX;
+import org.davincischools.leo.database.daos.Assignment;
+import org.davincischools.leo.database.daos.ClassX;
+import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.KnowledgeAndSkill;
+import org.davincischools.leo.database.daos.School;
+import org.davincischools.leo.database.daos.Student;
+import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.repos.AdminXRepository;
 import org.davincischools.leo.database.utils.repos.AssignmentKnowledgeAndSkillRepository;
@@ -35,7 +53,9 @@ import org.springframework.stereotype.Component;
     considerNestedRepositories = true)
 @EntityScan(basePackageClasses = UserX.class)
 public class Database {
+  private static final Logger logger = LogManager.getLogger();
 
+  public static final String INVALID_ENCODED_PASSWORD = "INVALID ENCODED PASSWORD";
   public static final int USER_MAX_EMAIL_ADDRESS_LENGTH =
       EntityUtils.getColumn(UserX.class, UserX.COLUMN_EMAILADDRESS_NAME).length();
   public static final int USER_MAX_FIRST_NAME_LENGTH =
@@ -44,10 +64,10 @@ public class Database {
       EntityUtils.getColumn(UserX.class, UserX.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
 
-  @Autowired private AdminXRepository adminRepository;
+  @Autowired private AdminXRepository adminXRepository;
   @Autowired private AssignmentKnowledgeAndSkillRepository assignmentKnowledgeAndSkillRepository;
   @Autowired private AssignmentRepository assignmentRepository;
-  @Autowired private ClassXRepository classRepository;
+  @Autowired private ClassXRepository classXRepository;
   @Autowired private DistrictRepository districtRepository;
   @Autowired private InterestRepository interestRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
@@ -66,12 +86,12 @@ public class Database {
   @Autowired private TeacherClassXRepository teacherClassXRepository;
   @Autowired private TeacherRepository teacherRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
-  @Autowired private UserXRepository userRepository;
+  @Autowired private UserXRepository userXRepository;
 
   public Database() {}
 
   public AdminXRepository getAdminXRepository() {
-    return adminRepository;
+    return adminXRepository;
   }
 
   public AssignmentKnowledgeAndSkillRepository getAssignmentKnowledgeAndSkillRepository() {
@@ -83,7 +103,7 @@ public class Database {
   }
 
   public ClassXRepository getClassXRepository() {
-    return classRepository;
+    return classXRepository;
   }
 
   public DistrictRepository getDistrictRepository() {
@@ -159,6 +179,179 @@ public class Database {
   }
 
   public UserXRepository getUserXRepository() {
-    return userRepository;
+    return userXRepository;
+  }
+
+  public District createDistrict(String name) {
+    checkArgument(!Strings.isNullOrEmpty(name));
+
+    return getDistrictRepository().findByName(name).orElseGet(() ->
+        getDistrictRepository()
+            .saveAndFlush(new District().setCreationTime(Instant.now()).setName(name)));
+  }
+
+  public School createSchool(District district, String nickname) {
+    checkNotNull(district);
+    checkArgument(!Strings.isNullOrEmpty(nickname));
+
+    return getSchoolRepository()
+        .findByNickname(district.getId(), nickname)
+        .orElseGet(() -> 
+            getSchoolRepository()
+                .saveAndFlush(
+                    new School()
+                        .setCreationTime(Instant.now())
+                        .setDistrict(district)
+                        .setNickname(nickname)
+                        .setName(
+                            switch (nickname) {
+                              case "DVC" -> "Da Vinci Communications High School";
+                              case "DVConnect" -> "Da Vinci Connect High School";
+                              case "DVD" -> "Da Vinci Design High School";
+                              case "DVFlex" -> "Da Vinci Flex High School";
+                              case "DVRise" -> "Da Vinci Rise High School-Richstone";
+                              case "DVS" -> "Da Vinci Science High School";
+                              default -> throw new IllegalArgumentException(
+                                  "Unrecognized school nickname: " + nickname);
+                            })
+                        .setAddress(
+                            switch (nickname) {
+                              case "DVC",
+                                  "DVD",
+                                  "DVS" -> "201 N. Douglas St., El Segundo, CA 90245";
+                              case "DVConnect" -> "550 Continental Blvd., El Segundo, CA 90245";
+                              case "DVFlex" -> "Address TBD";
+                              case "DVRise" -> "13634 Cordary Avenue, Hawthorne, CA 90250";
+                              default -> throw new IllegalArgumentException(
+                                  "Unrecognized school nickname: " + nickname);
+                            })));
+  }
+
+  public UserX createUserX(District district, String emailAddress, Consumer<UserX> modifier) {
+    checkNotNull(district);
+    checkArgument(!Strings.isNullOrEmpty(emailAddress));
+
+    UserX userX =
+        getUserXRepository()
+            .findByEmailAddress(emailAddress)
+            .orElseGet(() -> 
+                new UserX()
+                    .setCreationTime(Instant.now())
+                    .setFirstName("First Name")
+                    .setLastName("Last Name")
+                    .setEncodedPassword(INVALID_ENCODED_PASSWORD))
+            .setDistrict(district)
+            .setEmailAddress(emailAddress);
+
+    modifier.accept(userX);
+
+    getUserXRepository().saveAndFlush(userX);
+    return userX;
+  }
+
+  public void addAdminXPermission(UserX... userXs) {
+    for (var userX : userXs) {
+      if (userX.getAdminX() == null) {
+        userX.setAdminX(
+            getAdminXRepository().saveAndFlush(new AdminX().setCreationTime(Instant.now())));
+        getUserXRepository().saveAndFlush(userX);
+      }
+    }
+  }
+
+  public void addTeacherPermission(UserX... teachers) {
+    for (var teacher : teachers) {
+      if (teacher.getTeacher() == null) {
+        teacher.setTeacher(
+            getTeacherRepository().saveAndFlush(new Teacher().setCreationTime(Instant.now())));
+        getUserXRepository().saveAndFlush(teacher);
+      }
+    }
+  }
+
+  public void addStudentPermission(Consumer<UserX> modifier, UserX... students) {
+    for (var student : students) {
+      if (student.getStudent() == null) {
+        student.setStudent(new Student().setCreationTime(Instant.now()));
+      }
+
+      modifier.accept(student);
+
+      getStudentRepository().saveAndFlush(student.getStudent());
+      getUserXRepository().saveAndFlush(student);
+    }
+  }
+
+  public void addTeachersToSchool(School school, Teacher... teachers) {
+    Arrays.asList(teachers)
+        .forEach(teacher -> getTeacherSchoolRepository().saveTeacherSchool(teacher, school));
+  }
+
+  public void addStudentsToSchool(School school, Student... students) {
+    Arrays.asList(students)
+        .forEach(student -> getStudentSchoolRepository().saveStudentSchool(student, school));
+  }
+
+  public ClassX createClassX(School school, String name, Consumer<ClassX> modifier) {
+    ClassX classX =
+        getClassXRepository()
+            .findByName(school.getId(), name)
+            .orElseGet(() -> new ClassX().setCreationTime(Instant.now()).setSchool(school).setName(name));
+
+    modifier.accept(classX);
+
+    getClassXRepository().saveAndFlush(classX);
+
+    return classX;
+  }
+
+  public void addTeachersToClassX(ClassX classX, Teacher... teachers) {
+    Arrays.asList(teachers)
+        .forEach(teacher -> getTeacherClassXRepository().saveTeacherClassX(teacher, classX));
+  }
+
+  public void addStudentsToClassX(ClassX classX, Student... students) {
+    Arrays.asList(students)
+        .forEach(
+            student -> {
+              getStudentClassXRepository().saveStudentClassX(student, classX);
+            });
+  }
+
+  public KnowledgeAndSkill createKnowledgeAndSkill(ClassX classX, String name, String descr) {
+    return getKnowledgeAndSkillRepository()
+        .findByName(classX.getId(), name)
+        .orElseGet(() -> 
+            getKnowledgeAndSkillRepository()
+                .saveAndFlush(
+                    new KnowledgeAndSkill()
+                        .setCreationTime(Instant.now())
+                        .setClassX(classX)
+                        .setName(name)
+                        .setShortDescr(descr)
+                        .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))));
+  }
+
+  public Assignment createAssignment(
+      ClassX classX, String name, KnowledgeAndSkill... knowledgeAndSkills) {
+    Assignment assignment =
+        getAssignmentRepository()
+            .findByName(classX.getId(), name)
+            .orElseGet(() -> 
+                getAssignmentRepository()
+                    .saveAndFlush(
+                        new Assignment()
+                            .setCreationTime(Instant.now())
+                            .setClassX(classX)
+                            .setName(name)));
+
+    Arrays.asList(knowledgeAndSkills)
+        .forEach(
+            knowledgeAndSkill -> {
+              checkArgument(knowledgeAndSkill.getClassX().getId() == classX.getId());
+              getAssignmentKnowledgeAndSkillRepository()
+                  .saveAssignmentKnowledgeAndSkill(assignment, knowledgeAndSkill);
+            });
+    return assignment;
   }
 }

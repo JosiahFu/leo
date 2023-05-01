@@ -5,12 +5,9 @@ import static org.davincischools.leo.database.utils.EntityUtils.checkRequired;
 import static org.davincischools.leo.database.utils.EntityUtils.checkRequiredMaxLength;
 import static org.davincischools.leo.database.utils.EntityUtils.checkThat;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Iterables;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.District;
@@ -69,18 +66,14 @@ public class UserManagementService {
             db,
             optionalRequest.orElse(GetUserDetailsRequest.getDefaultInstance()),
             (request, log) -> {
-              checkArgument(request.hasUserXId());
+              UserX user = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
               var response = GetUserDetailsResponse.newBuilder();
 
-              Optional<UserX> user =
-                  db.getUserXRepository().findFullUserXByUserXId(request.getUserXId());
-              if (user.isPresent()) {
-                response.setUser(DataAccess.convertFullUserXToProto(user.get()));
-                response.addAllSchoolIds(
-                    Lists.transform(
-                        db.getTeacherSchoolRepository().findSchoolsByUserXId(request.getUserXId()),
-                        School::getId));
-              }
+              response.setUser(DataAccess.convertFullUserXToProto(user));
+              response.addAllSchoolIds(
+                  Iterables.transform(
+                      db.getSchoolRepository().findAllByTeacherId(user.getTeacher().getId()),
+                      School::getId));
 
               return response.build();
             })
@@ -100,8 +93,7 @@ public class UserManagementService {
 
               Optional<UserX> existingUserX = Optional.empty();
               if (request.getUser().hasId()) {
-                existingUserX =
-                    db.getUserXRepository().findFullUserXByUserXId(request.getUser().getId());
+                existingUserX = db.getUserXRepository().findById(request.getUser().getId());
               }
 
               if (setFieldErrors(request, response, existingUserX)) {
@@ -150,36 +142,18 @@ public class UserManagementService {
                 }
               }
               if (user.getTeacher() != null) {
-                // Add any missing schools.
-                ImmutableSet<Integer> schoolIdsToAdd =
-                    ImmutableSet.copyOf(request.getSchoolIdsList());
-
                 if (existingUserX.isPresent()) {
                   // Remove any extraneous schools.
                   db.getTeacherSchoolRepository()
-                      .keepSchoolsByTeacherId(
-                          user.getTeacher().getId(), request.getSchoolIdsList());
-
-                  // Calculate missing schools.
-                  List<Integer> existingSchoolIds =
-                      Lists.transform(
-                          db.getTeacherSchoolRepository().findSchoolsByUserXId(user.getId()),
-                          School::getId);
-                  schoolIdsToAdd =
-                      Sets.difference(
-                              Sets.newHashSet(request.getSchoolIdsList()),
-                              Sets.newHashSet(existingSchoolIds))
-                          .immutableCopy();
+                      .keepSchoolsForTeacher(user.getTeacher().getId(), request.getSchoolIdsList());
                 }
 
                 // Add missing schools.
-                for (int schoolId : schoolIdsToAdd) {
+                for (int schoolId : request.getSchoolIdsList()) {
                   db.getTeacherSchoolRepository()
-                      .save(
-                          db.getTeacherSchoolRepository()
-                              .createTeacherSchool(
-                                  user.getTeacher(),
-                                  new School().setCreationTime(Instant.now()).setId(schoolId)));
+                      .saveTeacherSchool(
+                          user.getTeacher(),
+                          new School().setCreationTime(Instant.now()).setId(schoolId));
                 }
               }
 
@@ -292,7 +266,7 @@ public class UserManagementService {
     }
 
     Optional<UserX> emailUser =
-        db.getUserXRepository().findFullUserXByEmailAddress(request.getUser().getEmailAddress());
+        db.getUserXRepository().findByEmailAddress(request.getUser().getEmailAddress());
     if (emailUser.isPresent()) {
       inputValid &=
           checkThat(

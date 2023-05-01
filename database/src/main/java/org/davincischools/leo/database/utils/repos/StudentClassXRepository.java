@@ -11,11 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudentClassXRepository extends JpaRepository<StudentClassX, StudentClassXId> {
 
-  default StudentClassX createStudentClassX(Student student, ClassX classX) {
-    return new StudentClassX()
-        .setCreationTime(Instant.now())
-        .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
-        .setStudent(student)
-        .setClassX(classX);
+  default StudentClassX saveStudentClassX(Student student, ClassX classX) {
+    return saveAndFlush(
+        new StudentClassX()
+            .setCreationTime(Instant.now())
+            .setId(new StudentClassXId().setStudentId(student.getId()).setClassXId(classX.getId()))
+            .setStudent(student)
+            .setClassX(classX));
   }
 }
