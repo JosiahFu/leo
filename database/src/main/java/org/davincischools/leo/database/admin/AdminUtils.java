@@ -314,7 +314,7 @@ public class AdminUtils {
     District district = createDistrict();
 
     List<Error> errors = Collections.synchronizedList(new ArrayList<>());
-    School school = db.createSchool(district, "DVFlex");
+    School school = db.createSchool(district, "DVRise");
     Set<Integer> classXIds = new HashSet<>();
 
     for (String line : Files.readLines(new File(importXqEks), StandardCharsets.UTF_8)) {
