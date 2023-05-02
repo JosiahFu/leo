@@ -23,6 +23,14 @@ public interface UserXRepository extends JpaRepository<UserX, Integer> {
           + " LEFT JOIN FETCH u.adminX"
           + " LEFT JOIN FETCH u.teacher"
           + " LEFT JOIN FETCH u.student"
+          + " WHERE u.teacher.id = (:teacherId)")
+  Optional<UserX> findByTeacherId(@Param("teacherId") int teacherId);
+
+  @Query(
+      "SELECT u FROM UserX u"
+          + " LEFT JOIN FETCH u.adminX"
+          + " LEFT JOIN FETCH u.teacher"
+          + " LEFT JOIN FETCH u.student"
           + " WHERE u.emailAddress = (:emailAddress)")
   Optional<UserX> findByEmailAddress(@Param("emailAddress") String emailAddress);
 

@@ -11,14 +11,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.text.RandomStringGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.School;
+import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.utils.Database;
@@ -31,6 +34,23 @@ import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication(scanBasePackageClasses = {Database.class, TestData.class})
 public class AdminUtils {
+
+  private enum XqCategory {
+    ID("Interdisciplinary"),
+    HUM("Humanities"),
+    STEAM("Science, Technology, Engineering, Arts, and Math (STEM)"),
+    SEL("Social, Emotional Learning (SS)");
+
+    private String name;
+
+    private XqCategory(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
+  }
 
   private static final Joiner ERROR_JOINER = Joiner.on("\n - ");
 
@@ -53,10 +73,13 @@ public class AdminUtils {
   @Value("${importStudents:}")
   String importStudents;
 
+  @Value("${importXqEks:}")
+  String importXqEks;
+
   @Value("${importEks:}")
   String importEks;
 
-  @Value("${delimiter:[\\t,]}")
+  @Value("${delimiter:[\\t]}")
   String delimiter;
 
   public District createDistrict() {
@@ -115,7 +138,8 @@ public class AdminUtils {
                   try {
                     String[] cells = line.split(delimiter);
                     if (cells.length < 4) {
-                      throw new IllegalArgumentException("Unexpected number of columns.");
+                      throw new IllegalArgumentException(
+                          "Unexpected number of columns: " + cells.length + ".");
                     }
 
                     String firstName = cells[0];
@@ -135,6 +159,8 @@ public class AdminUtils {
                             emailAddress,
                             userX -> userX.setFirstName(firstName).setLastName(lastName));
                     db.addTeacherPermission(teacher);
+                    db.addStudentPermission(
+                        userX -> userX.getStudent().setStudentId(-1).setGrade(-1), teacher);
 
                     School school = db.createSchool(district, schoolNickname);
                     db.addTeachersToSchool(school, teacher.getTeacher());
@@ -145,6 +171,7 @@ public class AdminUtils {
 
                       ClassX classX = db.createClassX(school, className, c -> {});
                       db.addTeachersToClassX(classX, teacher.getTeacher());
+                      db.addStudentsToClassX(classX, teacher.getStudent());
 
                       for (int eksIndex : new int[] {5, 7}) {
                         if (cells.length >= eksIndex + 2) {
@@ -156,7 +183,7 @@ public class AdminUtils {
 
                           db.createAssignment(
                               classX,
-                              "Assignment: " + eksName,
+                              eksName,
                               db.createKnowledgeAndSkill(classX, eksName, eksDescr));
                         }
                       }
@@ -211,7 +238,8 @@ public class AdminUtils {
                   try {
                     String[] cells = line.split(delimiter);
                     if (cells.length < 6) {
-                      throw new IllegalArgumentException("Unexpected number of columns.");
+                      throw new IllegalArgumentException(
+                          "Unexpected number of columns: " + cells.length + ".");
                     }
 
                     int id = Integer.parseInt(cells[0]);
@@ -280,6 +308,71 @@ public class AdminUtils {
     }
   }
 
+  public void importXqEks() throws IOException {
+    checkArgument(importXqEks != null, "--importXqEks required.");
+
+    District district = createDistrict();
+
+    List<Error> errors = Collections.synchronizedList(new ArrayList<>());
+    School school = db.createSchool(district, "DVFlex");
+    Set<Integer> classXIds = new HashSet<>();
+
+    for (String line : Files.readLines(new File(importXqEks), StandardCharsets.UTF_8)) {
+      try {
+        String[] cells = line.split(delimiter);
+        if (cells.length != 4) {
+          throw new IllegalArgumentException("Unexpected number of columns: " + cells.length + ".");
+        }
+
+        String eksName = cells[0];
+        String eksDescr = cells[1];
+        String outcome = cells[2];
+        XqCategory xqCategory = XqCategory.valueOf(cells[3]);
+
+        checkArgument(!eksName.isEmpty(), "Title required.");
+        checkArgument(!eksDescr.isEmpty(), "Description required.");
+        checkArgument(!outcome.isEmpty(), "Outcome required.");
+
+        ClassX classX = db.createClassX(school, xqCategory.getName(), c -> {});
+        db.createAssignment(classX, eksName, db.createKnowledgeAndSkill(classX, eksName, eksDescr));
+        classXIds.add(classX.getId());
+
+        log.atInfo().log("Imported: {}", line);
+      } catch (Exception e) {
+        log.atError().withThrowable(e).log("Error: {}", line);
+        errors.add(new Error(line, e));
+      }
+    }
+    try {
+      for (TeacherSchool teacherSchool : db.getTeacherSchoolRepository().findAll()) {
+        if (teacherSchool.getSchool().getId().equals(school.getId())) {
+          UserX userX =
+              db.getUserXRepository()
+                  .findByTeacherId(teacherSchool.getTeacher().getId())
+                  .orElseThrow();
+          for (int classXId : classXIds) {
+            ClassX classX = new ClassX().setId(classXId);
+            db.addTeachersToClassX(classX, userX.getTeacher());
+            db.addStudentsToClassX(classX, userX.getStudent());
+          }
+        }
+      }
+    } catch (Exception e) {
+      log.atError().withThrowable(e).log("Error: adding teachers to classes.");
+      errors.add(new Error("N/A", e));
+    }
+
+    if (!errors.isEmpty()) {
+      log.atError()
+          .log(
+              "There were errors during the import of the following teachers:\n - {}\n",
+              ERROR_JOINER.join(
+                  Lists.transform(errors, e -> e.value + "  --  " + e.e.getMessage())));
+    }
+
+    log.atInfo().log("Done.");
+  }
+
   public void processCommands() throws IOException {
     if (!createDistrict.isEmpty()) {
       log.atInfo().log("Creating district: {}", createDistrict);
@@ -301,6 +394,10 @@ public class AdminUtils {
     if (!importStudents.isEmpty()) {
       log.atInfo().log("Importing students: {}", importStudents);
       importStudents();
+    }
+    if (!importXqEks.isEmpty()) {
+      log.atInfo().log("Importing XQ EKS: {}", importXqEks);
+      importXqEks();
     }
     if (!createAdmin.isEmpty()) {
       log.atInfo().log("Creating admin: {}", createAdmin);
