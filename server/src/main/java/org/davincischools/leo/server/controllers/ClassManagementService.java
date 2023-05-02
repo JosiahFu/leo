@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
@@ -20,7 +21,6 @@ import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
-import org.davincischools.leo.database.utils.QuillInitializer;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsRequest;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
 import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse.Builder;
@@ -35,6 +35,7 @@ import org.davincischools.leo.server.utils.DataAccess;
 import org.davincischools.leo.server.utils.LogUtils;
 import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.davincischools.leo.server.utils.LogUtils.LogOperations;
+import org.davincischools.leo.server.utils.LogUtils.Status;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,10 +47,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ClassManagementService {
 
   private static final Joiner COMMA_AND_JOINER = Joiner.on(", and ");
+  private static final Joiner EOL_JOINER = Joiner.on("\n");
 
-  private static final Pattern AI_PROJECT_LABEL = Pattern.compile("([0-9]+[.])?[^:]{0,18}[:]");
-  private static final Pattern AI_REMOVE_LABEL_AND_QUOTES =
-      Pattern.compile("([0-9]+[.])?([^:.]{0,18}[:.])?\\s*[\"“]?(?<text>[^\"“]+)[\"“]?|.*");
+  private static final Pattern OPEN_AI_PROJECT_RESPONSE_LINE =
+      Pattern.compile(
+          "([Pp]roject [0-9]+[:.]\\s*)?(?<bullet>- )?([0-9]+\\.\\s*)?(([Ss]hort|[Ff]ull)"
+              + " [Dd]escription:|[Tt]itle:)?\\s*[\"“]?(?<text>[^\"“]*)[\"“]?");
+  private static final String TEXT_GROUP = "text";
+  private static final String BULLET_GROUP = "bullet";
 
   @Autowired Database db;
   @Autowired OpenAiUtils openAiUtils;
@@ -68,8 +73,7 @@ public class ClassManagementService {
               var response = GetStudentAssignmentsResponse.newBuilder();
 
               for (Assignment assignment :
-                  db.getAssignmentRepository()
-                      .findAllByStudentId(user.getStudent().getId())) {
+                  db.getAssignmentRepository().findAllByStudentId(user.getStudent().getId())) {
                 response.addAssignments(
                     DataAccess.convertAssignmentToProto(assignment.getClassX(), assignment));
               }
@@ -99,6 +103,7 @@ public class ClassManagementService {
                       .save(
                           new ProjectInput()
                               .setCreationTime(Instant.now())
+                              .setStudent(user.getStudent())
                               .setAssignment(new Assignment().setId(request.getAssignmentId()))
                               .setSomethingYouLove(request.getSomethingYouLove())
                               .setWhatYouAreGoodAt(request.getWhatYouAreGoodAt()));
@@ -158,11 +163,31 @@ public class ClassManagementService {
         .finish();
   }
 
+  private static String extractText(List<String> lines, AtomicInteger i) {
+    ArrayList<String> result = new ArrayList<>();
+    boolean inBulletedList = false;
+    while (i.get() < lines.size()) {
+      String line = lines.get(i.getAndIncrement());
+      Matcher matcher = OPEN_AI_PROJECT_RESPONSE_LINE.matcher(line);
+      if (!matcher.matches() || Strings.isNullOrEmpty(matcher.group(TEXT_GROUP))) {
+        continue;
+      }
+      result.add(matcher.group(TEXT_GROUP));
+      if (matcher.group(BULLET_GROUP) == null) {
+        if (inBulletedList) {
+          i.decrementAndGet();
+          result.remove(result.size() - 1);
+        }
+        break;
+      }
+      inBulletedList = true;
+    }
+    return EOL_JOINER.join(result);
+  }
+
   public static List<Project> extractProjects(
       LogOperations log, Builder response, ProjectInput projectInput, String aiResponse)
       throws IOException {
-    List<Project> projects = new ArrayList<>();
-
     // Parse the result into separate lines.
     List<String> lines = new ArrayList<>();
     BufferedReader reader = new BufferedReader(new StringReader(aiResponse));
@@ -170,62 +195,40 @@ public class ClassManagementService {
     while ((line = reader.readLine()) != null) {
       lines.add(line);
     }
+    lines = lines.stream().map(String::trim).filter(str -> !str.isEmpty()).toList();
 
-    // Process the lines and extract projects.
-    lines =
-        lines.stream()
-            .map(String::trim)
-            .filter(str -> !str.isEmpty())
-            .filter(str -> !AI_PROJECT_LABEL.matcher(str).matches())
-            .toList();
-    for (int i = 0; i < lines.size() - 2; i += 3) {
-      boolean addedNotes = false;
-      Matcher nameMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i));
-      Matcher shortDescrMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i + 1));
-      Matcher longDescrMatcher = AI_REMOVE_LABEL_AND_QUOTES.matcher(lines.get(i + 2));
+    // Process the lines and extract project triplets.
+    AtomicInteger i = new AtomicInteger(0);
+    ArrayList<String> results = new ArrayList<>();
+    while (i.get() < lines.size()) {
+      results.add(extractText(lines, i));
+    }
 
-      checkArgument(nameMatcher.matches());
-      checkArgument(shortDescrMatcher.matches());
-      checkArgument(longDescrMatcher.matches());
-
-      String name = lines.get(i);
-      if (!Strings.isNullOrEmpty(nameMatcher.group("text"))) {
-        name = nameMatcher.group("text");
-      } else {
-        log.addNote("Name failed to match: %s", lines.get(i));
-        addedNotes = true;
+    if (results.size() != 15) {
+      log.setStatus(Status.ERROR);
+      log.addNote("Parsed out number of lines other than 15 from OpenAI's response.");
+      log.addNote("The lines processed were:");
+      for (String noteLine : lines) {
+        Matcher m = OPEN_AI_PROJECT_RESPONSE_LINE.matcher(noteLine);
+        if (m.matches()) {
+          log.addNote(
+              "+ [%s]  --  BULLET: [%s], TEXT: [%s]",
+              noteLine, m.group(BULLET_GROUP), m.group(TEXT_GROUP));
+        } else {
+          log.addNote("- [%s]", noteLine);
+        }
       }
+    }
 
-      String shortDescr = lines.get(i + 1);
-      if (!Strings.isNullOrEmpty(shortDescrMatcher.group("text"))) {
-        shortDescr = shortDescrMatcher.group("text");
-      } else {
-        log.addNote("Short description failed to match: %s", lines.get(i + 1));
-        addedNotes = true;
-      }
-
-      String longDescr = lines.get(i + 2);
-      if (!Strings.isNullOrEmpty(longDescrMatcher.group("text"))) {
-        longDescr = longDescrMatcher.group("text");
-      } else {
-        log.addNote("Long description failed to match: %s", lines.get(i + 2));
-        addedNotes = true;
-      }
-
-      Project project =
+    List<Project> projects = new ArrayList<>();
+    for (int j = 0; j < results.size() - 2; j += 3) {
+      projects.add(
           new Project()
               .setCreationTime(Instant.now())
               .setProjectInput(projectInput)
-              .setName(name)
-              .setShortDescr(shortDescr)
-              .setShortDescrQuill(QuillInitializer.toQuillDelta(shortDescr))
-              .setLongDescr(longDescr)
-              .setLongDescrQuill(QuillInitializer.toQuillDelta(longDescr));
-      projects.add(project);
-      response.addProjects(DataAccess.convertProjectToProto(project));
-      if (addedNotes) {
-        log.addNote("");
-      }
+              .setName(results.get(j))
+              .setShortDescr(results.get(j + 1))
+              .setLongDescr(results.get(j + 2)));
     }
 
     return projects;
