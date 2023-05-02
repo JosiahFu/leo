@@ -3,6 +3,7 @@ import {
   createService,
   district_management,
   school_management,
+  pl_types,
   user_management,
 } from '../../../protos';
 import {useEffect, useState} from 'react';
@@ -12,11 +13,11 @@ import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import {SelectMultipleSchoolsFromList} from '../EditSchools/EditSchools';
 import {MultipleDisplay} from '../../../SelectMultipleFromList/SelectMultipleFromList';
 import UserManagementService = user_management.UserManagementService;
-import IUser = user_management.IUser;
+import IUser = pl_types.IUser;
 import DistrictManagementService = district_management.DistrictManagementService;
-import IDistrict = district_management.IDistrict;
+import IDistrict = pl_types.IDistrict;
 import IUserInformationResponse = user_management.IUserInformationResponse;
-import ISchool = school_management.ISchool;
+import ISchool = pl_types.ISchool;
 import SchoolManagementService = school_management.SchoolManagementService;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 

@@ -1,5 +1,6 @@
-import {user_management} from '../generated/protobuf-js';
-import IUser = user_management.IUser;
+import {pl_types} from '../generated/protobuf-js';
+import IUser = pl_types.IUser;
+import User = pl_types.User;
 
 export enum Role {
   ADMIN,
@@ -29,7 +30,7 @@ export function getCurrentUser(
 ): LoggedInUser | undefined {
   const userJson = localStorage.getItem('user');
   if (userJson != null) {
-    const user = user_management.User.fromObject(JSON.parse(userJson));
+    const user = User.fromObject(JSON.parse(userJson));
 
     const roles = new Set<Role>();
     user.isAdmin && roles.add(Role.ADMIN);

@@ -7,11 +7,12 @@ import {
   class_management,
   createService,
   partial_text_openai_prompt,
+  pl_types,
 } from '../../../protos';
 import {BarsOutlined, LoadingOutlined} from '@ant-design/icons';
 import PartialTextOpenAiPromptService = partial_text_openai_prompt.PartialTextOpenAiPromptService;
 import Prompt = partial_text_openai_prompt.GetSuggestionsRequest.Prompt;
-import IAssignment = class_management.IAssignment;
+import IAssignment = pl_types.IAssignment;
 import ClassManagementService = class_management.ClassManagementService;
 import {getCurrentUser} from '../../../utils/authentication';
 import {useNavigate} from 'react-router';

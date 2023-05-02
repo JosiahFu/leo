@@ -4,13 +4,14 @@ import {
   createService,
   district_management,
   school_management,
+  pl_types,
 } from '../../../protos';
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import DistrictManagementService = district_management.DistrictManagementService;
-import IDistrict = district_management.IDistrict;
+import IDistrict = pl_types.IDistrict;
 import SchoolManagementService = school_management.SchoolManagementService;
-import ISchool = school_management.ISchool;
+import ISchool = pl_types.ISchool;
 import ISchoolInformationResponse = school_management.ISchoolInformationResponse;
 import {
   MultipleDisplay,

@@ -18,10 +18,9 @@ import org.mockito.Mockito;
 public class ClassManagementServiceTest {
   LogOperations log = Mockito.mock(LogOperations.class);
 
-  org.davincischools.leo.protos.class_management.Project toProject(String protoString)
+  org.davincischools.leo.protos.pl_types.Project toProject(String protoString)
       throws ParseException {
-    return TextFormat.parse(
-        protoString, org.davincischools.leo.protos.class_management.Project.class);
+    return TextFormat.parse(protoString, org.davincischools.leo.protos.pl_types.Project.class);
   }
 
   @Test
@@ -112,7 +111,7 @@ public class ClassManagementServiceTest {
     assertThat(projects).hasSize(2);
     assertThat(DataAccess.convertProjectToProto(projects.get(0)))
         .isEqualTo(
-            org.davincischools.leo.protos.class_management.Project.newBuilder()
+            org.davincischools.leo.protos.pl_types.Project.newBuilder()
                 .setId(-1)
                 .setName("Primary Title: Secondary Title")
                 .setShortDescr("Short description 1.")
@@ -120,7 +119,7 @@ public class ClassManagementServiceTest {
                 .build());
     assertThat(DataAccess.convertProjectToProto(projects.get(1)))
         .isEqualTo(
-            org.davincischools.leo.protos.class_management.Project.newBuilder()
+            org.davincischools.leo.protos.pl_types.Project.newBuilder()
                 .setId(-1)
                 .setName("Something something 2")
                 .setShortDescr("Short Description 2.")

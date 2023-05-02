@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "pl_types.proto";
+
 option java_multiple_files = true;
 option java_package = "org.davincischools.leo.protos.school_management";
 
@@ -11,19 +13,12 @@ service SchoolManagementService {
   rpc RemoveSchool (RemoveSchoolRequest) returns (SchoolInformationResponse) {}
 }
 
-message School {
-  optional int32 id = 1;
-  optional int32 district_id = 2;
-  optional string name = 3 ;
-  optional string address = 4 ;
-}
-
 message GetSchoolsRequest {
   optional int32 district_id = 1;
 }
 
 message UpsertSchoolRequest {
-  optional School school = 1;
+  optional pl_types.School school = 1;
 }
 
 message RemoveSchoolRequest {
@@ -34,5 +29,5 @@ message RemoveSchoolRequest {
 message SchoolInformationResponse {
   optional int32 district_id = 1;
   optional int32 next_school_id = 2;
-  repeated School schools = 3;
+  repeated pl_types.School schools = 3;
 }

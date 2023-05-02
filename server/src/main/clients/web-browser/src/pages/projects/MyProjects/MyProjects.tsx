@@ -1,10 +1,10 @@
 import './MyProjects.scss';
 import {List} from 'antd';
 import {useEffect, useState} from 'react';
-import {class_management, createService} from '../../../protos';
+import {class_management, createService, pl_types} from '../../../protos';
 import ClassManagementService = class_management.ClassManagementService;
 import {getCurrentUser} from '../../../utils/authentication';
-import IProject = class_management.IProject;
+import IProject = pl_types.IProject;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 
 export function MyProjects() {

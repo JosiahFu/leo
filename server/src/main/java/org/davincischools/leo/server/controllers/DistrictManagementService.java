@@ -95,7 +95,7 @@ public class DistrictManagementService {
         StreamSupport.stream(db.getDistrictRepository().findAll().spliterator(), false)
             .map(
                 district ->
-                    org.davincischools.leo.protos.district_management.District.newBuilder()
+                    org.davincischools.leo.protos.pl_types.District.newBuilder()
                         .setId(district.getId())
                         .setName(district.getName())
                         .build())

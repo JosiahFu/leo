@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "pl_types.proto";
+
 option java_multiple_files = true;
 option java_package = "org.davincischools.leo.protos.class_management";
 
@@ -11,42 +13,12 @@ service ClassManagementService {
   rpc GetProjects (GetProjectsRequest) returns (GetProjectsResponse) {}
 }
 
-message KnowledgeAndSkill {
-  optional int32 id = 1;
-  optional string name = 3;
-  optional string short_descr = 4;
-  optional string long_descr = 5;
-}
-
-message ClassX {
-  optional int32 id = 1;
-  optional string name = 2;
-  optional string short_descr = 3;
-  optional string long_descr = 4;
-}
-
-message Assignment {
-  optional int32 id = 1;
-  optional string name = 3;
-  optional string short_descr = 4;
-  optional string long_descr = 5;
-
-  optional ClassX class_x = 2;
-}
-
-message Project {
-  optional int32 id = 1;
-  optional string name = 2;
-  optional string short_descr = 3;
-  optional string long_descr = 4;
-}
-
 message GetStudentAssignmentsRequest {
   optional int32 user_x_id = 1;
 }
 
 message GetStudentAssignmentsResponse {
-  repeated Assignment assignments = 1;
+  repeated pl_types.Assignment assignments = 1;
 }
 
 message GenerateAssignmentProjectsRequest {
@@ -57,7 +29,7 @@ message GenerateAssignmentProjectsRequest {
 }
 
 message GenerateAssignmentProjectsResponse {
-  repeated Project projects = 1;
+  repeated pl_types.Project projects = 1;
 }
 
 message GetProjectsRequest {
@@ -65,5 +37,5 @@ message GetProjectsRequest {
 }
 
 message GetProjectsResponse {
-  repeated Project projects = 1;
+  repeated pl_types.Project projects = 1;
 }

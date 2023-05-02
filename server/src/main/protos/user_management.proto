@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "pl_types.proto";
+
 option java_multiple_files = true;
 option java_package = "org.davincischools.leo.protos.user_management";
 
@@ -14,20 +16,6 @@ service UserManagementService {
   rpc Login (LoginRequest) returns (LoginResponse) {}
 }
 
-message User {
-  optional int32 id = 1;
-  optional int32 district_id = 2;
-  optional string first_name = 3;
-  optional string last_name = 4;
-  optional string email_address = 5;
-  optional string password = 6;
-  optional string verify_password = 7;
-
-  optional bool is_admin = 8;
-  optional bool is_teacher = 9;
-  optional bool is_student = 10;
-}
-
 message GetUsersRequest {
   optional int32 district_id = 1;
 }
@@ -37,12 +25,12 @@ message GetUserDetailsRequest {
 }
 
 message GetUserDetailsResponse {
-  optional User user = 1;
+  optional pl_types.User user = 1;
   repeated int32 school_ids = 2;
 }
 
 message UpsertUserRequest {
-  optional User user = 1;
+  optional pl_types.User user = 1;
   repeated int32 school_ids = 2;
 }
 
@@ -54,7 +42,7 @@ message RemoveUserRequest {
 message UserInformationResponse {
   optional int32 district_id = 1;
   optional int32 next_user_x_id = 2;
-  repeated User users = 3;
+  repeated pl_types.User users = 3;
 
   optional bool success = 4;
   optional string first_name_error = 5;
@@ -71,7 +59,7 @@ message LoginRequest {
 
 message LoginResponse {
   optional bool success = 1;
-  optional User user = 2;
+  optional pl_types.User user = 2;
 
   optional bool login_failure = 3;
   optional string email_address_error = 4;

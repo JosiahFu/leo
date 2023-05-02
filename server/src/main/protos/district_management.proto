@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "pl_types.proto";
+
 option java_multiple_files = true;
 option java_package = "org.davincischools.leo.protos.district_management";
 
@@ -12,19 +14,14 @@ service DistrictManagementService {
   rpc RemoveDistrict (RemoveDistrictRequest) returns (DistrictInformationResponse) {}
 }
 
-message District {
-  optional int32 id = 1;
-  optional string name = 2;
-}
-
 message GetDistrictsRequest {}
 
 message AddDistrictRequest {
-  optional District district = 1;
+  optional pl_types.District district = 1;
 }
 
 message UpdateDistrictRequest {
-  optional District district = 1;
+  optional pl_types.District district = 1;
 }
 
 message RemoveDistrictRequest {
@@ -33,5 +30,5 @@ message RemoveDistrictRequest {
 
 message DistrictInformationResponse {
   optional int32 modified_district_id = 1;
-  repeated District districts = 2;
+  repeated pl_types.District districts = 2;
 }

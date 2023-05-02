@@ -60,7 +60,7 @@ public class UserManagementLoginController {
 
     response.setSuccess(true);
     response.setUser(
-        org.davincischools.leo.protos.user_management.User.newBuilder()
+        org.davincischools.leo.protos.pl_types.User.newBuilder()
             .setId(user.get().getId())
             .setDistrictId(user.get().getDistrict().getId())
             .setFirstName(user.get().getFirstName())
