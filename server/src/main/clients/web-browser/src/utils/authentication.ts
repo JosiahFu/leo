@@ -26,7 +26,7 @@ export function logout() {
 }
 
 export function getCurrentUser(
-  onNotLoggedIn: () => void
+  onNotLoggedIn?: () => void
 ): LoggedInUser | undefined {
   const userJson = localStorage.getItem('user');
   if (userJson != null) {
@@ -46,6 +46,10 @@ export function getCurrentUser(
       roles: roles,
     };
   }
-  onNotLoggedIn();
+  if (onNotLoggedIn != null) {
+    onNotLoggedIn();
+  } else {
+    window.open('/login', '_self');
+  }
   return undefined;
 }

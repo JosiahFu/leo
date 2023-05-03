@@ -8,11 +8,10 @@ import IProject = pl_types.IProject;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 
 export function MyProjects() {
-  const [user] = useState(
-    getCurrentUser(() => {
-      window.open('/login');
-    })
-  );
+  const user = getCurrentUser();
+  if (user == null) {
+    return <></>;
+  }
 
   const [projects, setProjects] = useState<IProject[]>([]);
 

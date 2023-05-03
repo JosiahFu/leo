@@ -18,6 +18,7 @@ import {
   SelectMultipleFromList,
 } from '../../../SelectMultipleFromList/SelectMultipleFromList';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
+import {getCurrentUser} from '../../../utils/authentication';
 
 export function SelectSchoolFromList(props: {
   id: string;
@@ -93,6 +94,11 @@ export function SelectMultipleSchoolsFromList(props: {
 }
 
 export function EditSchools() {
+  const user = getCurrentUser();
+  if (user == null) {
+    return <></>;
+  }
+
   const [districts, setDistricts] = useState(new Map<number, IDistrict>());
   const [districtId, setDistrictId] = useState(-1);
 

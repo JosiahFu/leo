@@ -21,13 +21,12 @@ import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 const {Sider, Content} = Layout;
 
 export function IkigaiBuilder() {
-  const [user] = useState(
-    getCurrentUser(() => {
-      window.open('/login');
-    })
-  );
-  const navigate = useNavigate();
+  const user = getCurrentUser();
+  if (user == null) {
+    return <></>;
+  }
 
+  const navigate = useNavigate();
   const [ikigaiCenterPosition, setIkigaiCenterPosition] =
     useState<Coordinate | null>(null);
   const [ikigaiDistanceToCategoryCenter, setIkigaiDistanceToCategoryCenter] =
