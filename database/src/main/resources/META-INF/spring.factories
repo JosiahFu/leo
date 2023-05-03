@@ -1,3 +1,2 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
-  org.davincischools.leo.database.post_environment_processors.ProjectLeoEnvironmentPostProcessor,\
-  org.davincischools.leo.database.post_environment_processors.ConfigureTestDatabaseEnvironmentPostProcessor
+  org.davincischools.leo.database.post_environment_processors.ProjectLeoEnvironmentPostProcessor

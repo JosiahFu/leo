@@ -23,7 +23,6 @@ import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.UserX;
-import org.davincischools.leo.database.test.TestData;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootApplication(scanBasePackageClasses = {Database.class, TestData.class})
+@SpringBootApplication(scanBasePackageClasses = {Database.class})
 public class AdminUtils {
 
   private enum XqCategory {
@@ -65,7 +64,7 @@ public class AdminUtils {
   String createDistrict;
 
   @Value("${createAdmin:}")
-  String createAdmin;
+  List<String> createAdmins;
 
   @Value("${importTeachers:}")
   String importTeachers;
@@ -88,40 +87,40 @@ public class AdminUtils {
     return db.createDistrict(createDistrict);
   }
 
-  public UserX createAdmin() {
-    checkArgument(createAdmin != null, "--createAdmin required.");
+  public void createAdmins() {
+    checkArgument(!createAdmins.isEmpty(), "--createAdmin required.");
 
-    String password =
-        new RandomStringGenerator.Builder()
-            .withinRange(new char[] {'a', 'z'}, new char[] {'0', '9'})
-            .build()
-            .generate(20);
+    for (String createAdmin : createAdmins) {
+      String password =
+          new RandomStringGenerator.Builder()
+              .withinRange(new char[] {'a', 'z'}, new char[] {'0', '9'})
+              .build()
+              .generate(20);
 
-    District district = createDistrict();
-    UserX admin =
-        db.createUserX(district, createAdmin, userX -> UserUtils.setPassword(userX, password));
-    db.addAdminXPermission(admin);
+      District district = createDistrict();
+      UserX admin =
+          db.createUserX(district, createAdmin, userX -> UserUtils.setPassword(userX, password));
+      db.addAdminXPermission(admin);
 
-    // TODO: Later we don't want to do this. But, for development for now...
-    db.addStudentPermission(userX -> userX.getStudent().setStudentId(-1).setGrade(-1), admin);
-    db.addTeacherPermission(admin);
-    for (School school : db.getSchoolRepository().findAll()) {
-      db.addTeachersToSchool(school, admin.getTeacher());
-      db.addStudentsToSchool(school, admin.getStudent());
+      // TODO: Later we don't want to do this. But, for development for now...
+      db.addStudentPermission(userX -> userX.getStudent().setStudentId(-1).setGrade(-1), admin);
+      db.addTeacherPermission(admin);
+      for (School school : db.getSchoolRepository().findAll()) {
+        db.addTeachersToSchool(school, admin.getTeacher());
+        db.addStudentsToSchool(school, admin.getStudent());
+      }
+      for (ClassX classX : db.getClassXRepository().findAll()) {
+        db.addTeachersToClassX(classX, admin.getTeacher());
+        db.addStudentsToClassX(classX, admin.getStudent());
+      }
+
+      log.atWarn()
+          .log(
+              "IMPORTANT! Log in and change the temporary password:"
+                  + " login: \"{}\", temporary password: \"{}\"",
+              createAdmin,
+              password);
     }
-    for (ClassX classX : db.getClassXRepository().findAll()) {
-      db.addTeachersToClassX(classX, admin.getTeacher());
-      db.addStudentsToClassX(classX, admin.getStudent());
-    }
-
-    log.atWarn()
-        .log(
-            "IMPORTANT! Log in and change the temporary password:"
-                + " login: \"{}\", temporary password: \"{}\"",
-            createAdmin,
-            password);
-
-    return admin;
   }
 
   public void importTeachers() throws IOException {
@@ -399,9 +398,9 @@ public class AdminUtils {
       log.atInfo().log("Importing XQ EKS: {}", importXqEks);
       importXqEks();
     }
-    if (!createAdmin.isEmpty()) {
-      log.atInfo().log("Creating admin: {}", createAdmin);
-      createAdmin();
+    if (!createAdmins.isEmpty()) {
+      log.atInfo().log("Creating admin: {}", createAdmins);
+      createAdmins();
     }
   }
 
