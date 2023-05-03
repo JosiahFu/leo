@@ -3,6 +3,7 @@
 
 ### General ###
 *.bak
+**/.attach_pid*
 
 ### Maven ###
 /target/
