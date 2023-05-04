@@ -13,18 +13,20 @@ export function DefaultPage(props: PropsWithChildren<{title: string}>) {
 
   return (
     <>
-      <div className="page-header">
-        <div className="page-title">{props.title}</div>
-        <div className="page-account">
-          <QuestionCircleOutlined />
-          <BellOutlined />
-          <span className="profile-icon">
-            <SmileTwoTone />
-          </span>
-          {user?.firstName} {user?.lastName}
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title">{props.title}</div>
+          <div className="page-account">
+            <QuestionCircleOutlined />
+            <BellOutlined />
+            <span className="profile-icon">
+              <SmileTwoTone />
+            </span>
+            {user?.firstName} {user?.lastName}
+          </div>
         </div>
+        <div className="page-body">{props.children}</div>
       </div>
-      <div className="page-body">{props.children}</div>
     </>
   );
 }
