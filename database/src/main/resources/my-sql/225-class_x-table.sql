@@ -17,7 +17,7 @@ CREATE TABLE class_x
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    CONSTRAINT class_x__name
+    CONSTRAINT class_x__school_id__name
         UNIQUE (school_id, name)
 ) ENGINE InnoDB
   CHAR SET UTF8MB4;

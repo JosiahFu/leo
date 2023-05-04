@@ -55,7 +55,7 @@ public class Log {
 
   private Instant requestTime;
 
-  private byte[] initialResponse;
+  private String initialResponse;
 
   private String initialResponseType;
 
@@ -172,12 +172,13 @@ public class Log {
     return this;
   }
 
+  @Lob
   @Column(name = COLUMN_INITIALRESPONSE_NAME)
-  public byte[] getInitialResponse() {
+  public String getInitialResponse() {
     return initialResponse;
   }
 
-  public Log setInitialResponse(byte[] initialResponse) {
+  public Log setInitialResponse(String initialResponse) {
     this.initialResponse = initialResponse;
     return this;
   }

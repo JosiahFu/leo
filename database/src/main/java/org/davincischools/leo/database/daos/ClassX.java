@@ -17,7 +17,9 @@ import java.time.Instant;
 @Table(
     name = ClassX.TABLE_NAME,
     schema = "leo_temp",
-    indexes = {@Index(name = "class_x__name", columnList = "school_id, name", unique = true)})
+    indexes = {
+      @Index(name = "class_x__school_id__name", columnList = "school_id, name", unique = true)
+    })
 public class ClassX {
 
   public static final String ENTITY_NAME = "ClassX";

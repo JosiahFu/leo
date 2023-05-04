@@ -13,7 +13,10 @@ CREATE TABLE log
     request_time          DATETIME   NOT NULL,
 
     -- The time of the first response, presumably from external services.
-    initial_response      MEDIUMBLOB,
+    --
+    -- Base 64 mime-encoded if the type is binary. If it is a UTF-8 string
+    -- in binary format, it will be converted to a string.
+    initial_response      MEDIUMTEXT,
     initial_response_type MEDIUMTEXT,
     initial_response_time DATETIME   NOT NULL,
 

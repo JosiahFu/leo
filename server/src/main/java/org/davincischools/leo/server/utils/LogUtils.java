@@ -13,8 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serial;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
@@ -308,8 +311,8 @@ public class LogUtils {
       if (logEntry.getInitialResponseType() == null) {
         logEntry.setInitialResponseType(log.input.getClass().getName());
       }
-      if (log.logEntry.getInitialResponse() == null && log.input instanceof byte[]) {
-        logEntry.setInitialResponse((byte[]) log.input);
+      if (log.logEntry.getInitialResponse() == null) {
+        logEntry.setInitialResponse(ioToString(log.input));
       }
     }
 
@@ -352,6 +355,13 @@ public class LogUtils {
                       .map(name -> "HEADER: " + name + ": " + r.getHeaders(name))
                       .toList())
               .build());
+    } else if (o instanceof byte[]) {
+      String converted = new String((byte[]) o, StandardCharsets.UTF_8);
+      if (Arrays.compare((byte[]) o, converted.getBytes(StandardCharsets.UTF_8)) == 0) {
+        return converted;
+      } else {
+        return new String(Base64.getMimeEncoder().encode((byte[]) o), StandardCharsets.US_ASCII);
+      }
     } else {
       return o.toString();
     }

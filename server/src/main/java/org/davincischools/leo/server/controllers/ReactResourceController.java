@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.server.utils.HttpServletProxy;
 import org.davincischools.leo.server.utils.LogUtils;
@@ -31,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class ReactResourceController {
-
-  private static final Logger logger = LogManager.getLogger();
 
   // Optional port of running React web development server.
   @Value("${react_port:0}")
