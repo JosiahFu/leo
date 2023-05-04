@@ -109,6 +109,9 @@ public class LogUtils {
     Object lastSuccessfulInput;
     Instant lastSuccessfulInputTime;
     Object input;
+    int retries = 0;
+    int retriesWithinMilliseconds = 0;
+    boolean firstTime = true;
     /**
      * True if we've handled the error with an onError(). It causes any future functionality to be
      * skipped until the final writes the log entry before it returns from finish().
@@ -172,18 +175,56 @@ public class LogUtils {
     }
 
     @CheckReturnValue
+    public Logger<R, I> retryNextStep(int times, int withinMilliseconds) {
+      retries = times;
+      retriesWithinMilliseconds = withinMilliseconds;
+      return this;
+    }
+
+    @CheckReturnValue
     @SuppressWarnings("unchecked")
     public <O> Logger<R, O> andThen(InputConsumer<I, O> inputConsumer) {
       if (!skipToFinish && throwables.isEmpty()) {
-        try {
-          lastSuccessfulInput = input;
-          lastSuccessfulInputTime = Instant.now();
-          input = inputConsumer.accept((I) input, this);
-        } catch (Throwable t) {
-          input = null;
-          throwables.add(t);
+        lastSuccessfulInput = input;
+        lastSuccessfulInputTime = Instant.now();
+        Instant startTime = Instant.now();
+        for (int retry = 0; retry <= retries; ++retry) {
+          try {
+            input = inputConsumer.accept((I) lastSuccessfulInput, this);
+
+            if (firstTime) {
+              firstTime = false;
+              if (logEntry.getInitialResponseTime() == null) {
+                logEntry.setInitialResponseTime(Instant.now());
+              }
+              if (input != null) {
+                if (logEntry.getInitialResponseType() == null) {
+                  logEntry.setInitialResponseType(input.getClass().getName());
+                }
+                if (logEntry.getInitialResponse() == null) {
+                  logEntry.setInitialResponse(ioToString(input));
+                }
+              }
+            }
+            break;
+          } catch (Throwable t) {
+            if (retry > retries
+                || Instant.now().isAfter(startTime.plusMillis(retriesWithinMilliseconds))) {
+              input = null;
+              throwables.add(t);
+            } else {
+              logger.atWarn().withThrowable(t).log("Retrying after error: {}", retry);
+              try {
+                Thread.sleep(250);
+              } catch (Exception ignored) {
+              }
+            }
+          }
         }
       }
+
+      retries = 0;
+      retriesWithinMilliseconds = 0;
       return (Logger<R, O>) this;
     }
 
@@ -283,11 +324,9 @@ public class LogUtils {
   }
 
   @CheckReturnValue
-  public static <I, O> Logger<I, O> executeAndLog(
-      Database db, I request, InputConsumer<I, O> inputConsumer) {
+  public static <I> Logger<I, I> executeAndLog(Database db, I request) {
     checkNotNull(db);
     checkNotNull(request);
-    checkNotNull(inputConsumer);
 
     Log logEntry = new Log().setCreationTime(Instant.now());
 
@@ -302,21 +341,13 @@ public class LogUtils {
         .setRequestType(request.getClass().getName())
         .setRequestTime(Instant.now());
 
-    Logger<I, O> log = new Logger<I, I>(db, request, logEntry).andThen(inputConsumer);
+    return new Logger<I, I>(db, request, logEntry);
+  }
 
-    if (logEntry.getInitialResponseTime() == null) {
-      logEntry.setInitialResponseTime(Instant.now());
-    }
-    if (log.input != null) {
-      if (logEntry.getInitialResponseType() == null) {
-        logEntry.setInitialResponseType(log.input.getClass().getName());
-      }
-      if (log.logEntry.getInitialResponse() == null) {
-        logEntry.setInitialResponse(ioToString(log.input));
-      }
-    }
-
-    return log;
+  @CheckReturnValue
+  public static <I, O> Logger<I, O> executeAndLog(
+      Database db, I request, InputConsumer<I, O> inputConsumer) {
+    return executeAndLog(db, request).andThen(inputConsumer);
   }
 
   @Nullable

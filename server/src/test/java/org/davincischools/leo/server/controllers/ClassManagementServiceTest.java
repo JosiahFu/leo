@@ -130,10 +130,10 @@ Full 2
 %s""",
             ClassManagementService.END_OF_TITLE,
             ClassManagementService.END_OF_SHORT,
-            ClassManagementService.END_OF_PROJECT,
+            ClassManagementService.START_OF_PROJECT,
             ClassManagementService.END_OF_TITLE,
             ClassManagementService.END_OF_SHORT,
-            ClassManagementService.END_OF_PROJECT));
+            ClassManagementService.START_OF_PROJECT));
     ProtoTruth.assertThat(response.build())
         .isEqualTo(
             GenerateAssignmentProjectsResponse.newBuilder()
