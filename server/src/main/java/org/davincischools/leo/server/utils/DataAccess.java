@@ -142,9 +142,7 @@ public class DataAccess {
   public static List<org.davincischools.leo.protos.pl_types.Project> getProtoProjectsByUserXId(
       Database db, UserX userX) {
     return StreamSupport.stream(
-            db.getProjectRepository()
-                .findAllByStudentId(userX.getStudent().getStudentId())
-                .spliterator(),
+            db.getProjectRepository().findAllByStudentId(userX.getStudent().getId()).spliterator(),
             false)
         .map(DataAccess::convertProjectToProto)
         .collect(Collectors.toList());
