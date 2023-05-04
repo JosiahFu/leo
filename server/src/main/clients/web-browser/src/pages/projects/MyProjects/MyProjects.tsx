@@ -1,11 +1,11 @@
 import './MyProjects.scss';
-import {List} from 'antd';
 import {useEffect, useState} from 'react';
 import {class_management, createService, pl_types} from '../../../protos';
 import ClassManagementService = class_management.ClassManagementService;
 import {getCurrentUser} from '../../../utils/authentication';
 import IProject = pl_types.IProject;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
+import {ProjectCard} from '../../../libs/ProjectCard/ProjectCard';
 
 export function MyProjects() {
   const user = getCurrentUser();
@@ -28,20 +28,11 @@ export function MyProjects() {
   return (
     <>
       <DefaultPage title="My Projects">
-        <div className="brief-instructions">Select a class to begin.</div>
-        <List
-          dataSource={projects}
-          renderItem={project => (
-            <List.Item itemID={project.id?.toString()}>
-              NAME: {project.name}
-              <br />
-              DESCRIPTION: {project.shortDescr}
-              <br />
-              DETAILS: {project.longDescr}
-              <br />
-            </List.Item>
-          )}
-        />
+        <div>
+          {projects.map(project => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       </DefaultPage>
     </>
   );
