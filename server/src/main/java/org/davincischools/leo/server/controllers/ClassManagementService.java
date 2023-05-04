@@ -3,16 +3,12 @@ package org.davincischools.leo.server.controllers;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
@@ -35,7 +31,6 @@ import org.davincischools.leo.server.utils.DataAccess;
 import org.davincischools.leo.server.utils.LogUtils;
 import org.davincischools.leo.server.utils.LogUtils.LogExecutionError;
 import org.davincischools.leo.server.utils.LogUtils.LogOperations;
-import org.davincischools.leo.server.utils.LogUtils.Status;
 import org.davincischools.leo.server.utils.OpenAiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,14 +42,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ClassManagementService {
 
   private static final Joiner COMMA_AND_JOINER = Joiner.on(", and ");
-  private static final Joiner EOL_JOINER = Joiner.on("\n");
 
-  private static final Pattern OPEN_AI_PROJECT_RESPONSE_LINE =
+  private static final Pattern REMOVE_FLUFF =
       Pattern.compile(
-          "([Pp]roject [0-9]+[:.]\\s*)?(?<bullet>- )?([0-9]+\\.\\s*)?(([Ss]hort|[Ff]ull)"
-              + " [Dd]escription:|[Tt]itle:)?\\s*[\"“]?(?<text>[^\"“]*)[\"“]?");
-  private static final String TEXT_GROUP = "text";
-  private static final String BULLET_GROUP = "bullet";
+          // Match newlines with the '.' character.
+          "(?s)"
+              // Match the start of the line.
+              + "^"
+              // A number, e.g., "1: " or "1. "
+              + "([0-9]+[:.])?\\s*"
+              // A label, e.g., "Title - " or "Full Description: "
+              + "(([Pp]roject\\s*[0-9]*|[Tt]itle|[Ss]hort|[Ff]ull)?\\s*([Dd]escription)?)?\\s*"
+              // The end of the label, e.g., the ":" or " - " from above.
+              + "(\\.|:| -)?\\s*" //
+              // A second number for, e.g., "Project: 1. "
+              + "([0-9]+[:.])?\\s*" //
+              // A title after the label, e.g., "Project 1 - Title: "
+              + "(Title:)?\\s*" //
+              // The main text, either quoted or not. Quotes are removed.
+              + "([\"“”](?<quotedText>.*)[\"“”]|(?<unquotedText>.*))"
+              // Match the end of the line.
+              + "$");
+  private static final ImmutableList<String> TEXT_GROUPS =
+      ImmutableList.of("quotedText", "unquotedText");
+
+  // Do NOT have any special Regex characters in these delimiters.
+  static final String END_OF_TITLE = "~~title:ProjectLeoDelimiter~~";
+  static final String END_OF_SHORT = "~~short:ProjectLeoDelimiter~~";
+  static final String END_OF_PROJECT = "~~prj:ProjectLeoDelimiter~~";
 
   @Autowired Database db;
   @Autowired OpenAiUtils openAiUtils;
@@ -116,7 +131,10 @@ public class ClassManagementService {
                           db.getKnowledgeAndSkillRepository()
                               .findAllByAssignmentId(request.getAssignmentId()),
                           knowledgeAndSkill ->
-                              ("\"" + DataAccess.getShortDescr(knowledgeAndSkill) + "\"")));
+                              "\""
+                                  + StringEscapeUtils.escapeJava(
+                                      DataAccess.getShortDescr(knowledgeAndSkill))
+                                  + "\""));
 
               // Query OpenAI for projects.
               // TODO: Is there an asynchronous way to do this?
@@ -129,8 +147,9 @@ public class ClassManagementService {
                               .setContent(
                                   String.format(
                                       "You are a senior student who wants to spend 60 hours to"
-                                          + " build a project that demonstrates your mastery of %s."
-                                          + " You are passionate about \"%s\" and good at \"%s\".",
+                                          + " build a project that demonstrates your mastery of"
+                                          + " %s. You are passionate about \"%s\" and good at"
+                                          + " \"%s\".",
                                       knowledgeAndSkillsTextList,
                                       StringEscapeUtils.escapeJava(request.getSomethingYouLove()),
                                       StringEscapeUtils.escapeJava(request.getWhatYouAreGoodAt()))))
@@ -138,9 +157,16 @@ public class ClassManagementService {
                           OpenAiMessage.newBuilder()
                               .setRole("user")
                               .setContent(
-                                  "Generate 5 projects that would fit the criteria. For each"
-                                      + " project, return a title, a short description, and a full"
-                                      + " description on separate lines."))
+                                  String.format(
+                                      "Generate 5 projects that would fit the criteria. For each"
+                                          + " project, return: 1) a title, 2) then the text \"%s\","
+                                          + " 3) then a declarative summary of the project in one"
+                                          + " sentence, 4) then the text \"%s\", 5) then a full"
+                                          + " description of the project including an outline of"
+                                          + " major steps, 6) then the text \"%s\".",
+                                      StringEscapeUtils.escapeJava(END_OF_TITLE),
+                                      StringEscapeUtils.escapeJava(END_OF_SHORT),
+                                      StringEscapeUtils.escapeJava(END_OF_PROJECT))))
                       .build();
 
               OpenAiResponse aiResponse =
@@ -163,74 +189,47 @@ public class ClassManagementService {
         .finish();
   }
 
-  private static String extractText(List<String> lines, AtomicInteger i) {
-    ArrayList<String> result = new ArrayList<>();
-    boolean inBulletedList = false;
-    while (i.get() < lines.size()) {
-      String line = lines.get(i.getAndIncrement());
-      Matcher matcher = OPEN_AI_PROJECT_RESPONSE_LINE.matcher(line);
-      if (!matcher.matches() || Strings.isNullOrEmpty(matcher.group(TEXT_GROUP))) {
-        continue;
-      }
-      result.add(matcher.group(TEXT_GROUP));
-      if (matcher.group(BULLET_GROUP) == null) {
-        if (inBulletedList) {
-          i.decrementAndGet();
-          result.remove(result.size() - 1);
+  static String normalizeAndCheckString(String input) {
+    checkArgument(!input.isEmpty(), "empty input");
+    input = input.trim().replaceAll("\\n\\n", "\n");
+    Matcher fluffMatcher = REMOVE_FLUFF.matcher(input);
+    if (fluffMatcher.matches()) {
+      for (String groupName : TEXT_GROUPS) {
+        String groupText = fluffMatcher.group(groupName);
+        if (groupText != null) {
+          input = groupText;
+          break;
         }
-        break;
       }
-      inBulletedList = true;
     }
-    return EOL_JOINER.join(result);
+    return input.trim().replaceAll("\\n\\n", "\n");
   }
 
-  public static List<Project> extractProjects(
-      LogOperations log, Builder response, ProjectInput projectInput, String aiResponse)
-      throws IOException {
-    // Parse the result into separate lines.
-    List<String> lines = new ArrayList<>();
-    BufferedReader reader = new BufferedReader(new StringReader(aiResponse));
-    String line;
-    while ((line = reader.readLine()) != null) {
-      lines.add(line);
-    }
-    lines = lines.stream().map(String::trim).filter(str -> !str.isEmpty()).toList();
+  static List<Project> extractProjects(
+      LogOperations log, Builder response, ProjectInput projectInput, String aiResponse) {
+    List<Project> projects = new ArrayList<>();
+    for (String projectText : aiResponse.split(END_OF_PROJECT)) {
+      if (normalizeAndCheckString(projectText).isEmpty()) {
+        continue;
+      }
+      try {
+        String[] pieces_of_information =
+            projectText.trim().split(END_OF_TITLE + "|" + END_OF_SHORT);
+        checkArgument(pieces_of_information.length == 3, projectText);
 
-    // Process the lines and extract project triplets.
-    AtomicInteger i = new AtomicInteger(0);
-    ArrayList<String> results = new ArrayList<>();
-    while (i.get() < lines.size()) {
-      results.add(extractText(lines, i));
-    }
+        projects.add(
+            new Project()
+                .setCreationTime(Instant.now())
+                .setProjectInput(projectInput)
+                .setName(normalizeAndCheckString(pieces_of_information[0]))
+                .setShortDescr(normalizeAndCheckString(pieces_of_information[1]))
+                .setLongDescr(normalizeAndCheckString(pieces_of_information[2])));
+        response.addProjects(DataAccess.convertProjectToProto(projects.get(projects.size() - 1)));
 
-    if (results.size() != 15) {
-      log.setStatus(Status.ERROR);
-      log.addNote("Parsed out number of lines other than 15 from OpenAI's response.");
-      log.addNote("The lines processed were:");
-      for (String noteLine : lines) {
-        Matcher m = OPEN_AI_PROJECT_RESPONSE_LINE.matcher(noteLine);
-        if (m.matches()) {
-          log.addNote(
-              "+ [%s]  --  BULLET: [%s], TEXT: [%s]",
-              noteLine, m.group(BULLET_GROUP), m.group(TEXT_GROUP));
-        } else {
-          log.addNote("- [%s]", noteLine);
-        }
+      } catch (Exception e) {
+        log.addNote("Could not parse project text: %s", projectText);
       }
     }
-
-    List<Project> projects = new ArrayList<>();
-    for (int j = 0; j < results.size() - 2; j += 3) {
-      projects.add(
-          new Project()
-              .setCreationTime(Instant.now())
-              .setProjectInput(projectInput)
-              .setName(results.get(j))
-              .setShortDescr(results.get(j + 1))
-              .setLongDescr(results.get(j + 2)));
-    }
-
     return projects;
   }
 

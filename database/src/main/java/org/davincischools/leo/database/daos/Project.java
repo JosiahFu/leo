@@ -25,7 +25,7 @@ public class Project {
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
-  public static final String COLUMN_STATE_NAME = "state";
+  public static final String COLUMN_THUMBSSTATE_NAME = "thumbs_state";
   public static final String COLUMN_NEEDSREVIEW_NAME = "needs_review";
 
   private Integer id;
@@ -42,7 +42,7 @@ public class Project {
 
   private String longDescrQuill;
 
-  private String state;
+  private String thumbsState;
 
   private Byte needsReview;
 
@@ -80,8 +80,7 @@ public class Project {
     return this;
   }
 
-  @Lob
-  @Column(name = COLUMN_SHORTDESCR_NAME)
+  @Column(name = COLUMN_SHORTDESCR_NAME, length = 1024)
   public String getShortDescr() {
     return shortDescr;
   }
@@ -124,13 +123,13 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_STATE_NAME, length = 11)
-  public String getState() {
-    return state;
+  @Column(name = COLUMN_THUMBSSTATE_NAME, length = 11)
+  public String getThumbsState() {
+    return thumbsState;
   }
 
-  public Project setState(String state) {
-    this.state = state;
+  public Project setThumbsState(String thumbsState) {
+    this.thumbsState = thumbsState;
     return this;
   }
 
