@@ -1,1 +1,63 @@
+@use '../../../libs/color';
 @import '../../../libs/DefaultPage/DefaultPage';
+
+.panel {
+
+  .title {
+    width: 100%;
+    white-space: nowrap;
+    font-size: large;
+    font-weight: bold;
+  }
+
+  .body {
+    font-size: smaller;
+    width: 100%;
+
+    .hint {
+      padding: 0.5em;
+    }
+  }
+}
+
+.line-item {
+  display: grid;
+  box-sizing: content-box;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0.5em;
+  grid-row: 1;
+  grid-column: 1;
+
+  .anticon {
+    display: flex;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+    color: color.$destructive-active;
+    padding: 0 0.5em 0 0.5em;
+    justify-content: flex-end;
+
+    svg {
+      z-index: 2;
+    }
+  }
+
+  .ant-input {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    text-align: left;
+
+    padding-right: 2em;
+    background: none;
+    margin: 0;
+  }
+}
+
+.add-line-item.anticon {
+  padding-left: 1em;
+  color: lightgreen;
+}

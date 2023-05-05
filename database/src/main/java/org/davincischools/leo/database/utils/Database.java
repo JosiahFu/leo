@@ -63,6 +63,11 @@ public class Database {
       EntityUtils.getColumn(UserX.class, UserX.COLUMN_LASTNAME_NAME).length();
   public static final int USER_MIN_PASSWORD_LENGTH = 8;
 
+  public enum KNOWLEDGE_AND_SKILL_TYPE {
+    EKS,
+    XQ_COMPETENCY,
+  }
+
   @Autowired private AdminXRepository adminXRepository;
   @Autowired private AssignmentKnowledgeAndSkillRepository assignmentKnowledgeAndSkillRepository;
   @Autowired private AssignmentRepository assignmentRepository;
@@ -323,7 +328,8 @@ public class Database {
             });
   }
 
-  public KnowledgeAndSkill createKnowledgeAndSkill(ClassX classX, String name, String descr) {
+  public KnowledgeAndSkill createKnowledgeAndSkill(
+      ClassX classX, String name, String descr, KNOWLEDGE_AND_SKILL_TYPE type) {
     return getKnowledgeAndSkillRepository()
         .findByName(classX.getId(), name)
         .orElseGet(
@@ -335,7 +341,8 @@ public class Database {
                             .setClassX(classX)
                             .setName(name)
                             .setShortDescr(descr)
-                            .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))));
+                            .setShortDescrQuill(QuillInitializer.toQuillDelta(descr))
+                            .setType(type.name())));
   }
 
   public Assignment createAssignment(

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.ClassX;
+import org.davincischools.leo.database.daos.KnowledgeAndSkill;
 import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.UserX;
@@ -146,5 +147,22 @@ public class DataAccess {
             false)
         .map(DataAccess::convertProjectToProto)
         .collect(Collectors.toList());
+  }
+
+  public static org.davincischools.leo.protos.pl_types.Eks getProtoEks(KnowledgeAndSkill kas) {
+    return org.davincischools.leo.protos.pl_types.Eks.newBuilder()
+        .setId(kas.getId())
+        .setName(kas.getName())
+        .setShortDescr(getShortDescr(kas))
+        .build();
+  }
+
+  public static org.davincischools.leo.protos.pl_types.XqCompetency orProtoXqCompetency(
+      KnowledgeAndSkill kas) {
+    return org.davincischools.leo.protos.pl_types.XqCompetency.newBuilder()
+        .setId(kas.getId())
+        .setName(kas.getName())
+        .setShortDescr(getShortDescr(kas))
+        .build();
   }
 }

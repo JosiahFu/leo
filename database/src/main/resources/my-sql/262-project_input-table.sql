@@ -8,7 +8,7 @@ CREATE TABLE project_input
 
     pending_completion   DATETIME,
 
-    assignment_id        INT      NOT NULL,
+    assignment_id        INT,
     CONSTRAINT project_input__assignment_id
         FOREIGN KEY (assignment_id)
             REFERENCES assignment (id)

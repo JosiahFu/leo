@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+import "pl_types.proto";
+
+option java_multiple_files = true;
+option java_package = "org.davincischools.leo.protos.project_management";
+
+package project_management;
+
+service ProjectManagementService {
+  rpc GetEks (GetEksRequest) returns (GetEksResponse) {}
+  rpc GetXqCompetencies (GetXqCompetenciesRequest) returns (GetXqCompetenciesResponse) {}
+  rpc GetMotivations (GetMotivationsRequest) returns (GetMotivationsResponse) {}
+  rpc GenerateProjects (GenerateProjectsRequest) returns (GenerateProjectsResponse) {}
+}
+
+message GetEksRequest {
+  optional int32 user_x_id = 1;
+}
+
+message GetEksResponse {
+  repeated pl_types.Eks eks = 1;
+}
+
+message GetXqCompetenciesRequest {
+  optional int32 user_x_id = 1;
+}
+
+message GetXqCompetenciesResponse {
+  repeated pl_types.XqCompetency xq_compentencies = 1;
+}
+
+message GetMotivationsRequest {
+}
+
+message GetMotivationsResponse {
+}
+
+message GenerateProjectsRequest {
+  optional int32 user_x_id = 1;
+  repeated string interests = 2;
+  repeated string career = 3;
+  repeated pl_types.Eks eks = 4;
+  repeated pl_types.XqCompetency xq_compentencies = 5;
+}
+
+message GenerateProjectsResponse {
+  repeated pl_types.Project projects = 1;
+}

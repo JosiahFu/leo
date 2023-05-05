@@ -21,6 +21,7 @@ public class KnowledgeAndSkill {
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_NAME_NAME = "name";
+  public static final String COLUMN_TYPE_NAME = "type";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
@@ -31,6 +32,8 @@ public class KnowledgeAndSkill {
   private Instant creationTime;
 
   private String name;
+
+  private String type;
 
   private String shortDescr;
 
@@ -71,6 +74,16 @@ public class KnowledgeAndSkill {
 
   public KnowledgeAndSkill setName(String name) {
     this.name = name;
+    return this;
+  }
+
+  @Column(name = COLUMN_TYPE_NAME, nullable = false, length = 13)
+  public String getType() {
+    return type;
+  }
+
+  public KnowledgeAndSkill setType(String type) {
+    this.type = type;
     return this;
   }
 

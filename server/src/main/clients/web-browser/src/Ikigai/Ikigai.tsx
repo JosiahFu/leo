@@ -1,5 +1,5 @@
 import './Ikigai.scss';
-import {createRef, ReactNode, useEffect, useState} from 'react';
+import {createRef, PropsWithChildren, useEffect, useState} from 'react';
 import {IkigaiCategory} from '../IkigaiCategory/IkigaiCategory';
 import {doTransition, overshootTransition} from '../utils/transitions';
 import {SpinButton, SpinButtonFunctions} from './SpinButton/SpinButton';
@@ -9,40 +9,31 @@ export type Coordinate = {
   y: number;
 };
 
-export function Ikigai(props: {
-  id: string;
-  // Setting this to null will hide the diagram.
-  centerPosition: Coordinate | null;
-  categoryDiameter: number;
-  distanceToCategoryCenter: number;
-  radians?: number;
-  enabled?: boolean;
-  processing?: boolean;
-
-  lovesResizeAndRotateElement: ReactNode;
-  lovesValueIsSet?: number;
-  onLovesClick: () => void;
-
-  worldNeedsResizeAndRotateElement: ReactNode;
-  worldNeedsValueIsSet?: number;
-  onWorldNeedsClick: () => void;
-
-  paidForResizeAndRotateElement: ReactNode;
-  paidForValueIsSet?: number;
-  onPaidForClick: () => void;
-
-  goodAtResizeAndRotateElement: ReactNode;
-  goodAtValueIsSet?: number;
-  onGoodAtClick: () => void;
-
-  showSpinButton: boolean;
-  onSpinClick: () => void;
-}) {
+export function Ikigai(
+  props: PropsWithChildren<{
+    id: string;
+    // Setting this to null will hide the diagram.
+    centerPosition: Coordinate | null;
+    categoryDiameter: number;
+    distanceToCategoryCenter: number;
+    radians: number;
+    radiansOffset?: number;
+    enabled: boolean;
+    processing?: boolean;
+    showSpinButton: boolean;
+    onSpinClick: () => void;
+    categoryElementIds: (string | undefined)[];
+  }>
+) {
   const visibleAlpha = 0.2;
   const showHideDurationMs = 750;
   const processingStepDurationMs = 750;
   const processingStepDelayMs = 250;
   const processingStepIncrement = Math.PI / 4;
+  const radiansOffset =
+    props.radiansOffset != null
+      ? props.radiansOffset
+      : (2 * Math.PI) / props.categoryElementIds.length / 2;
 
   const [centerPosition, setCenterPosition] = useState<Coordinate | null>(null);
   const [categoryDiameter, setCategoryDiameter] = useState(0);
@@ -85,7 +76,7 @@ export function Ikigai(props: {
   function hide(durationMs: number): Promise<void> {
     const promise = doTransition(
       durationMs,
-      {setFn: setRadians, begin: radians - 4 * Math.PI, end: 0},
+      {setFn: setRadians, begin: radians - 2 * Math.PI, end: 0},
       {
         setFn: setDistanceToCategoryCenter,
         begin: props.distanceToCategoryCenter,
@@ -156,82 +147,30 @@ export function Ikigai(props: {
   return (
     <>
       <div style={{visibility: centerPosition ? 'visible' : 'hidden'}}>
-        <div id={props.id + '.lovesPanel'} onClick={props.onLovesClick}>
-          <div>{props.lovesResizeAndRotateElement}</div>
-        </div>
-        <IkigaiCategory
-          id={props.id + '.lovesCategory'}
-          center={centerPosition || {x: 0, y: 0}}
-          diameter={categoryDiameter}
-          color={{r: 249, g: 209, b: 98}}
-          alpha={alpha}
-          radians={radians + 1.5 * Math.PI}
-          distance={distanceToCategoryCenter}
-          resizeAndRotateElementIds={[props.id + '.lovesPanel']}
-          onClick={props.enabled !== false ? props.onLovesClick : () => {}}
-          highlightBackground={
-            props.lovesValueIsSet != null ? props.lovesValueIsSet : 1
-          }
-        />
-        <div
-          id={props.id + '.worldNeedsPanel'}
-          onClick={props.onWorldNeedsClick}
-        >
-          <div>{props.worldNeedsResizeAndRotateElement}</div>
-        </div>
-        <IkigaiCategory
-          id={props.id + '.worldNeedsCategory'}
-          center={centerPosition || {x: 0, y: 0}}
-          diameter={categoryDiameter}
-          color={{r: 243, g: 149, b: 79}}
-          alpha={alpha}
-          radians={radians + 0 * Math.PI}
-          distance={distanceToCategoryCenter}
-          resizeAndRotateElementIds={[props.id + '.worldNeedsPanel']}
-          onClick={props.enabled !== false ? props.onWorldNeedsClick : () => {}}
-          highlightBackground={
-            props.worldNeedsValueIsSet != null ? props.worldNeedsValueIsSet : 1
-          }
-        />
-        <div id={props.id + '.paidForPanel'} onClick={props.onPaidForClick}>
-          <div>{props.paidForResizeAndRotateElement}</div>
-        </div>
-        <IkigaiCategory
-          id={props.id + '.paidForCategory'}
-          center={centerPosition || {x: 0, y: 0}}
-          diameter={categoryDiameter}
-          color={{r: 107, g: 198, b: 165}}
-          alpha={alpha}
-          radians={radians + 0.5 * Math.PI}
-          distance={distanceToCategoryCenter}
-          resizeAndRotateElementIds={[props.id + '.paidForPanel']}
-          onClick={props.enabled !== false ? props.onPaidForClick : () => {}}
-          highlightBackground={
-            props.paidForValueIsSet != null ? props.paidForValueIsSet : 1
-          }
-        />
-        <div id={props.id + '.goodAtPanel'} onClick={props.onGoodAtClick}>
-          <div>{props.goodAtResizeAndRotateElement}</div>
-        </div>
-        <IkigaiCategory
-          id={props.id + '.goodAtCategory'}
-          center={centerPosition || {x: 0, y: 0}}
-          diameter={categoryDiameter}
-          color={{r: 10, g: 86, b: 136}}
-          alpha={alpha}
-          radians={radians + Math.PI}
-          distance={distanceToCategoryCenter}
-          resizeAndRotateElementIds={[props.id + '.goodAtPanel']}
-          onClick={props.enabled !== false ? props.onGoodAtClick : () => {}}
-          highlightBackground={
-            props.goodAtValueIsSet != null ? props.goodAtValueIsSet : 1
-          }
-        />
+        {props.categoryElementIds.map((categoryElementId, index) => (
+          <IkigaiCategory
+            id={props.id + '.' + index}
+            key={index}
+            center={centerPosition || {x: 0, y: 0}}
+            diameter={categoryDiameter}
+            maxDiameter={props.categoryDiameter}
+            hue={index * (360 / props.categoryElementIds.length)}
+            alpha={alpha}
+            radians={
+              radians +
+              ((2 * Math.PI) / props.categoryElementIds.length) * index +
+              radiansOffset
+            }
+            distance={distanceToCategoryCenter}
+            categoryElementId={categoryElementId}
+          />
+        ))}
+        {props.children}
         <SpinButton
           id={props.id + '.spinButton'}
           origin={centerPosition || {x: 0, y: 0}}
           diameter={categoryDiameter / 3}
-          enabled={props.enabled !== false && spinButtonEnabled}
+          enabled={spinButtonEnabled && props.enabled}
           onClick={props.onSpinClick}
           ref={spinButton}
         />

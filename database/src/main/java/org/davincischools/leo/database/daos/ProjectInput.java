@@ -92,8 +92,8 @@ public class ProjectInput {
     return this;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "assignment_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assignment_id")
   public Assignment getAssignment() {
     return assignment;
   }

@@ -24,6 +24,7 @@ import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.database.utils.Database.KNOWLEDGE_AND_SKILL_TYPE;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -183,7 +184,8 @@ public class AdminUtils {
                           db.createAssignment(
                               classX,
                               eksName,
-                              db.createKnowledgeAndSkill(classX, eksName, eksDescr));
+                              db.createKnowledgeAndSkill(
+                                  classX, eksName, eksDescr, KNOWLEDGE_AND_SKILL_TYPE.EKS));
                         }
                       }
                     }
@@ -323,17 +325,21 @@ public class AdminUtils {
           throw new IllegalArgumentException("Unexpected number of columns: " + cells.length + ".");
         }
 
-        String eksName = cells[0];
-        String eksDescr = cells[1];
+        String xqName = cells[0];
+        String xqDescr = cells[1];
         String outcome = cells[2];
         XqCategory xqCategory = XqCategory.valueOf(cells[3]);
 
-        checkArgument(!eksName.isEmpty(), "Title required.");
-        checkArgument(!eksDescr.isEmpty(), "Description required.");
+        checkArgument(!xqName.isEmpty(), "Title required.");
+        checkArgument(!xqDescr.isEmpty(), "Description required.");
         checkArgument(!outcome.isEmpty(), "Outcome required.");
 
         ClassX classX = db.createClassX(school, xqCategory.getName(), c -> {});
-        db.createAssignment(classX, eksName, db.createKnowledgeAndSkill(classX, eksName, eksDescr));
+        db.createAssignment(
+            classX,
+            xqName,
+            db.createKnowledgeAndSkill(
+                classX, xqName, xqDescr, KNOWLEDGE_AND_SKILL_TYPE.XQ_COMPETENCY));
         classXIds.add(classX.getId());
 
         log.atInfo().log("Imported: {}", line);

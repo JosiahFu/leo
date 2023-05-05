@@ -4,6 +4,7 @@ CREATE TABLE knowledge_and_skill
     creation_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name              VARCHAR(255) NOT NULL,
+    type              ENUM ('EKS', 'XQ_COMPETENCY') NOT NULL,
     short_descr       TEXT,
     short_descr_quill TEXT,
     long_descr        TEXT,

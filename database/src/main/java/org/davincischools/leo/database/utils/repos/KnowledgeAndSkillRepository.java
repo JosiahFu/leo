@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KnowledgeAndSkillRepository extends JpaRepository<KnowledgeAndSkill, Integer> {
+
+  @Query("SELECT ks FROM KnowledgeAndSkill ks" + " WHERE ks.type = (:type)")
+  Iterable<KnowledgeAndSkill> findAll(@Param("type") String type);
+
   @Query(
       "SELECT ks FROM KnowledgeAndSkill ks"
           + " INNER JOIN FETCH AssignmentKnowledgeAndSkill aks"
