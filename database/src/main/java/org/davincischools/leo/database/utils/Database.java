@@ -217,7 +217,7 @@ public class Database {
                                   case "DVConnect" -> "Da Vinci Connect High School";
                                   case "DVD" -> "Da Vinci Design High School";
                                   case "DVFlex" -> "Da Vinci Flex High School";
-                                  case "DVRise" -> "Da Vinci Rise High School-Richstone";
+                                  case "DVRISE" -> "Da Vinci Rise High School-Richstone";
                                   case "DVS" -> "Da Vinci Science High School";
                                   default -> throw new IllegalArgumentException(
                                       "Unrecognized school nickname: " + nickname);
@@ -229,7 +229,7 @@ public class Database {
                                       "DVS" -> "201 N. Douglas St., El Segundo, CA 90245";
                                   case "DVConnect" -> "550 Continental Blvd., El Segundo, CA 90245";
                                   case "DVFlex" -> "Address TBD";
-                                  case "DVRise" -> "13634 Cordary Avenue, Hawthorne, CA 90250";
+                                  case "DVRISE" -> "13634 Cordary Avenue, Hawthorne, CA 90250";
                                   default -> throw new IllegalArgumentException(
                                       "Unrecognized school nickname: " + nickname);
                                 })));

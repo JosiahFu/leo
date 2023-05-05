@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.text.RandomStringGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,8 +100,17 @@ public class AdminUtils {
               .generate(20);
 
       District district = createDistrict();
+      AtomicBoolean passwordUpdated = new AtomicBoolean(false);
       UserX admin =
-          db.createUserX(district, createAdmin, userX -> UserUtils.setPassword(userX, password));
+          db.createUserX(
+              district,
+              createAdmin,
+              userX -> {
+                if (userX.getEncodedPassword().equals(Database.INVALID_ENCODED_PASSWORD)) {
+                  UserUtils.setPassword(userX, password);
+                  passwordUpdated.set(true);
+                }
+              });
       db.addAdminXPermission(admin);
 
       // TODO: Later we don't want to do this. But, for development for now...
@@ -115,12 +125,14 @@ public class AdminUtils {
         db.addStudentsToClassX(classX, admin.getStudent());
       }
 
-      log.atWarn()
-          .log(
-              "IMPORTANT! Log in and change the temporary password:"
-                  + " login: \"{}\", temporary password: \"{}\"",
-              createAdmin,
-              password);
+      if (passwordUpdated.get()) {
+        log.atWarn()
+            .log(
+                "IMPORTANT! Log in and change the temporary password:"
+                    + " login: \"{}\", temporary password: \"{}\"",
+                createAdmin,
+                password);
+      }
     }
   }
 
