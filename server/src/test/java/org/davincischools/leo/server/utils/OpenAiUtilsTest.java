@@ -1,6 +1,5 @@
 package org.davincischools.leo.server.utils;
 
-
 import org.davincischools.leo.server.ServerApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
