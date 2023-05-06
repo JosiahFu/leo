@@ -52,6 +52,7 @@ public class ReactResourceController {
 
   @RequestMapping({
     "/",
+    "/docs/**",
     "/favicon.ico",
     "/images/**",
     "/index.html",

@@ -1,0 +1,57 @@
+<svg viewBox="6 -1 27 49" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      .foreground {
+      stroke: #F3954F;
+      fill: #F3954F;
+      stroke-width: 1.5;
+      }
+
+      .background {
+      stroke: white;
+      fill: white;
+      stroke-width: 3;
+      }
+
+      .icon {
+      fill: none;
+      }
+
+      .font {
+      font-size: 5.5px;
+      font-weight: bold;
+      font-family: Tahoma, Trebuchet MS, sans-serif;
+      stroke-width: 0;
+      alignment-baseline: central;
+      }
+
+      .debug {
+
+      fill: none;
+      stroke: none;
+      stroke-width: 1;
+      }
+    </style>
+  </defs>
+  <!-- debug -->
+  <rect x="-16" y="-16" width="500" height="500" class="debug"/>
+
+  <!-- bottom -->
+  <circle cx="19" cy="26" r="10" class="background icon"/>
+  <circle cx="19" cy="26" r="10" class="foreground icon"/>
+
+  <!-- left -->
+  <circle cx="12" cy="19" r="10" class="background icon"/>
+  <circle cx="12" cy="19" r="10" class="foreground icon"/>
+
+  <!-- right -->
+  <circle cx="26" cy="19" r="10" class="background icon"/>
+  <circle cx="26" cy="19" r="10" class="foreground icon"/>
+
+  <!-- top -->
+  <circle cx="19" cy="12" r="10" class="background icon"/>
+  <circle cx="19" cy="12" r="10" class="foreground icon"/>
+
+  <text x="19" y="43" text-anchor="middle" class="background font" style="stroke-width: 1.5;">PROJECT LEO</text>
+  <text x="19" y="43" text-anchor="middle" class="foreground font">PROJECT LEO</text>
+</svg>

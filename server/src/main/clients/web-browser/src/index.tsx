@@ -17,6 +17,7 @@ import {DefaultPageNav} from './libs/DefaultPage/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
 import {MyProjects} from './pages/projects/MyProjects/MyProjects';
 import {MyAccount} from './pages/profiles/MyProfile/MyAccount';
+import {PrivacyPolicy} from './pages/docs/PrivacyPolicy';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -30,6 +31,16 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <Login />,
+      },
+    ],
+  },
+  {
+    path: '/docs',
+    element: <DefaultPageNav />,
+    children: [
+      {
+        path: 'privacy-policy',
+        element: <PrivacyPolicy />,
       },
     ],
   },
