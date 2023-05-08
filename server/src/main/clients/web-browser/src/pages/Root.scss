@@ -1,4 +1,6 @@
 @use '../libs/color';
+@use '../libs/forms.scss';
+
 @import "../index";
 
 header {
@@ -94,8 +96,6 @@ footer {
   align-items: center;
   gap: 5em;
 
-  div {}
-
   img {
     width: 40%;
   }
@@ -112,7 +112,6 @@ footer {
   align-items: center;
   gap: 5em;
 
-
   div {
     width: 100%;
   }
@@ -122,3 +121,9 @@ footer {
   }
 }
 
+.form-separator {
+  border-width: 1px 0 0 0;
+  border-color: color.$primary-800;
+  border-style: solid;
+  margin: 0.5em 0 1em 0;
+}

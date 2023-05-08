@@ -1,9 +1,15 @@
 import './Root.scss';
+
 import {Link} from 'react-router-dom';
-import {Button, Dropdown, Form, Input, InputNumber, Modal, Space} from 'antd';
+import {Button, Dropdown, Form, Input, Modal} from 'antd';
 import {ChangeEvent, useState} from 'react';
-import {DownOutlined} from '@ant-design/icons';
-import * as React from 'react';
+import {
+  DownOutlined,
+  MailOutlined,
+  QuestionOutlined,
+  SolutionOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {interest_service} from '../generated/protobuf-js';
 import InterestService = interest_service.InterestService;
 import {createService} from '../protos';
@@ -35,7 +41,9 @@ export function Root() {
       professionSelection !== otherProfession
         ? professionSelection
         : professionDescr;
-    interestService.registerInterest(request);
+    interestService
+      .registerInterest(request)
+      .catch(error => console.log(error));
   }
 
   return (
@@ -242,7 +250,7 @@ export function Root() {
       </footer>
       <Modal
         title="I'm interested! Tell me more!"
-        width="80%"
+        width="60%"
         open={interestFormOpen}
         closable={true}
         onCancel={() => setInterestFormOpen(false)}
@@ -257,56 +265,79 @@ export function Root() {
           wrapperCol={{span: 96}}
           onFinish={submitInterestForm}
         >
+          <div>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  message: 'Please enter your first name.',
+                },
+              ]}
+              name="first_name"
+            >
+              <div>
+                <UserOutlined />
+                <Input
+                  name="first_name"
+                  placeholder="First Name"
+                  maxLength={255}
+                  autoComplete="given-name"
+                />
+              </div>
+            </Form.Item>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  message: 'Please enter your last name.',
+                },
+              ]}
+              name="last_name"
+            >
+              <div>
+                <UserOutlined />
+                <Input
+                  name="last_name"
+                  placeholder="Last Name"
+                  maxLength={255}
+                  autoComplete="family-name"
+                />
+              </div>
+            </Form.Item>
+          </div>
           <Form.Item
-            label="First Name"
             rules={[
               {
                 required: true,
                 whitespace: true,
-                message: 'Please enter your first name',
+                message: 'Please enter your email address.',
               },
-            ]}
-            name="firstName"
-          >
-            <Input name="firstName" maxLength={255} />
-          </Form.Item>
-          <Form.Item
-            label="Last Name"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: 'Please enter your last name',
-              },
-            ]}
-            name="lastName"
-          >
-            <Input name="lastName" maxLength={255} />
-          </Form.Item>
-          <Form.Item
-            label="E-mail"
-            rules={[
               {
                 type: 'email',
-                message: 'This e-mail address is not valid',
-              },
-              {
-                required: true,
-                message: 'Please enter your e-mail address',
+                message: 'This e-mail address is not valid.',
               },
             ]}
-            name="emailAddress"
+            name="email_address"
           >
-            <Input name="emailAddress" maxLength={254} />
+            <div>
+              <MailOutlined />
+              <Input
+                name="email_address"
+                placeholder="Email Address"
+                maxLength={255}
+                autoComplete="email"
+              />
+            </div>
           </Form.Item>
           <Form.Item
-            label="Profession"
             required={true}
             rules={[
               {
                 validator: () => {
                   if (professionSelection.trim() === selectProfession) {
-                    return Promise.reject('Please select your profession');
+                    return Promise.reject('Please select your profession.');
                   }
                   return Promise.resolve();
                 },
@@ -314,46 +345,45 @@ export function Root() {
             ]}
             name="professionSelection"
           >
-            <Dropdown
-              menu={{
-                items: defaultProfessions.map(value => {
-                  return {
-                    key: value,
-                    label: (
-                      <div
-                        onClick={() => {
-                          setProfessionSelection(value);
-                          interestForm.setFieldValue(
-                            'professionSelection',
-                            value
-                          );
-                        }}
-                      >
-                        {value}
-                      </div>
-                    ),
-                  };
-                }),
-              }}
-            >
-              <Button>
-                <Space>
-                  {professionSelection}
-                  <DownOutlined />
-                </Space>
-              </Button>
-            </Dropdown>
+            <div>
+              <Dropdown
+                menu={{
+                  items: defaultProfessions.map(value => {
+                    return {
+                      key: value,
+                      label: (
+                        <div
+                          onClick={() => {
+                            setProfessionSelection(value);
+                            interestForm.setFieldValue(
+                              'professionSelection',
+                              value
+                            );
+                          }}
+                        >
+                          {value}
+                        </div>
+                      ),
+                    };
+                  }),
+                }}
+                placement="bottomLeft"
+              >
+                <div className="ant-input">{professionSelection}</div>
+              </Dropdown>
+              <SolutionOutlined />
+              <DownOutlined className="right" />
+            </div>
           </Form.Item>
           <Form.Item
-            label="Describe Profession"
-            required={true}
+            required={professionSelection === otherProfession}
             hidden={professionSelection !== otherProfession}
             rules={[
               {
                 validator: () => {
                   if (professionSelection === otherProfession) {
                     if (professionDescr.trim() === '') {
-                      return Promise.reject('Please describe your profession');
+                      return Promise.reject('Please describe your profession.');
                     }
                   }
                   return Promise.resolve();
@@ -362,43 +392,85 @@ export function Root() {
             ]}
             name="professionDescr"
           >
-            <Input
-              name="professionDescr"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setProfessionDescr(e.target.value)
-              }
-              value={professionDescr}
-              maxLength={255}
-            />
+            <div>
+              <SolutionOutlined />
+              <Input
+                name="professionDescr"
+                placeholder="Profession Description"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setProfessionDescr(e.target.value)
+                }
+                value={professionDescr}
+                maxLength={255}
+              />
+            </div>
           </Form.Item>
           <Form.Item
-            label="Reason for Interest"
             rules={[
               {
                 required: true,
                 whitespace: true,
-                message: 'Please enter your reason for interest',
+                message: 'Please let us know your thoughts.',
               },
             ]}
             name="reasonForInterest"
           >
-            <Input.TextArea name="reasonForInterest" maxLength={8192} />
+            <div>
+              <QuestionOutlined />
+              <Input.TextArea
+                name="reasonForInterest"
+                placeholder="Let us know your thoughts / Questions / Comments / Suggestions"
+                maxLength={8192}
+                rows={5}
+              />
+            </div>
           </Form.Item>
+          <div className="form-separator" />
           <Form.Item label="District Name" name="districtName">
             <Input name="districtName" maxLength={255} />
           </Form.Item>
           <Form.Item label="School Name" name="schoolName">
             <Input name="schoolName" maxLength={255} />
           </Form.Item>
-          <Form.Item label="Anticipated Usage" style={{marginBottom: 0}}>
-            <div style={{display: 'flex', gap: 10}}>
-              <Form.Item label="Teachers" name="numTeachers">
-                <InputNumber name="numTeachers" min={0} max={100000} />
-              </Form.Item>
-              <Form.Item label="Students" name="numStudents">
-                <InputNumber name="numTeachers" min={0} max={100000} />
-              </Form.Item>
-            </div>
+          <Form.Item
+            label="Number of Teachers"
+            name="numTeachers"
+            rules={[
+              {
+                validator: () => {
+                  if (
+                    !/^(\d+|)$/.test(
+                      interestForm.getFieldValue('numTeachers') ?? ''
+                    )
+                  ) {
+                    return Promise.reject('Please enter a valid number.');
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input name="numTeachers" />
+          </Form.Item>
+          <Form.Item
+            label="Number of Students"
+            name="numStudents"
+            rules={[
+              {
+                validator: () => {
+                  if (
+                    !/^(\d+|)$/.test(
+                      interestForm.getFieldValue('numStudents') ?? ''
+                    )
+                  ) {
+                    return Promise.reject('Please enter a valid number.');
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input name="numStudents" />
           </Form.Item>
           <Form.Item label="Address Line 1:" name="addressLine_1">
             <Input name="addressLine_1" maxLength={255} />
