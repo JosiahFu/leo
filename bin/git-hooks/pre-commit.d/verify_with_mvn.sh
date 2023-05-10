@@ -7,11 +7,10 @@ GIT_DIR="$(git rev-parse --show-toplevel)/.git"
 GIT_HASH="$(git rev-parse --verify HEAD)"
 
 echo "Checking out staged files."
+rm -rf "${TEMP_DIR}"
 mkdir --parents "${TEMP_DIR}/.git"
 git -C "${TEMP_DIR}" --git-dir="${GIT_DIR}" checkout --quiet --force "${GIT_HASH}"
 git -C "${TEMP_DIR}" --git-dir="${GIT_DIR}" submodule --quiet update --init --force --checkout --recursive --depth=1
-# -d: Remove untracked directories in addition to untracked files.
-git -C "${TEMP_DIR}" --git-dir="${GIT_DIR}" clean --quiet --force -d
 
 echo "Executing Maven."
 mvn --file "${TEMP_DIR}/pom.xml" clean package

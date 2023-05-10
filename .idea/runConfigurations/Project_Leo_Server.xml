@@ -1,5 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Project Leo Server" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="Project Leo Server" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false">
+    <option name="DEBUG_MODE" value="true" />
+    <envs>
+      <env name="PROJECT_LEO_TEST_DATABASE_PORT" value="3307" />
+    </envs>
     <module name="project-leo-server" />
     <selectedOptions>
       <option name="spring.boot.profiles" visible="false" />

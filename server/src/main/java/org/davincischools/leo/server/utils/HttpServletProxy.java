@@ -138,7 +138,8 @@ public class HttpServletProxy {
           continue;
         } else if (COOKIE_HEADERS.contains(name.toLowerCase())) {
           for (String value : header.getValue()) {
-            for (HttpCookie externalCookie : HttpCookie.parse(uriRewriter.rewriteForSpring(value))) {
+            for (HttpCookie externalCookie :
+                HttpCookie.parse(uriRewriter.rewriteForSpring(value))) {
               response.addCookie(convertCookie(externalCookie));
             }
           }
@@ -153,8 +154,10 @@ public class HttpServletProxy {
       byte[] externalBody = externalResponse.body();
       if (mediaType.isPresent() && mediaType.get().type().equals(MediaType.ANY_TEXT_TYPE.type())) {
         byte[] decodedBytes =
-            decodeBody(externalResponse.headers().allValues(HttpHeaders.CONTENT_ENCODING), externalBody);
-        String body = new String(decodedBytes, mediaType.get().charset().or(StandardCharsets.UTF_8));
+            decodeBody(
+                externalResponse.headers().allValues(HttpHeaders.CONTENT_ENCODING), externalBody);
+        String body =
+            new String(decodedBytes, mediaType.get().charset().or(StandardCharsets.UTF_8));
         externalBody =
             uriRewriter
                 .rewriteForSpring(body)
@@ -163,7 +166,8 @@ public class HttpServletProxy {
             .getOutputStream()
             .write(
                 encodeBody(
-                    externalResponse.headers().allValues(HttpHeaders.CONTENT_ENCODING), decodedBytes));
+                    externalResponse.headers().allValues(HttpHeaders.CONTENT_ENCODING),
+                    decodedBytes));
       } else {
         response.getOutputStream().write(externalBody);
       }

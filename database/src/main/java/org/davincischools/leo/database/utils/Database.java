@@ -7,8 +7,6 @@ import com.google.common.base.Strings;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.ClassX;
@@ -47,13 +45,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 
 @Component
-@EnableJpaRepositories(
-    basePackageClasses = {UserX.class, Database.class},
-    considerNestedRepositories = true)
-@EntityScan(basePackageClasses = UserX.class)
+@EnableJpaRepositories(basePackageClasses = {Database.class})
+@EntityScan(basePackageClasses = {UserX.class})
 public class Database {
-  private static final Logger logger = LogManager.getLogger();
-
   public static final String INVALID_ENCODED_PASSWORD = "INVALID ENCODED PASSWORD";
   public static final int USER_MAX_EMAIL_ADDRESS_LENGTH =
       EntityUtils.getColumn(UserX.class, UserX.COLUMN_EMAILADDRESS_NAME).length();
@@ -91,8 +85,6 @@ public class Database {
   @Autowired private TeacherRepository teacherRepository;
   @Autowired private TeacherSchoolRepository teacherSchoolRepository;
   @Autowired private UserXRepository userXRepository;
-
-  public Database() {}
 
   public AdminXRepository getAdminXRepository() {
     return adminXRepository;
