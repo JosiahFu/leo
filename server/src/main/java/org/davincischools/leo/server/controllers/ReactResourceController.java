@@ -76,7 +76,7 @@ public class ReactResourceController {
               Optional<MediaType> mediaType = getResponseMimeType(uri);
               if (reactPort > 0) {
                 // Forward the request to the React server running locally.
-                HttpServletProxy.sendRequestToReact(uri, reactPort, mediaType, request, response);
+                HttpServletProxy.sendExternalRequest(uri, reactPort, mediaType, request, response);
               } else {
                 // Get and copy a resource from the classpath.
                 mediaType.map(Object::toString).ifPresent(response::setContentType);
