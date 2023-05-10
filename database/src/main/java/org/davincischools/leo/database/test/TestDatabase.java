@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -34,41 +35,52 @@ public class TestDatabase {
   private static final String USERNAME = "dev";
   private static final String PASSWORD = "password";
 
-  @Bean
-  @Profile({"!prod"})
+  // Created connection.
+  private static DataSource dataSource = null;
+
+  @Bean("dataSource")
+  @Profile("!prod")
+  @Primary
   private static DataSource createTestDataSource(@Autowired Environment environment)
       throws SQLException, IOException {
     try {
-      // Create and start the container.
-      int port =
-          Optional.ofNullable(environment.getProperty(TEST_DATABASE_PORT_KEY, Integer.class))
-              .orElseGet(TestSocketUtils::findAvailableTcpPort);
-      MySQLContainer<?> container = createMySqlContainer(port);
-      container.start();
+      synchronized (TestDatabase.class) {
+        if (dataSource != null) {
+          return dataSource;
+        }
 
-      // Configure a data source to point to the container.
-      DataSource dataSource =
-          DataSourceBuilder.create()
-              .driverClassName(org.testcontainers.jdbc.ContainerDatabaseDriver.class.getName())
-              .url(container.getJdbcUrl())
-              .username(ROOT_USERNAME)
-              .password(ROOT_PASSWORD)
-              .type(MysqlDataSource.class)
-              .build();
+        // Create and start the container.
+        int port =
+            Optional.ofNullable(environment.getProperty(TEST_DATABASE_PORT_KEY, Integer.class))
+                .orElseGet(TestSocketUtils::findAvailableTcpPort);
+        MySQLContainer<?> container = createMySqlContainer(port);
+        container.start();
 
-      // Create the user and grant them permission.
-      createUser(dataSource, USERNAME, PASSWORD);
-      grantAllAccess(dataSource, DATABASE_NAME, USERNAME);
+        // Configure a data source to point to the container.
+        dataSource =
+            DataSourceBuilder.create()
+                .driverClassName(org.testcontainers.jdbc.ContainerDatabaseDriver.class.getName())
+                .url(container.getJdbcUrl())
+                .username(ROOT_USERNAME)
+                .password(ROOT_PASSWORD)
+                .type(MysqlDataSource.class)
+                .build();
 
-      // Load the schema into it.
-      DatabaseManagement.loadSchema(dataSource);
+        // Create the user and grant them permission.
+        createUser(dataSource, USERNAME, PASSWORD);
+        grantAllAccess(dataSource, DATABASE_NAME, USERNAME);
 
-      logger
-          .atWarn()
-          .log(
-              "Created a test database at {}. Data will not be persisted.", container.getJdbcUrl());
+        // Load the schema into it.
+        DatabaseManagement.loadSchema(dataSource);
 
-      return dataSource;
+        logger
+            .atWarn()
+            .log(
+                "Created a test database at {}. Data will not be persisted.",
+                container.getJdbcUrl());
+
+        return dataSource;
+      }
     } catch (IllegalStateException e) {
       // Ths failure is probably due to Docker Desktop not being installed.
       if (e.getMessage().contains("Could not find a valid Docker environment")) {
