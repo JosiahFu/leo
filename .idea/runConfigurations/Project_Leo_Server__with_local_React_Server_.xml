@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Project Leo Server (with local React Server)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false">
-    <option name="DEBUG_MODE" value="true" />
     <envs>
       <env name="PROJECT_LEO_TEST_DATABASE_PORT" value="3307" />
     </envs>

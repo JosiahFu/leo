@@ -21,7 +21,9 @@ public class LoadCustomProjectLeoProperties implements EnvironmentPostProcessor 
     try {
       // Load the custom Project Leo properties file, if it exists.
       if (projectLeoPropertiesFile.exists()
-          && !environment.getPropertySources().contains(LoadCustomProjectLeoProperties.class.getName())) {
+          && !environment
+              .getPropertySources()
+              .contains(LoadCustomProjectLeoProperties.class.getName())) {
         environment
             .getPropertySources()
             .addFirst(

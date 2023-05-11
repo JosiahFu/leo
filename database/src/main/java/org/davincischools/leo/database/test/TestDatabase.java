@@ -39,7 +39,7 @@ public class TestDatabase {
   private static DataSource dataSource = null;
 
   @Bean("dataSource")
-  @Profile("!prod")
+  @Profile("!useExternalDatabase")
   @Primary
   private static DataSource createTestDataSource(@Autowired Environment environment)
       throws SQLException, IOException {

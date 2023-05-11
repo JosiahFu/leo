@@ -8,12 +8,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.UserX;
+import org.davincischools.leo.database.post_environment_processors.LoadCustomProjectLeoProperties;
 import org.davincischools.leo.database.test.TestDatabase;
 import org.davincischools.leo.database.utils.Database;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessageConverter;
@@ -42,8 +45,16 @@ public class ServerApplication {
   }
 
   public static void main(String[] args) throws IOException {
-    ApplicationContext context = SpringApplication.run(ServerApplication.class, args);
+    // Load custom Project Leo properties into the environment.
+    ConfigurableEnvironment environment = new StandardEnvironment();
+    LoadCustomProjectLeoProperties.loadCustomProjectLeoProperties(environment);
 
+    // Start the Project Leo server.
+    SpringApplication sa = new SpringApplication(ServerApplication.class);
+    sa.setEnvironment(environment);
+    ApplicationContext context = sa.run(args);
+
+    // Dump the list of beans in the context.
     logger.atInfo().log("Bean names available:");
     String[] beanNames = context.getBeanDefinitionNames();
     Arrays.sort(beanNames);
@@ -52,6 +63,7 @@ public class ServerApplication {
       logger.atInfo().log("  - {} ({})", beanName, bean.getClass().getName());
     }
 
+    // Log the port the server is running on.
     int serverPort =
         context.getEnvironment().getProperty(LOCAL_SERVER_PORT_PROPERTY, Integer.class, 0);
     logger.atInfo().log("Leo server started on port http://localhost:{}.", serverPort);
