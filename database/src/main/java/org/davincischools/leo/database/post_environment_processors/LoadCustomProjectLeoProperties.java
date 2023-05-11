@@ -9,7 +9,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 /** Loads additional properties from ${HOME}/project_leo.properties, if present. */
-public class ProjectLeoEnvironmentPostProcessor implements EnvironmentPostProcessor {
+public class LoadCustomProjectLeoProperties implements EnvironmentPostProcessor {
 
   @Override
   public void postProcessEnvironment(
@@ -23,7 +23,7 @@ public class ProjectLeoEnvironmentPostProcessor implements EnvironmentPostProces
             .getPropertySources()
             .addFirst(
                 new ResourcePropertySource(
-                    ProjectLeoEnvironmentPostProcessor.class.getName(),
+                    LoadCustomProjectLeoProperties.class.getName(),
                     projectLeoProperties.toURI().toString()));
       }
     } catch (IOException e) {
