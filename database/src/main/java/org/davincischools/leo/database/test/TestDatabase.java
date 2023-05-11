@@ -25,6 +25,9 @@ import org.testcontainers.utility.DockerImageName;
 
 @Component
 public class TestDatabase {
+
+  public static final String USE_EXTERNAL_DATABASE_PROFILE = "useExternalDatabase";
+
   private static final Logger logger = LogManager.getLogger();
 
   // Test database constants.
@@ -39,7 +42,7 @@ public class TestDatabase {
   private static DataSource dataSource = null;
 
   @Bean("dataSource")
-  @Profile("!useExternalDatabase")
+  @Profile("!" + USE_EXTERNAL_DATABASE_PROFILE)
   @Primary
   private static DataSource createTestDataSource(@Autowired Environment environment)
       throws SQLException, IOException {

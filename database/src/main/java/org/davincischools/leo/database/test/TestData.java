@@ -1,6 +1,8 @@
 package org.davincischools.leo.database.test;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
@@ -11,12 +13,30 @@ import org.davincischools.leo.database.utils.Database;
 import org.davincischools.leo.database.utils.Database.KNOWLEDGE_AND_SKILL_TYPE;
 import org.davincischools.leo.database.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TestData {
 
   public static final String PASSWORD = "password";
+
+  @Component
+  @Profile("!" + TestDatabase.USE_EXTERNAL_DATABASE_PROFILE)
+  public class LoadTestDataOnStartup implements ApplicationListener<ContextRefreshedEvent> {
+
+    private static final Logger logger = LogManager.getLogger();
+
+    @Autowired TestData testData;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+      testData.addTestData();
+      logger.atInfo().log("Added test data to the test database.");
+    }
+  }
 
   private final Database db;
 
