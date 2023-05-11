@@ -83,7 +83,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/dbadmin-dependencies
+                                ${project.build.directory}/project-leo-database-dependencies
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -94,12 +94,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <finalName>dbadmin</finalName>
                     <archive>
                         <manifest>
                             <mainClass>org.davincischools.leo.database.admin.AdminUtils</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>dbadmin-dependencies/</classpathPrefix>
+                            <classpathPrefix>project-leo-database-dependencies/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                         <manifestEntries>

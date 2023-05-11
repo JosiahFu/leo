@@ -40,7 +40,7 @@ public class OpenAiUtils {
   private static final Logger logger = LogManager.getLogger();
 
   public static final String OPENAI_API_KEY_PROP_NAME = "openai.api.key";
-  public static final String OPENAI_API_URL_PROP_NAME = "openai.api.url";
+  public static final String OPENAI_URL_PROP_NAME = "openai.url";
   public static final String OPENAI_API_KEY_ENV_NAME =
       OPENAI_API_KEY_PROP_NAME.toUpperCase().replaceAll("\\.", "_");
   public static final String GPT_3_5_TURBO_MODEL = "gpt-3.5-turbo";
@@ -51,7 +51,7 @@ public class OpenAiUtils {
 
   private OpenAiUtils(
       @Value("${" + OPENAI_API_KEY_PROP_NAME + ":}") String openAiKey,
-      @Value("${" + OPENAI_API_URL_PROP_NAME + ":}") String openAiUrl,
+      @Value("${" + OPENAI_URL_PROP_NAME + ":}") String openAiUrl,
       @Autowired Database db) {
     this.openAiKey = openAiKey;
     this.openAiUrl = openAiUrl;
@@ -70,7 +70,7 @@ public class OpenAiUtils {
             request,
             (unused, log) -> {
               // The OPENAI_API_KEY is required.
-              if (openAiKey.isEmpty()) {
+              if (openAiKey.isEmpty() || openAiKey.equals("<your_open_ai_api_key>")) {
                 logger
                     .atError()
                     .log(
@@ -100,7 +100,7 @@ public class OpenAiUtils {
                       .clientConnector(new ReactorClientHttpConnector(client))
                       .build()
                       .post()
-                      .uri(URI.create(openAiUrl))
+                      .uri(URI.create(openAiUrl + "/v1/chat/completions"))
                       .contentType(MediaType.APPLICATION_JSON)
                       .header(HttpHeaders.AUTHORIZATION, "Bearer " + openAiKey)
                       .header(HttpHeaders.CACHE_CONTROL, "no-cache,no-store,max-age=0")

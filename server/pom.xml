@@ -342,7 +342,7 @@
                 <version>3.2.0</version>
                 <configuration>
                     <filesets>
-                        <fileset>
+                        <fileset erroronmissingdir="false" followsymlinks="false" defaultexcludes="false">
                             <directory>${clients.directory}</directory>
                             <includes>
                                 <include>*/build/</include>
@@ -352,7 +352,7 @@
                                 <include>*/src/generated/</include>
                             </includes>
                         </fileset>
-                        <fileset>
+                        <fileset erroronmissingdir="false" followsymlinks="false" defaultexcludes="false">
                             <directory>${project.build.sourceDirectory}/..</directory>
                             <includes>
                                 <include>java-protos/</include>
@@ -376,7 +376,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/server-dependencies
+                                ${project.build.directory}/project-leo-server-dependencies
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -387,12 +387,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <finalName>server</finalName>
                     <archive>
                         <manifest>
                             <mainClass>org.davincischools.leo.server.ServerApplication</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>server-dependencies/</classpathPrefix>
+                            <classpathPrefix>project-leo-server-dependencies/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                         <manifestEntries>

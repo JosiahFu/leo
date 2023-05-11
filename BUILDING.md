@@ -16,9 +16,7 @@ commands in a Terminal to do this:
 
 ```shell
 # Check out the Project Leo source code and submodules.
-git clone git@github.com:DaVinciSchools/leo.git project_leo
-cd project_leo
-git submodule update --init --recursive
+git clone --recurse-submodules --shallow-submodules git@github.com:DaVinciSchools/leo.git project_leo
 ```
 
 This will create a subfolder called ```project_leo``` with the source code in
@@ -79,22 +77,23 @@ included with the
 [spring.config.import](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files.importing)
 command line flag or SPRING_CONFIG_IMPORT environment variable.
 
-The default properties override file, ```${HOME}/project_leo.properties```,
-can have the following properties (only specify the ones you want):
+See [```application.properties```](https://github.com/DaVinciSchools/leo/blob/main/server/src/main/resources/application.properties)
+in this repository for all property settings. However, for local development,
+you will probably only need to override the following properties in
+```${HOME}/project_leo.properties```.
 
 ```properties
 # Set to the OpenAI key used for queries. Its value starts with "sk-".
-openai.api.key=<your_api_key>
+openai.api.key=<your_open_ai_api_key>
 
-# Set to "false" so that the database configuration below will be used.
-project_leo.use.test.database=false
-
-# The database that Project Leo will connect to.
-spring.datasource.url=jdbc:mysql://localhost:3306/<database_name>
-spring.datasource.username=<user>
-spring.datasource.password=<password>
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-hibernate.dialect=org.hibernate.dialect.MySQLDialect
+# Enable the following profile and properties to use an external database.
+# 
+# spring.profiles.active=useExternalDatabase
+#
+# spring.datasource.url=jdbc:mysql://localhost:3306/leo_temp
+# spring.datasource.username=temp
+# spring.datasource.password=temp
+# spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
 
 Properties can also be set using environment variables. For instance,
@@ -108,7 +107,7 @@ command:
 
 ```shell
 # Build Project Leo using the Apache Maven tool.
-mvn install
+mvn package
 ```
 
 This will do a number of things:

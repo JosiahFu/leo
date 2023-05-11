@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.davincischools.leo</groupId>
     <artifactId>project-leo</artifactId>
@@ -145,6 +145,24 @@
 
     <build>
         <plugins>
+            <!-- Delete additional files for mvn clean. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset erroronmissingdir="false" followsymlinks="false" defaultexcludes="false">
+                            <directory>${basedir}</directory>
+                            <includes>
+                                <include>bin/git-hooks/**/*.tmp/</include>
+                                <include>bin/git-hooks/**/*.tmp</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -156,7 +174,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <target>
                                 <apply executable="java" failonerror="true" failifexecutionfails="true" parallel="true" skipemptyfilesets="true" force="true" verbose="true">
@@ -178,6 +196,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Set default compiler parameters. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
