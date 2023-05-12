@@ -54,7 +54,26 @@ $neutral-800: #000000;
 $info: $accent-700;
 $info-active: $accent-800;
 $warning-active: $secondary-700;
-$error: #eb6060;
 $error-active: #b64a4a;
 $destructive: #eb6060;
 $destructive-active: #b64a4a;
+
+$error-background: #ffaacc;
+$error-border: #990000;
+$error-color: #990000;
+
+@mixin error {
+  background-color: $error-background;
+  border-color: $error-border;
+  color: $error-color;
+}
+
+$success-background: #cceecc;
+$success-border: #006600;
+$success-color: #006600;
+
+@mixin success {
+  background-color: $success-background;
+  border-color: $success-border;
+  color: $success-color;
+}
