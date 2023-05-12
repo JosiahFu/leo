@@ -18,6 +18,7 @@ import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
 import {MyProjects} from './pages/projects/MyProjects/MyProjects';
 import {MyAccount} from './pages/profiles/MyProfile/MyAccount';
 import {PrivacyPolicy} from './pages/docs/PrivacyPolicy';
+import {Overview} from './pages/projects/Overview/Overview';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
     path: '/projects',
     element: <DefaultPageNav />,
     children: [
+      {
+        path: 'overview',
+        element: <Overview />,
+      },
       {
         path: 'ikigai-builder',
         element: <IkigaiBuilder />,

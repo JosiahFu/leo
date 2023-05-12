@@ -21,6 +21,7 @@ enum MenuKeys {
   DASHBOARD,
   PROJECTS,
   MY_PROJECTS,
+  OVERVIEW,
   IKIGAI_BUILDER,
   INTERNSHIPS,
   MY_ACCOUNT,
@@ -69,6 +70,9 @@ export function DefaultPageNav() {
                   icon={<RocketOutlined />}
                   title="Projects"
                 >
+                  <Menu.Item key={MenuKeys.OVERVIEW}>
+                    <Link to="/projects/overview">Overview</Link>
+                  </Menu.Item>
                   <Menu.Item key={MenuKeys.MY_PROJECTS}>
                     <Link to="/projects/my-projects">My Projects</Link>
                   </Menu.Item>

@@ -62,7 +62,7 @@ export function Root() {
           <a href="#our_mission" className="nav-link">
             Our Mission
           </a>
-          <Link to="" className="nav-link">
+          <Link to="/projects/overview" className="nav-link">
             Projects
           </Link>
           <Link to="" className="nav-link">
