@@ -28,7 +28,7 @@ export function LandingPageNav() {
           </Link>
         </div>
         <div className="header-section header-section-right">
-          <Link to="/login">
+          <Link to="/users/login">
             <button className="light">Login</button>
           </Link>
           <Link to="">

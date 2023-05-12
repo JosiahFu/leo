@@ -1,6 +1,6 @@
-@use '../../FieldWithError/FieldWithError';
+@use '../../../FieldWithError/FieldWithError';
 
-@import '../../libs/DefaultPage/DefaultPage.scss';
+@import '../../../libs/DefaultPage/DefaultPage';
 
 .form-container {
   display: flex;

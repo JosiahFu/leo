@@ -49,7 +49,7 @@ export function getCurrentUser(
   if (onNotLoggedIn != null) {
     onNotLoggedIn();
   } else {
-    window.open('/login', '_self');
+    window.open('/users/login', '_self');
   }
   return undefined;
 }

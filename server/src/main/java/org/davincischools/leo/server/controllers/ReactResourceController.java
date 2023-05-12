@@ -53,16 +53,17 @@ public class ReactResourceController {
   @RequestMapping({
     "/",
     "/docs/**",
-    "/favicon.ico",
+    "/favicon.*",
     "/images/**",
     "/index.html",
-    "/installHooks.js",
-    "/login",
+    "/installHooks.js", // React developer tools plugin.
+    "/main.*.json",
     "/manifest.json",
     "/profiles/**",
     "/projects/**",
     "/robots.txt",
-    "/static/**"
+    "/static/**",
+    "/users/**"
   })
   public void getResource(HttpServletRequest originalRequest, HttpServletResponse response)
       throws IOException {

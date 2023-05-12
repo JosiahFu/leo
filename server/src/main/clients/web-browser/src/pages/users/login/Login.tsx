@@ -2,17 +2,17 @@ import './Login.scss';
 import {Layout} from 'antd';
 import {useState} from 'react';
 import {useNavigate} from 'react-router';
-import {user_management} from '../../generated/protobuf-js';
+import {user_management} from '../../../generated/protobuf-js';
 import UserManagementService = user_management.UserManagementService;
-import {createService} from '../../protos';
-import {FieldWithError} from '../../FieldWithError/FieldWithError';
+import {createService} from '../../../protos';
+import {FieldWithError} from '../../../FieldWithError/FieldWithError';
 import ILoginResponse = user_management.ILoginResponse;
 import ILoginRequest = user_management.ILoginRequest;
-import {login} from '../../utils/authentication';
-import {DefaultPage} from '../../libs/DefaultPage/DefaultPage';
+import {login} from '../../../utils/authentication';
+import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 const {Content} = Layout;
 
-export default function Login() {
+export function Login() {
   const userManagementService = createService(
     UserManagementService,
     'UserManagementService'

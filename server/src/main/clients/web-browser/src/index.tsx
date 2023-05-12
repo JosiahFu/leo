@@ -10,7 +10,7 @@ import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
 import StudentUpload from './pages/student/Upload';
 import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
-import Login from './pages/login/Login';
+import {Login} from './pages/users/login/Login';
 import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
 import {DefaultPageNav} from './libs/DefaultPage/DefaultPageNav';
@@ -25,11 +25,11 @@ const root = ReactDOM.createRoot(
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: '/users',
     element: <DefaultPageNav />,
     children: [
       {
-        path: '',
+        path: 'login',
         element: <Login />,
       },
     ],
