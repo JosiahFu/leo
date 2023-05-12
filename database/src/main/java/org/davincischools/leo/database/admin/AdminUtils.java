@@ -327,7 +327,7 @@ public class AdminUtils {
     District district = createDistrict();
 
     List<Error> errors = Collections.synchronizedList(new ArrayList<>());
-    School school = db.createSchool(district, "DVRise");
+    School school = db.createSchool(district, "DVRISE");
     Set<Integer> classXIds = new HashSet<>();
 
     for (String line : Files.readLines(new File(importXqEks), StandardCharsets.UTF_8)) {
@@ -400,7 +400,7 @@ public class AdminUtils {
       db.createSchool(district, "DVConnect");
       db.createSchool(district, "DVD");
       db.createSchool(district, "DVFlex");
-      db.createSchool(district, "DVRise");
+      db.createSchool(district, "DVRISE");
       db.createSchool(district, "DVS");
     }
 
