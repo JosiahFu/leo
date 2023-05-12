@@ -250,11 +250,14 @@ export function Root() {
       </footer>
       <Modal
         title="I'm interested! Tell me more!"
-        width="60%"
         open={interestFormOpen}
         closable={true}
         onCancel={() => setInterestFormOpen(false)}
         footer={null}
+        style={{
+          width: '60%',
+          minWidth: 'fit-content',
+        }}
         forceRender
       >
         <Form
@@ -425,15 +428,23 @@ export function Root() {
               />
             </div>
           </Form.Item>
-          <div className="form-separator" />
-          <Form.Item label="District Name" name="districtName">
-            <Input name="districtName" maxLength={255} />
+          <div className="form-separator" style={{marginBottom: '0.5em'}} />
+          The following fields are optional:
+          <Form.Item name="districtName">
+            <Input
+              name="districtName"
+              maxLength={255}
+              placeholder="District Name"
+            />
           </Form.Item>
-          <Form.Item label="School Name" name="schoolName">
-            <Input name="schoolName" maxLength={255} />
+          <Form.Item name="schoolName">
+            <Input
+              name="schoolName"
+              maxLength={255}
+              placeholder="School Name"
+            />
           </Form.Item>
           <Form.Item
-            label="Number of Teachers"
             name="numTeachers"
             rules={[
               {
@@ -450,10 +461,9 @@ export function Root() {
               },
             ]}
           >
-            <Input name="numTeachers" />
+            <Input name="numTeachers" placeholder="Number of Teachers" />
           </Form.Item>
           <Form.Item
-            label="Number of Students"
             name="numStudents"
             rules={[
               {
@@ -470,23 +480,32 @@ export function Root() {
               },
             ]}
           >
-            <Input name="numStudents" />
+            <Input name="numStudents" placeholder="Number of Students" />
           </Form.Item>
-          <Form.Item label="Address Line 1:" name="addressLine_1">
-            <Input name="addressLine_1" maxLength={255} />
+          <Form.Item name="addressLine_1">
+            <Input
+              name="addressLine_1"
+              maxLength={255}
+              placeholder="Address Line 1"
+            />
           </Form.Item>
-          <Form.Item label="Address Line 2:" name="addressLine_2">
-            <Input name="addressLine_2" maxLength={255} />
+          <Form.Item name="addressLine_2">
+            <Input
+              name="addressLine_2"
+              maxLength={255}
+              placeholder="Address Line 2"
+            />
           </Form.Item>
-          <Form.Item label="City" name="city">
-            <Input name="city" maxLength={20} />
+          <Form.Item name="city">
+            <Input name="city" maxLength={20} placeholder="City" />
           </Form.Item>
-          <Form.Item label="State" name="state">
-            <Input name="state" maxLength={2} />
+          <Form.Item name="state">
+            <Input name="state" maxLength={2} placeholder="State" />
           </Form.Item>
-          <Form.Item label="Zip Code" name="zipCode">
-            <Input name="zipCode" maxLength={10} />
+          <Form.Item name="zipCode">
+            <Input name="zipCode" maxLength={10} placeholder="Zip Code" />
           </Form.Item>
+          <div className="form-separator" style={{marginTop: '1em'}} />
           <Form.Item style={{textAlign: 'end'}}>
             <Button type="primary" htmlType="submit">
               Submit
