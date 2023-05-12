@@ -18,7 +18,7 @@ CREATE TABLE log
     -- in binary format, it will be converted to a string.
     initial_response      MEDIUMTEXT,
     initial_response_type MEDIUMTEXT,
-    initial_response_time DATETIME   NOT NULL,
+    initial_response_time DATETIME,
 
     -- The time of a fully processed response to send back to the client.
     final_response        MEDIUMTEXT,

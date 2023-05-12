@@ -194,7 +194,7 @@ public class Log {
     return this;
   }
 
-  @Column(name = COLUMN_INITIALRESPONSETIME_NAME, nullable = false)
+  @Column(name = COLUMN_INITIALRESPONSETIME_NAME)
   public Instant getInitialResponseTime() {
     return initialResponseTime;
   }
