@@ -17,18 +17,18 @@ import {useState} from 'react';
 const {Header, Sider, Content} = Layout;
 
 enum MenuKeys {
-  HOME,
-  DASHBOARD,
-  PROJECTS,
-  MY_PROJECTS,
-  OVERVIEW,
-  IKIGAI_BUILDER,
-  INTERNSHIPS,
-  MY_ACCOUNT,
   ADMIN,
+  DASHBOARD,
   EDIT_DISTRICTS,
   EDIT_SCHOOLS,
   EDIT_USERS,
+  HOME,
+  IKIGAI_BUILDER,
+  INTERNSHIPS,
+  MY_ACCOUNT,
+  MY_PROJECTS,
+  OVERVIEW,
+  PROJECTS,
 }
 
 export function DefaultPageNav() {
@@ -112,7 +112,7 @@ export function DefaultPageNav() {
             <Footer>
               <Menu mode="inline" className="top-menu">
                 <Menu.Item key={MenuKeys.MY_ACCOUNT} icon={<UserOutlined />}>
-                  <Link to="/profiles/my-account">My Account</Link>
+                  <Link to="/users/my-account">My Account</Link>
                 </Menu.Item>
               </Menu>
             </Footer>

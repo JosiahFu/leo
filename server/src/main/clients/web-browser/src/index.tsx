@@ -10,13 +10,13 @@ import StudentProjectGen from './pages/student/ProjectGen';
 import StudentProjectImplementation from './pages/student/ProjectImplement';
 import StudentUpload from './pages/student/Upload';
 import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
-import {Login} from './pages/users/login/Login';
+import {Login} from './pages/users/Login/Login';
 import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
 import {EditSchools} from './pages/profiles/EditSchools/EditSchools';
 import {DefaultPageNav} from './libs/DefaultPage/DefaultPageNav';
 import {IkigaiBuilder} from './pages/projects/IkigaiBuilder/IkigaiBuilder';
 import {MyProjects} from './pages/projects/MyProjects/MyProjects';
-import {MyAccount} from './pages/profiles/MyProfile/MyAccount';
+import {MyAccount} from './pages/users/MyAccount/MyAccount';
 import {PrivacyPolicy} from './pages/docs/PrivacyPolicy';
 import {Overview} from './pages/projects/Overview/Overview';
 
@@ -32,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <Login />,
+      },
+      {
+        path: 'my-account',
+        element: <MyAccount />,
       },
     ],
   },
@@ -60,10 +64,6 @@ const router = createBrowserRouter([
       {
         path: 'edit-users',
         element: <EditUsers />,
-      },
-      {
-        path: 'my-account',
-        element: <MyAccount />,
       },
     ],
   },
