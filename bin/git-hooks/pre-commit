@@ -1,12 +1,24 @@
-#!/bin/bash -x
-set -e
+#!/bin/bash
 
-HOOK_DIR="$(git rev-parse --show-toplevel)/bin/git-hooks"
-GIT_DIR="$(git rev-parse --show-toplevel)/.git"
+commands () {
+  set -e
 
-shopt -s nullglob
-for HOOK in "${GIT_DIR}/hooks/pre-commit.d"/* "${HOOK_DIR}/pre-commit.d"/* ; do
-    if [ -f "${HOOK}" ] && [ -x "${HOOK}" ]; then
-      ${HOOK} "$@"
-    fi
-done
+  HOOK_DIR="$(git rev-parse --show-toplevel)/bin/git-hooks"
+  GIT_DIR="$(git rev-parse --show-toplevel)/.git"
+
+  shopt -s nullglob
+  for HOOK in "${GIT_DIR}/hooks/pre-commit.d"/* "${HOOK_DIR}/pre-commit.d"/* ; do
+      if [ -f "${HOOK}" ] && [ -x "${HOOK}" ]; then
+        ${HOOK} "$@"
+      fi
+  done
+}
+OUTPUT="$(commands "$@" 2>&1)"
+
+if [ $? -ne 0 ]; then
+  echo "${OUTPUT}"
+  echo -e
+  echo "   !!! Failed to run pre-commit hooks. !!!"
+  echo -e
+  exit 1
+fi
