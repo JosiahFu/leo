@@ -6,6 +6,7 @@
     "lib": [
       "dom",
     ],
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowJs": true,
