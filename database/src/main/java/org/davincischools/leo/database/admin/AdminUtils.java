@@ -83,22 +83,27 @@ public class AdminUtils {
   @Value("${delimiter:[\\t]}")
   String delimiter;
 
+  @Value("${resetPassword:}")
+  List<String> resetPasswords;
+
   public District createDistrict() {
     checkArgument(createDistrict != null, "--createDistrict required.");
 
     return db.createDistrict(createDistrict);
   }
 
+  private static String createPassword() {
+    return new RandomStringGenerator.Builder()
+        .withinRange(new char[] {'a', 'z'}, new char[] {'0', '9'})
+        .build()
+        .generate(20);
+  }
+
   public void createAdmins() {
     checkArgument(!createAdmins.isEmpty(), "--createAdmin required.");
 
     for (String createAdmin : createAdmins) {
-      String password =
-          new RandomStringGenerator.Builder()
-              .withinRange(new char[] {'a', 'z'}, new char[] {'0', '9'})
-              .build()
-              .generate(20);
-
+      String password = createPassword();
       District district = createDistrict();
       AtomicBoolean passwordUpdated = new AtomicBoolean(false);
       UserX admin =
@@ -134,6 +139,27 @@ public class AdminUtils {
                 password);
       }
     }
+  }
+
+  public void resetPasswords() throws IOException {
+    checkArgument(!resetPasswords.isEmpty(), "--resetPassword required.");
+    resetPasswords.stream()
+        .parallel()
+        .forEach(
+            resetPassword -> {
+              String password = createPassword();
+              db.getUserXRepository()
+                  .save(
+                      UserUtils.setPassword(
+                          db.getUserXRepository().findByEmailAddress(resetPassword).orElseThrow(),
+                          password));
+              log.atWarn()
+                  .log(
+                      "IMPORTANT! Log in and change the temporary password:"
+                          + " login: \"{}\", temporary password: \"{}\"",
+                      resetPassword,
+                      password);
+            });
   }
 
   public void importTeachers() throws IOException {
@@ -419,6 +445,10 @@ public class AdminUtils {
     if (!createAdmins.isEmpty()) {
       log.atInfo().log("Creating admin: {}", createAdmins);
       createAdmins();
+    }
+    if (!resetPasswords.isEmpty()) {
+      log.atInfo().log("Resetting passwords: {}", resetPasswords);
+      resetPasswords();
     }
   }
 
