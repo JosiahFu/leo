@@ -10,7 +10,6 @@
             "request": "launch",
             "mainClass": "org.davincischools.leo.server.ServerApplication",
             "projectName": "project-leo-server",
-            "args": "--project_leo.test.database.port=3307",
             "classPaths": ["$Auto", "${workspaceFolder}/server/target/classes"]
         },
         {
@@ -19,7 +18,7 @@
             "request": "launch",
             "mainClass": "org.davincischools.leo.server.ServerApplication",
             "projectName": "project-leo-server",
-            "args": "--react_port=3000  --project_leo.test.database.port=3307",
+            "args": "--react_port=3000",
             "classPaths": ["$Auto", "${workspaceFolder}/server/target/classes"]
         }
     ]
