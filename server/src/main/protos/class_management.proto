@@ -9,8 +9,6 @@ package class_management;
 
 service ClassManagementService {
   rpc GetStudentAssignments (GetStudentAssignmentsRequest) returns (GetStudentAssignmentsResponse) {}
-  rpc GenerateAssignmentProjects (GenerateAssignmentProjectsRequest) returns (GenerateAssignmentProjectsResponse) {}
-  rpc GetProjects (GetProjectsRequest) returns (GetProjectsResponse) {}
 }
 
 message GetStudentAssignmentsRequest {
@@ -19,23 +17,4 @@ message GetStudentAssignmentsRequest {
 
 message GetStudentAssignmentsResponse {
   repeated pl_types.Assignment assignments = 1;
-}
-
-message GenerateAssignmentProjectsRequest {
-  optional int32 user_x_id = 1;
-  optional string something_you_love = 2;
-  optional string what_you_are_good_at = 3;
-  optional int32 assignment_id = 4;
-}
-
-message GenerateAssignmentProjectsResponse {
-  repeated pl_types.Project projects = 1;
-}
-
-message GetProjectsRequest {
-  optional int32 user_x_id = 1;
-}
-
-message GetProjectsResponse {
-  repeated pl_types.Project projects = 1;
 }

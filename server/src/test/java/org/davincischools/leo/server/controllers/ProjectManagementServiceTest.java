@@ -3,31 +3,32 @@ package org.davincischools.leo.server.controllers;
 import com.google.common.truth.Truth;
 import com.google.common.truth.extensions.proto.ProtoTruth;
 import org.davincischools.leo.database.daos.ProjectInput;
-import org.davincischools.leo.protos.class_management.GenerateAssignmentProjectsResponse;
 import org.davincischools.leo.protos.pl_types.Project;
+import org.davincischools.leo.protos.project_management.GenerateProjectsResponse;
 import org.davincischools.leo.server.utils.LogUtils.LogOperations;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ClassManagementServiceTest {
+public class ProjectManagementServiceTest {
   LogOperations mockLog = Mockito.mock(LogOperations.class);
 
   @Test
   public void testProjectNumberColon() {
-    Truth.assertThat(ClassManagementService.normalizeAndCheckString("Project 1: Title's Title"))
+    Truth.assertThat(ProjectManagementService.normalizeAndCheckString("Project 1: Title's Title"))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testProjectNumberColonQuoted() {
-    Truth.assertThat(ClassManagementService.normalizeAndCheckString("Project 1: \"Title's Title\""))
+    Truth.assertThat(
+            ProjectManagementService.normalizeAndCheckString("Project 1: \"Title's Title\""))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testProjectNumberColonLabelColon() {
     Truth.assertThat(
-            ClassManagementService.normalizeAndCheckString(
+            ProjectManagementService.normalizeAndCheckString(
                 "Project 1: Title: Primary Title: Subtitle"))
         .isEqualTo("Primary Title: Subtitle");
   }
@@ -35,40 +36,40 @@ public class ClassManagementServiceTest {
   @Test
   public void testProjectNumberColonLabelColonQuoted() {
     Truth.assertThat(
-            ClassManagementService.normalizeAndCheckString("Project 1: Title: \"Title's Title\""))
+            ProjectManagementService.normalizeAndCheckString("Project 1: Title: \"Title's Title\""))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testShortDescrNumberColon() {
     Truth.assertThat(
-            ClassManagementService.normalizeAndCheckString("Short Description: Title's Title"))
+            ProjectManagementService.normalizeAndCheckString("Short Description: Title's Title"))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testShortDescrNumberColonQuoted() {
     Truth.assertThat(
-            ClassManagementService.normalizeAndCheckString("Short Description: “Title's Title”"))
+            ProjectManagementService.normalizeAndCheckString("Short Description: “Title's Title”"))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testDescrNumberColon() {
-    Truth.assertThat(ClassManagementService.normalizeAndCheckString("Description: Title's Title"))
+    Truth.assertThat(ProjectManagementService.normalizeAndCheckString("Description: Title's Title"))
         .isEqualTo("Title's Title");
   }
 
   @Test
   public void testNumberDotLabelColon() {
-    Truth.assertThat(ClassManagementService.normalizeAndCheckString("1. Title: This: Title"))
+    Truth.assertThat(ProjectManagementService.normalizeAndCheckString("1. Title: This: Title"))
         .isEqualTo("This: Title");
   }
 
   @Test
   public void testBulletedFullDescription() {
     Truth.assertThat(
-            ClassManagementService.normalizeAndCheckString(
+            ProjectManagementService.normalizeAndCheckString(
                 """
 Full Description:
 
@@ -90,9 +91,8 @@ Full Description:
 
   @Test
   public void textExtractProject() {
-    GenerateAssignmentProjectsResponse.Builder response =
-        GenerateAssignmentProjectsResponse.newBuilder();
-    ClassManagementService.extractProjects(
+    GenerateProjectsResponse.Builder response = GenerateProjectsResponse.newBuilder();
+    ProjectManagementService.extractProjects(
         mockLog,
         response,
         new ProjectInput(),
@@ -128,15 +128,15 @@ Full description:
 Full 2
 
 %s""",
-            ClassManagementService.END_OF_TITLE,
-            ClassManagementService.END_OF_SHORT,
-            ClassManagementService.START_OF_PROJECT,
-            ClassManagementService.END_OF_TITLE,
-            ClassManagementService.END_OF_SHORT,
-            ClassManagementService.START_OF_PROJECT));
+            ProjectManagementService.END_OF_TITLE,
+            ProjectManagementService.END_OF_SHORT,
+            ProjectManagementService.START_OF_PROJECT,
+            ProjectManagementService.END_OF_TITLE,
+            ProjectManagementService.END_OF_SHORT,
+            ProjectManagementService.START_OF_PROJECT));
     ProtoTruth.assertThat(response.build())
         .isEqualTo(
-            GenerateAssignmentProjectsResponse.newBuilder()
+            GenerateProjectsResponse.newBuilder()
                 .addProjects(
                     Project.newBuilder()
                         .setId(-1)

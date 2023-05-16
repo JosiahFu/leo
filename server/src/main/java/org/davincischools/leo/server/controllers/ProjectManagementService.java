@@ -26,6 +26,8 @@ import org.davincischools.leo.protos.project_management.GenerateProjectsRequest;
 import org.davincischools.leo.protos.project_management.GenerateProjectsResponse;
 import org.davincischools.leo.protos.project_management.GetEksRequest;
 import org.davincischools.leo.protos.project_management.GetEksResponse;
+import org.davincischools.leo.protos.project_management.GetProjectsRequest;
+import org.davincischools.leo.protos.project_management.GetProjectsResponse;
 import org.davincischools.leo.protos.project_management.GetXqCompetenciesRequest;
 import org.davincischools.leo.protos.project_management.GetXqCompetenciesResponse;
 import org.davincischools.leo.server.utils.DataAccess;
@@ -270,5 +272,23 @@ public class ProjectManagementService {
       }
     }
     return projects;
+  }
+
+  @PostMapping(value = "/api/protos/ClassManagementService/GetProjects")
+  @ResponseBody
+  public GetProjectsResponse getProjects(@RequestBody Optional<GetProjectsRequest> optionalRequest)
+      throws LogExecutionError {
+    return LogUtils.executeAndLog(
+            db,
+            optionalRequest.orElse(GetProjectsRequest.getDefaultInstance()),
+            (request, log) -> {
+              UserX userX = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
+              var response = GetProjectsResponse.newBuilder();
+
+              response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, userX));
+
+              return response.build();
+            })
+        .finish();
   }
 }

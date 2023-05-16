@@ -1,11 +1,11 @@
 import './MyProjects.scss';
 import {useEffect, useState} from 'react';
-import {class_management, createService, pl_types} from '../../../protos';
-import ClassManagementService = class_management.ClassManagementService;
+import {createService, pl_types, project_management} from '../../../protos';
 import {getCurrentUser} from '../../../utils/authentication';
 import IProject = pl_types.IProject;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 import {ProjectCard} from '../../../libs/ProjectCard/ProjectCard';
+import ProjectManagementService = project_management.ProjectManagementService;
 
 export function MyProjects() {
   const user = getCurrentUser();
@@ -16,11 +16,11 @@ export function MyProjects() {
   const [projects, setProjects] = useState<IProject[]>([]);
 
   useEffect(() => {
-    const classManagementService = createService(
-      ClassManagementService,
+    const service = createService(
+      ProjectManagementService,
       'ClassManagementService'
     );
-    classManagementService
+    service
       .getProjects({userXId: user!.userXId!})
       .then(response => setProjects(response.projects));
   }, []);
