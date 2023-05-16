@@ -99,24 +99,22 @@ const FreeTextInput = forwardRef<
         onCancel={onCancel}
       >
         {editingValues.map((value, index) => (
-          <>
-            <div key={index} className="line-item">
-              <Input
-                placeholder={props.inputPlaceholder}
-                maxLength={255}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setEditingValue(index, e.target.value);
-                }}
-                value={value}
-              />
-              <CloseOutlined
-                style={{
-                  visibility: editingValues.length > 1 ? 'visible' : 'hidden',
-                }}
-                onClick={() => removeEditingValue(index)}
-              />
-            </div>
-          </>
+          <div key={index} className="line-item">
+            <Input
+              placeholder={props.inputPlaceholder}
+              maxLength={255}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setEditingValue(index, e.target.value);
+              }}
+              value={value}
+            />
+            <CloseOutlined
+              style={{
+                visibility: editingValues.length > 1 ? 'visible' : 'hidden',
+              }}
+              onClick={() => removeEditingValue(index)}
+            />
+          </div>
         ))}
         <PlusOutlined
           className="add-line-item"
@@ -193,18 +191,16 @@ const DropdownSelectInput = forwardRef<
         <div className="title">{props.shortTitle}</div>
         <div className="body">
           {props.values.length > 0 ? (
-            <>
-              <div>
-                <div style={{textAlign: 'left'}}>
-                  {props.values.map((value, index) => (
-                    <span key={index} style={{whiteSpace: 'nowrap'}}>
-                      - {props.optionToLabel(props.options.get(value))}
-                      <br />
-                    </span>
-                  ))}
-                </div>
+            <div>
+              <div style={{textAlign: 'left'}}>
+                {props.values.map((value, index) => (
+                  <span key={index} style={{whiteSpace: 'nowrap'}}>
+                    - {props.optionToLabel(props.options.get(value))}
+                    <br />
+                  </span>
+                ))}
               </div>
-            </>
+            </div>
           ) : (
             <div className="hint">
               {props.hint != null ? props.hint : 'Select to modify.'}
@@ -220,32 +216,30 @@ const DropdownSelectInput = forwardRef<
         onCancel={onCancel}
       >
         {editingValues.map((value, index) => (
-          <>
-            <div key={index} className="line-item">
-              <select
-                key={index}
-                value={value}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                  setEditingValue(index, Number.parseInt(e.target.value));
-                }}
-              >
-                <option key={-1} value={-1}>
-                  {props.inputPlaceholder}
+          <div key={index} className="line-item">
+            <select
+              key={index}
+              value={value}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                setEditingValue(index, Number.parseInt(e.target.value));
+              }}
+            >
+              <option key={-1} value={-1}>
+                {props.inputPlaceholder}
+              </option>
+              {[...props.options.keys()].map(key => (
+                <option key={key} value={key}>
+                  {props.optionToLabel(props.options.get(key))}
                 </option>
-                {[...props.options.keys()].map(key => (
-                  <option key={key} value={key}>
-                    {props.optionToLabel(props.options.get(key))}
-                  </option>
-                ))}
-              </select>
-              <CloseOutlined
-                style={{
-                  visibility: editingValues.length > 1 ? 'visible' : 'hidden',
-                }}
-                onClick={() => removeEditingValue(index)}
-              />
-            </div>
-          </>
+              ))}
+            </select>
+            <CloseOutlined
+              style={{
+                visibility: editingValues.length > 1 ? 'visible' : 'hidden',
+              }}
+              onClick={() => removeEditingValue(index)}
+            />
+          </div>
         ))}
         <PlusOutlined
           className="add-line-item"
@@ -282,6 +276,7 @@ export function IkigaiBuilder() {
   >(undefined);
 
   const [processing, setProcessing] = useState(false);
+  const navigate = useNavigate();
 
   // Resize and reposition the Ikigai diagram to be consistent with the window.
   function updateIkigaiPosition() {
@@ -355,7 +350,7 @@ export function IkigaiBuilder() {
         eks: eks.map(id => eksOptions.get(id)!),
         xqCompentencies: xqCompetencies.map(id => xqCompetencyOptions.get(id)!),
       })
-      .finally(() => useNavigate()('/projects/my-projects'));
+      .finally(() => navigate('/projects/my-projects'));
   }
 
   const [studentInterests, setStudentInterests] = useState<string[]>([]);
