@@ -4,12 +4,16 @@ CREATE TABLE project
     creation_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     name              VARCHAR(255) NOT NULL,
+
     short_descr       VARCHAR(1024),
     short_descr_quill TEXT,
     long_descr        MEDIUMTEXT,
     long_descr_quill  MEDIUMTEXT,
+    favorite          BOOLEAN,
     thumbs_state      ENUM('THUMBS_UP', 'THUMBS_DOWN'),
-    needs_review      TINYINT, -- Boolean 0 = false.
+    archived          BOOLEAN,
+    deleted           BOOLEAN,
+    needs_review      BOOLEAN,
 
     project_input_id  INT,
     CONSTRAINT project__project_input_id

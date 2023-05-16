@@ -25,7 +25,10 @@ public class Project {
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
+  public static final String COLUMN_FAVORITE_NAME = "favorite";
   public static final String COLUMN_THUMBSSTATE_NAME = "thumbs_state";
+  public static final String COLUMN_ARCHIVED_NAME = "archived";
+  public static final String COLUMN_DELETED_NAME = "deleted";
   public static final String COLUMN_NEEDSREVIEW_NAME = "needs_review";
 
   private Integer id;
@@ -42,9 +45,15 @@ public class Project {
 
   private String longDescrQuill;
 
+  private Boolean favorite;
+
   private String thumbsState;
 
-  private Byte needsReview;
+  private Boolean archived;
+
+  private Boolean deleted;
+
+  private Boolean needsReview;
 
   private ProjectInput projectInput;
 
@@ -123,6 +132,16 @@ public class Project {
     return this;
   }
 
+  @Column(name = COLUMN_FAVORITE_NAME)
+  public Boolean getFavorite() {
+    return favorite;
+  }
+
+  public Project setFavorite(Boolean favorite) {
+    this.favorite = favorite;
+    return this;
+  }
+
   @Column(name = COLUMN_THUMBSSTATE_NAME, length = 11)
   public String getThumbsState() {
     return thumbsState;
@@ -133,12 +152,32 @@ public class Project {
     return this;
   }
 
+  @Column(name = COLUMN_ARCHIVED_NAME)
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  public Project setArchived(Boolean archived) {
+    this.archived = archived;
+    return this;
+  }
+
+  @Column(name = COLUMN_DELETED_NAME)
+  public Boolean getDeleted() {
+    return deleted;
+  }
+
+  public Project setDeleted(Boolean deleted) {
+    this.deleted = deleted;
+    return this;
+  }
+
   @Column(name = COLUMN_NEEDSREVIEW_NAME)
-  public Byte getNeedsReview() {
+  public Boolean getNeedsReview() {
     return needsReview;
   }
 
-  public Project setNeedsReview(Byte needsReview) {
+  public Project setNeedsReview(Boolean needsReview) {
     this.needsReview = needsReview;
     return this;
   }
