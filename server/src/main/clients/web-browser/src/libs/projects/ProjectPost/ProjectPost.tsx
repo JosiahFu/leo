@@ -1,11 +1,6 @@
 import {ReactNode} from 'react';
 
-function ProjectPost({
-  title,
-  date,
-  image,
-  content,
-}: {
+function ProjectPost(props: {
   title: string;
   date: Date;
   image: string;
@@ -14,11 +9,11 @@ function ProjectPost({
   return (
     <article>
       <div className="post-header">
-        <h2>{title}</h2>
-        <span>{date.toLocaleDateString()}</span>
+        <h2>{props.title}</h2>
+        <span>{props.date.toLocaleDateString()}</span>
       </div>
-      <img src={image} alt={title} />
-      {content}
+      <img src={props.image} alt={props.title} />
+      {props.content}
     </article>
   );
 }
