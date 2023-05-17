@@ -87,15 +87,23 @@
                 <directory>src/main/resources</directory>
             </testResource>
         </testResources>
-        <extensions>
-            <!-- Provides OS specific information. Needed for protoc binary. -->
-            <extension>
+        <plugins>
+            <plugin>
+                <!-- A workaround for M2E. It doesn't recognize extensions.
+                     See: https://github.com/trustin/os-maven-plugin#issues-with-eclipse-m2e-or-other-ides -->
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
                 <version>1.7.1</version>
-            </extension>
-        </extensions>
-        <plugins>
+                <executions>
+                    <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>detect</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Add java-protos to the source folders. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -103,6 +111,7 @@
                 <version>3.3.0</version>
                 <executions>
                     <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
                         <id>add-java-sources</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -134,6 +143,7 @@
                 <executions>
                     <!-- Install node executable. -->
                     <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
                         <id>install-node-and-npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
@@ -143,6 +153,7 @@
 
                     <!-- Install npm. -->
                     <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
                         <id>npm-install</id>
                         <goals>
                             <goal>npm</goal>
@@ -173,6 +184,7 @@
                 <executions>
                     <!-- Make Protocol Buffer destination dirs. -->
                     <execution>
+                       <?m2e execute onConfiguration,onIncremental?>
                         <id>make-protobuf-dirs</id>
                         <goals>
                             <goal>run</goal>
@@ -187,6 +199,7 @@
                     </execution>
                     <!-- Compile Protocol Buffers for JavaScript. -->
                     <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
                         <id>generate-protobuf-javascript</id>
                         <goals>
                             <goal>run</goal>
@@ -223,6 +236,7 @@
 
                     <!-- Format JavaScript/TypeScript using the Google TypeScript formatter. -->
                     <execution>
+                        <?m2e ignore?>
                         <id>format-javascript-files</id>
                         <goals>
                             <goal>run</goal>
@@ -257,6 +271,7 @@
 
                     <!-- Build the React web app. -->
                     <execution>
+                        <?m2e ignore?>
                         <id>compile-web-browser-client</id>
                         <goals>
                             <goal>run</goal>
@@ -277,6 +292,7 @@
 
                     <!-- Copy compiled React web app to the classpath for serving. -->
                     <execution>
+                        <?m2e ignore?>
                         <id>copy-web-browser-client</id>
                         <goals>
                             <goal>run</goal>
@@ -307,7 +323,8 @@
                 <extensions>true</extensions>
                 <executions>
                     <execution>
-                        <id>generate-protobuf-java</id>
+                       <?m2e execute onConfiguration,onIncremental?>
+                       <id>generate-protobuf-java</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -369,6 +386,7 @@
                 <version>3.5.0</version>
                 <executions>
                     <execution>
+                        <?m2e ignore?>
                         <id>copy maven dependencies</id>
                         <phase>package</phase>
                         <goals>
