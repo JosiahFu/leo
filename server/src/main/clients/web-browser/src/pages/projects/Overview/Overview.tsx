@@ -1,6 +1,6 @@
 import './Overview.scss';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {ProjectDashboard} from '../../../ProjectDashboard/ProjectDashboard';
+import {ProjectDashboard} from '../../../libs/projects/ProjectDashboard/ProjectDashboard';
 import {Layout} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 
