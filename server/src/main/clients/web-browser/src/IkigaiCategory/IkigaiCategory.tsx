@@ -110,8 +110,6 @@ export function IkigaiCategory(props: {
         break;
     }
 
-    console.log(Orientation[orientation] + ': ');
-    console.log(style);
     return style;
   }
 
