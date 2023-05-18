@@ -1,7 +1,6 @@
 import './IkigaiBuilder.scss';
 import {Input, Layout, Modal} from 'antd';
-import {Coordinate, Ikigai} from '../../../Ikigai/Ikigai';
-import {useMeasure} from '@react-hookz/web';
+import {Ikigai} from '../../../Ikigai/Ikigai';
 import {ChangeEvent, useEffect, useState, useRef, forwardRef} from 'react';
 import {createService, pl_types, project_management} from '../../../protos';
 import {getCurrentUser} from '../../../utils/authentication';
@@ -68,22 +67,31 @@ const FreeTextInput = forwardRef<
 
   return (
     <>
-      <div id={props.id} className="panel" ref={ref} onClick={onClick}>
-        <div className="title">{props.shortTitle}</div>
-        <div className="body">
+      <div id={props.id} ref={ref} onClick={onClick}>
+        <div className="panel">
+          <div className="title">{props.shortTitle}</div>
           {props.values.length > 0 ? (
-            <>
-              <div>
-                <div style={{textAlign: 'left', width: 'fit-content'}}>
-                  {props.values.map((value, index) => (
-                    <span key={index} style={{whiteSpace: 'nowrap'}}>
-                      - {value}
-                      <br />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </>
+            <div
+              className="values"
+              style={{
+                textAlign: 'left',
+                width: 'fit-content',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {props.values.map((value, index) => (
+                <span
+                  key={index}
+                  style={{
+                    paddingLeft: '0.5em',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  - {value}
+                  <br />
+                </span>
+              ))}
+            </div>
           ) : (
             <div className="hint">
               {props.hint != null ? props.hint : 'Select to modify.'}
@@ -187,25 +195,27 @@ const DropdownSelectInput = forwardRef<
 
   return (
     <>
-      <div id={props.id} className="panel" ref={ref} onClick={onClick}>
-        <div className="title">{props.shortTitle}</div>
-        <div className="body">
-          {props.values.length > 0 ? (
-            <div>
-              <div style={{textAlign: 'left'}}>
-                {props.values.map((value, index) => (
-                  <span key={index} style={{whiteSpace: 'nowrap'}}>
-                    - {props.optionToLabel(props.options.get(value))}
-                    <br />
-                  </span>
-                ))}
+      <div id={props.id} ref={ref} onClick={onClick}>
+        <div className="panel">
+          <div className="title">{props.shortTitle}</div>
+          <div className="body">
+            {props.values.length > 0 ? (
+              <div>
+                <div style={{textAlign: 'left'}}>
+                  {props.values.map((value, index) => (
+                    <span key={index} style={{whiteSpace: 'nowrap'}}>
+                      - {props.optionToLabel(props.options.get(value))}
+                      <br />
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="hint">
-              {props.hint != null ? props.hint : 'Select to modify.'}
-            </div>
-          )}
+            ) : (
+              <div className="hint">
+                {props.hint != null ? props.hint : 'Select to modify.'}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <Modal
@@ -262,60 +272,8 @@ export function IkigaiBuilder() {
     return <></>;
   }
 
-  const [ikigaiCenterPosition, setIkigaiCenterPosition] =
-    useState<Coordinate | null>(null);
-  const [ikigaiDistanceToCategoryCenter, setIkigaiDistanceToCategoryCenter] =
-    useState(0);
-  const [ikigaiCategoryDiameter, setIkigaiCategoryDiameter] = useState(0);
-
-  const [ikigaiContainerMeasure, ikigaiContainerMeasureRef] =
-    useMeasure<HTMLDivElement>();
-  const [useIkigaiResizeTimeout, setUseIkigaiResizeTimeout] = useState(true);
-  const [ikigaiResizeTimeoutId, setIkigaiResizeTimeoutId] = useState<
-    NodeJS.Timeout | undefined
-  >(undefined);
-
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
-
-  // Resize and reposition the Ikigai diagram to be consistent with the window.
-  function updateIkigaiPosition() {
-    if (
-      ikigaiContainerMeasureRef.current != null &&
-      ikigaiContainerMeasure != null
-    ) {
-      setIkigaiCenterPosition({
-        x:
-          ikigaiContainerMeasureRef.current.offsetLeft +
-          ikigaiContainerMeasure.width / 2,
-        y:
-          ikigaiContainerMeasureRef.current.offsetTop +
-          ikigaiContainerMeasure.height / 2,
-      });
-      setIkigaiCategoryDiameter(
-        Math.min(ikigaiContainerMeasure.width, ikigaiContainerMeasure.height) /
-          2
-      );
-      setIkigaiDistanceToCategoryCenter(
-        (Math.min(ikigaiContainerMeasure.width, ikigaiContainerMeasure.height) /
-          2) *
-          0.45
-      );
-    }
-    setUseIkigaiResizeTimeout(false);
-  }
-
-  useEffect(() => {
-    // TODO: This is a terrible solution. Revisit.
-    if (useIkigaiResizeTimeout) {
-      if (ikigaiResizeTimeoutId != null) {
-        clearTimeout(ikigaiResizeTimeoutId!);
-      }
-      setIkigaiResizeTimeoutId(setTimeout(updateIkigaiPosition, 500));
-    } else {
-      updateIkigaiPosition();
-    }
-  }, [ikigaiContainerMeasureRef, ikigaiContainerMeasure]);
 
   // function getLovesRelatedSuggestions() {
   //   const partialTextOpenAiPromptService = createService(
@@ -398,90 +356,86 @@ export function IkigaiBuilder() {
       <DefaultPage title="Ikigai Project Builder">
         <Layout style={{height: '100%'}}>
           <Content style={{borderRight: '#F0781F solid 1px', padding: '0.5em'}}>
-            <div
-              style={{width: '100%', height: '100%'}}
-              ref={ikigaiContainerMeasureRef}
+            <Ikigai
+              id="ikigai-builder"
+              categoryDiameter={(width, height) => Math.min(width, height) / 2}
+              distanceToCategoryCenter={(width, height) =>
+                (Math.min(width, height) / 2) * 0.45
+              }
+              radians={0}
+              enabled={!processing}
+              processing={processing}
+              categoryElementIds={[
+                careersRef.current?.id,
+                xqCompetencyRef.current?.id,
+                eksRef.current?.id,
+                studentInterestsRef.current?.id,
+                // motivationsRef
+              ]}
+              showSpinButton={
+                careers.length > 0 &&
+                studentInterests.length > 0 &&
+                eks.length > 0 &&
+                xqCompetencies.length > 0
+              }
+              onSpinClick={onSpinClick}
+              radiansOffset={0}
             >
-              <Ikigai
-                id="ikigai-builder"
-                centerPosition={ikigaiCenterPosition}
-                categoryDiameter={ikigaiCategoryDiameter}
-                distanceToCategoryCenter={ikigaiDistanceToCategoryCenter}
-                radians={0}
-                enabled={!processing}
-                processing={processing}
-                categoryElementIds={[
-                  careersRef.current?.id,
-                  xqCompetencyRef.current?.id,
-                  eksRef.current?.id,
-                  studentInterestsRef.current?.id,
-                  // motivationsRef
-                ]}
-                showSpinButton={
-                  careers.length > 0 &&
-                  studentInterests.length > 0 &&
-                  eks.length > 0 &&
-                  xqCompetencies.length > 0
-                }
-                onSpinClick={onSpinClick}
-                radiansOffset={0}
-              >
-                <FreeTextInput
-                  id="studentInterests"
-                  ref={studentInterestsRef}
-                  shortTitle="Student Interests"
-                  hint="Click to add student interests."
-                  inputPlaceholder="Enter a Student Interest"
-                  values={studentInterests}
-                  maxNumberOfValues={4}
-                  onValuesUpdated={setStudentInterests}
-                />
-                <DropdownSelectInput
-                  id="eks"
-                  ref={eksRef}
-                  shortTitle="Knowledge and Skills"
-                  hint="Click to add desired knowledge and skills."
-                  inputPlaceholder="Select a Knowledge and Skills"
-                  options={eksOptions}
-                  values={eks}
-                  maxNumberOfValues={4}
-                  onValuesUpdated={setEks}
-                  optionToLabel={value => (value as IEks).name!}
-                />
-                <DropdownSelectInput
-                  id="xqCompetency"
-                  ref={xqCompetencyRef}
-                  shortTitle="XQ Competency"
-                  hint="Click to add desired XQ Competency."
-                  inputPlaceholder="Select an XQ Competency"
-                  options={xqCompetencyOptions}
-                  values={xqCompetencies}
-                  maxNumberOfValues={4}
-                  onValuesUpdated={setXqCompetencies}
-                  optionToLabel={value => (value as IXqCompetency).name!}
-                />
-                <FreeTextInput
-                  id="careers"
-                  ref={careersRef}
-                  shortTitle="Career Interest"
-                  hint="Click to set a career."
-                  inputPlaceholder="Enter a Career Name"
-                  values={careers}
-                  maxNumberOfValues={4}
-                  onValuesUpdated={setCareers}
-                />
-                {/*<FreeTextInput*/}
-                {/*  id="motivations"*/}
-                {/*  ref={motivationsRef}*/}
-                {/*  shortTitle="Motivations"*/}
-                {/*  hint="Click to add a motivation."*/}
-                {/*  inputPlaceholder="Motivation"*/}
-                {/*  values={motivations}*/}
-                {/*  maxNumberOfValues={4}*/}
-                {/*  onValuesUpdated={setMotivations}*/}
-                {/*/>*/}
-              </Ikigai>
-            </div>
+              <FreeTextInput
+                id="studentInterests"
+                ref={studentInterestsRef}
+                shortTitle="Student Interests"
+                hint="Click to add student interests."
+                inputPlaceholder="Enter a Student Interest"
+                values={studentInterests}
+                maxNumberOfValues={4}
+                onValuesUpdated={setStudentInterests}
+              />
+              <DropdownSelectInput
+                id="eks"
+                ref={eksRef}
+                shortTitle="Knowledge and Skills"
+                hint="Click to add desired knowledge and skills."
+                inputPlaceholder="Select a Knowledge and Skills"
+                options={eksOptions}
+                values={eks}
+                maxNumberOfValues={4}
+                onValuesUpdated={setEks}
+                optionToLabel={value => (value as IEks).name!}
+              />
+              <DropdownSelectInput
+                id="xqCompetency"
+                ref={xqCompetencyRef}
+                shortTitle="XQ Competency"
+                hint="Click to add desired XQ Competency."
+                inputPlaceholder="Select an XQ Competency"
+                options={xqCompetencyOptions}
+                values={xqCompetencies}
+                maxNumberOfValues={4}
+                onValuesUpdated={setXqCompetencies}
+                optionToLabel={value => (value as IXqCompetency).name!}
+              />
+              <FreeTextInput
+                id="careers"
+                ref={careersRef}
+                shortTitle="Career Interest"
+                hint="Click to set a career."
+                inputPlaceholder="Enter a Career Name"
+                values={careers}
+                maxNumberOfValues={4}
+                onValuesUpdated={setCareers}
+              />
+              {/*<FreeTextInput*/}
+              {/*  id="motivations"*/}
+              {/*  ref={motivationsRef}*/}
+              {/*  shortTitle="Motivations"*/}
+              {/*  hint="Click to add a motivation."*/}
+              {/*  inputPlaceholder="Motivation"*/}
+              {/*  values={motivations}*/}
+              {/*  maxNumberOfValues={4}*/}
+              {/*  onValuesUpdated={setMotivations}*/}
+              {/*/>*/}
+            </Ikigai>
           </Content>
         </Layout>
         <Modal

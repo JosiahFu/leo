@@ -2,21 +2,23 @@
 @import '../../../libs/DefaultPage/DefaultPage';
 
 .panel {
+  width: min-content;
 
   .title {
-    width: 100%;
     white-space: nowrap;
-    font-size: large;
+    font-size: larger;
     font-weight: bold;
+    text-align: center;
   }
 
-  .body {
-    font-size: smaller;
-    width: 100%;
+  .values {
+    padding: 0.5em;
+    text-align: left;
+  }
 
-    .hint {
-      padding: 0.5em;
-    }
+  .hint {
+    padding: 0.5em;
+    text-align: center;
   }
 }
 

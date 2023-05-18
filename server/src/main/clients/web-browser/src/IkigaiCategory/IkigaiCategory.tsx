@@ -1,5 +1,4 @@
 import './IkigaiCategory.scss';
-import {PropsWithChildren} from 'react';
 
 enum Orientation {
   NORTH,
@@ -12,33 +11,30 @@ enum Orientation {
   NORTHEAST,
 }
 
-export function IkigaiCategory(
-  props: PropsWithChildren<{
-    id: string;
-    center: {x: number; y: number};
-    diameter: number;
-    maxDiameter: number;
-    alpha: number;
-    radians: number;
-    textRadians?: number;
-    distance: number;
-    categoryElementId: string | undefined;
-    hue: number;
-  }>
-) {
-  const x =
-    props.center.x +
-    Math.cos(props.radians) * props.distance -
-    props.diameter / 2;
-  const y =
-    props.center.y +
-    Math.sin(props.radians) * props.distance -
-    props.diameter / 2;
-  const edgeAt45Deg = (props.diameter / 2) * Math.cos(0.25 * Math.PI);
+export function IkigaiCategory(props: {
+  id: string;
+  center: {x: number; y: number};
+  diameter: number;
+  maxDiameter: number;
+  alpha: number;
+  radians: number;
+  textRadians?: number;
+  distance: number;
+  categoryElementId: string | undefined;
+  hue: number;
+}) {
   const scale =
     props.maxDiameter !== 0 ? props.diameter / props.maxDiameter : 0;
+  const diameter = props.diameter / scale;
+  const x =
+    props.center.x + Math.cos(props.radians) * props.distance - diameter / 2;
+  const y =
+    props.center.y + Math.sin(props.radians) * props.distance - diameter / 2;
+  const edgeAt45Deg = (diameter / 2) * Math.cos(0.25 * Math.PI);
 
-  function getOrientationStyle(style: CSSStyleDeclaration) {
+  function getOrientationStyle() {
+    const style: Partial<CSSStyleDeclaration> = {placeContent: undefined};
+
     // Force the angle to be between 0 and 2 * Math.PI.
     const normalizedRadians =
       ((props.radians % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
@@ -72,7 +68,7 @@ export function IkigaiCategory(
       case Orientation.NORTH:
       case Orientation.NORTHWEST:
         Object.assign(style, {
-          justifyContent: 'initial',
+          justifyContent: 'flex-start',
         });
         break;
       case Orientation.SOUTHEAST:
@@ -96,57 +92,50 @@ export function IkigaiCategory(
       case Orientation.EAST:
       case Orientation.SOUTHEAST:
         Object.assign(style, {
-          textAlign: 'right',
-          float: 'right',
-          alignItems: 'right',
+          alignItems: 'flex-end',
         });
         break;
       case Orientation.SOUTHWEST:
       case Orientation.WEST:
       case Orientation.NORTHWEST:
         Object.assign(style, {
-          textAlign: 'left',
-          float: 'left',
-          alignItems: 'left',
+          alignItems: 'flex-start',
         });
         break;
       case Orientation.NORTH:
       case Orientation.SOUTH:
         Object.assign(style, {
-          textAlign: 'center',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          float: 'center',
           alignItems: 'center',
         });
         break;
     }
+
+    console.log(Orientation[orientation] + ': ');
+    console.log(style);
+    return style;
   }
 
   if (props.categoryElementId != null) {
     const element = document.getElementById(props.categoryElementId);
     if (element != null) {
-      Object.assign<CSSStyleDeclaration, Partial<CSSStyleDeclaration>>(
-        element.style,
-        {
-          display: 'flex',
-          flexFlow: 'column nowrap',
-          position: 'absolute',
-          left: x + 'px',
-          top: y + 'px',
-          width: props.diameter + 'px',
-          height: props.diameter + 'px',
-          padding: props.diameter / 2 - edgeAt45Deg + 'px',
-          borderRadius: '50%',
-          transform: `scale(${scale}, ${scale})`,
-          visibility: 'visible',
-          backgroundColor: `hsla(${props.hue}, 100%, 75%, ${props.alpha})`,
-          borderStyle: 'solid',
-          borderWidth: '1px',
-          borderColor: `hsla(${props.hue}, 100%, 80%, ${props.alpha})`,
-        }
-      );
-      getOrientationStyle(element.style);
+      Object.assign(element.style, getOrientationStyle(), {
+        display: 'flex',
+        flexFlow: 'column nowrap',
+        position: 'absolute',
+        left: x + 'px',
+        top: y + 'px',
+        width: diameter + 'px',
+        maxWidth: diameter + 'px',
+        height: diameter + 'px',
+        padding: diameter / 2 - edgeAt45Deg + 'px',
+        borderRadius: '50%',
+        transform: `scale(${scale}, ${scale})`,
+        visibility: 'visible',
+        backgroundColor: `hsla(${props.hue}, 100%, 75%, ${props.alpha})`,
+        borderStyle: 'solid',
+        borderWidth: '1px',
+        borderColor: `hsla(${props.hue}, 100%, 80%, ${props.alpha})`,
+      });
     }
   }
 
