@@ -39,12 +39,8 @@ public class TeacherClassXId implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
+    if (this == o) return true;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
     TeacherClassXId entity = (TeacherClassXId) o;
     return Objects.equals(this.teacherId, entity.teacherId)
         && Objects.equals(this.classXId, entity.classXId);

@@ -18,7 +18,7 @@ import java.time.Instant;
     name = ClassX.TABLE_NAME,
     schema = "leo_temp",
     indexes = {
-      @Index(name = "class_x__school_id__name", columnList = "school_id, name", unique = true)
+      @Index(name = "class_x__school_id__name", columnList = "name, school_id", unique = true)
     })
 public class ClassX {
 

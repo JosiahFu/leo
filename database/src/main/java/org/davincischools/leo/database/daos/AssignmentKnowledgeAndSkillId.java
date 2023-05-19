@@ -39,12 +39,8 @@ public class AssignmentKnowledgeAndSkillId implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
+    if (this == o) return true;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
     AssignmentKnowledgeAndSkillId entity = (AssignmentKnowledgeAndSkillId) o;
     return Objects.equals(this.knowledgeAndSkillId, entity.knowledgeAndSkillId)
         && Objects.equals(this.assignmentId, entity.assignmentId);

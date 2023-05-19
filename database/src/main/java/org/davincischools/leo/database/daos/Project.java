@@ -142,7 +142,8 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_THUMBSSTATE_NAME, length = 11)
+  @Lob
+  @Column(name = COLUMN_THUMBSSTATE_NAME)
   public String getThumbsState() {
     return thumbsState;
   }
