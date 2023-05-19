@@ -17,14 +17,14 @@
     </parent>
 
     <properties>
-        <test.containers.version>1.17.6</test.containers.version>
+        <test.containers.version>1.18.1</test.containers.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>6.0.2</version>
+            <version>6.1.0</version>
         </dependency>
 
         <!-- MySQL test containers. -->
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>${spring.boot.version}</version>
+            <version>${spring.boot.starter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
