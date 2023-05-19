@@ -55,7 +55,7 @@ public class TestDatabase {
         // Create and start the container.
         int port =
             Optional.ofNullable(environment.getProperty(TEST_DATABASE_PORT_KEY, Integer.class))
-                .orElseGet(TestSocketUtils::findAvailableTcpPort);
+                .orElse(-1);
         MySQLContainer<?> container = createMySqlContainer(port);
         container.start();
 
@@ -105,7 +105,8 @@ public class TestDatabase {
             .withUsername(USERNAME)
             .withPassword(PASSWORD)
             .withEnv("MYSQL_ROOT_PASSWORD", ROOT_PASSWORD);
-    container.setPortBindings(ImmutableList.of(port + ":3306"));
+    container.setPortBindings(
+        ImmutableList.of((port > 0 ? port : TestSocketUtils.findAvailableTcpPort()) + ":3306"));
 
     // Workaround for
     // "STDERR: mysqld: Can't read dir of '/etc/mysql/conf.d/' (Errcode: 13 - Permission denied)"
