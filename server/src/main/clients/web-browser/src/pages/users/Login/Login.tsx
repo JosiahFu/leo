@@ -8,7 +8,7 @@ import {createService} from '../../../protos';
 import {FieldWithError} from '../../../FieldWithError/FieldWithError';
 import ILoginResponse = user_management.ILoginResponse;
 import ILoginRequest = user_management.ILoginRequest;
-import {login} from '../../../utils/authentication';
+import {login} from '../../../libs/authentication';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 const {Content} = Layout;
 

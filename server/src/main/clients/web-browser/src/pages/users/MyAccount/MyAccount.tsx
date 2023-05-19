@@ -1,7 +1,7 @@
 import './MyAccount.scss';
 import {SignupForm} from '../../../libs/SignupForm/SignupForm';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {getCurrentUser} from '../../../utils/authentication';
+import {getCurrentUser} from '../../../libs/authentication';
 
 export function MyAccount() {
   const user = getCurrentUser();

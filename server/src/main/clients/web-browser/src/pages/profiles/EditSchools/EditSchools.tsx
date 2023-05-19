@@ -18,7 +18,7 @@ import {
   SelectMultipleFromList,
 } from '../../../SelectMultipleFromList/SelectMultipleFromList';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {getCurrentUser} from '../../../utils/authentication';
+import {getCurrentUser} from '../../../libs/authentication';
 
 export function SelectSchoolFromList(props: {
   id: string;

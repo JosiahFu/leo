@@ -6,7 +6,7 @@ import DistrictInformationResponse = district_management.DistrictInformationResp
 import IDistrict = pl_types.IDistrict;
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {getCurrentUser} from '../../../utils/authentication';
+import {getCurrentUser} from '../../../libs/authentication';
 
 export function SelectDistrictFromList(props: {
   id: string;
