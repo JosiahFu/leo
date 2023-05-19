@@ -1,11 +1,8 @@
-import {ReactNode} from 'react';
+import {PropsWithChildren} from 'react';
 
-function ProjectPost(props: {
-  title: string;
-  date: Date;
-  image: string;
-  content: ReactNode;
-}) {
+function ProjectPost(
+  props: PropsWithChildren<{title: string; date: Date; image: string}>
+) {
   return (
     <article>
       <div className="post-header">
@@ -13,7 +10,7 @@ function ProjectPost(props: {
         <span>{props.date.toLocaleDateString()}</span>
       </div>
       <img src={props.image} alt={props.title} />
-      {props.content}
+      {props.children}
     </article>
   );
 }

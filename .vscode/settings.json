@@ -17,5 +17,6 @@
     "[typescriptreact]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-    }
+    },
+    "editor.indentSize": 2
 }
