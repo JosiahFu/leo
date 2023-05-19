@@ -112,6 +112,7 @@ public class LogUtils {
     int retries = 0;
     int retriesWithinMilliseconds = 0;
     boolean firstTime = true;
+
     /**
      * True if we've handled the error with an onError(). It causes any future functionality to be
      * skipped until the final writes the log entry before it returns from finish().
