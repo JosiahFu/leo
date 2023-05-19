@@ -6,7 +6,6 @@ import {ChangeEvent, useState} from 'react';
 import {
   DownOutlined,
   MailOutlined,
-  QuestionOutlined,
   SolutionOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -277,17 +276,14 @@ export function Root() {
                   message: 'Please enter your first name.',
                 },
               ]}
-              name="first_name"
+              name="firstName"
             >
-              <div>
-                <UserOutlined />
-                <Input
-                  name="first_name"
-                  placeholder="First Name"
-                  maxLength={255}
-                  autoComplete="given-name"
-                />
-              </div>
+              <Input
+                placeholder="First Name"
+                maxLength={255}
+                autoComplete="given-name"
+                prefix={<UserOutlined />}
+              />
             </Form.Item>
             <Form.Item
               rules={[
@@ -297,17 +293,14 @@ export function Root() {
                   message: 'Please enter your last name.',
                 },
               ]}
-              name="last_name"
+              name="lastName"
             >
-              <div>
-                <UserOutlined />
-                <Input
-                  name="last_name"
-                  placeholder="Last Name"
-                  maxLength={255}
-                  autoComplete="family-name"
-                />
-              </div>
+              <Input
+                placeholder="Last Name"
+                maxLength={255}
+                autoComplete="family-name"
+                prefix={<UserOutlined />}
+              />
             </Form.Item>
           </div>
           <Form.Item
@@ -322,17 +315,14 @@ export function Root() {
                 message: 'This e-mail address is not valid.',
               },
             ]}
-            name="email_address"
+            name="emailAddress"
           >
-            <div>
-              <MailOutlined />
-              <Input
-                name="email_address"
-                placeholder="Email Address"
-                maxLength={255}
-                autoComplete="email"
-              />
-            </div>
+            <Input
+              placeholder="Email Address"
+              maxLength={255}
+              autoComplete="email"
+              prefix={<MailOutlined />}
+            />
           </Form.Item>
           <Form.Item
             required={true}
@@ -348,35 +338,59 @@ export function Root() {
             ]}
             name="professionSelection"
           >
-            <div>
-              <Dropdown
-                menu={{
-                  items: defaultProfessions.map(value => {
-                    return {
-                      key: value,
-                      label: (
-                        <div
-                          onClick={() => {
-                            setProfessionSelection(value);
-                            interestForm.setFieldValue(
-                              'professionSelection',
-                              value
-                            );
-                          }}
-                        >
-                          {value}
-                        </div>
-                      ),
-                    };
-                  }),
-                }}
-                placement="bottomLeft"
-              >
-                <div className="ant-input">{professionSelection}</div>
-              </Dropdown>
-              <SolutionOutlined />
-              <DownOutlined className="right" />
-            </div>
+            <Dropdown
+              menu={{
+                items: defaultProfessions.map(value => {
+                  return {
+                    key: value,
+                    label: (
+                      <div
+                        onClick={() => {
+                          setProfessionSelection(value);
+                          interestForm.setFieldValue(
+                            'professionSelection',
+                            value
+                          );
+                        }}
+                      >
+                        {value}
+                      </div>
+                    ),
+                  };
+                }),
+              }}
+              placement="bottomLeft"
+            >
+              <div className="project-leo-dropdown">
+                <span
+                  className="ant-input-prefix"
+                  style={{
+                    marginInlineEnd: '4px',
+                  }}
+                >
+                  <SolutionOutlined />
+                </span>
+                <span
+                  style={{
+                    color:
+                      professionSelection === selectProfession
+                        ? '#bfbfbf'
+                        : 'black',
+                    width: '100%',
+                  }}
+                >
+                  {professionSelection}
+                </span>
+                <span
+                  className="ant-input-suffix"
+                  style={{
+                    marginInlineStart: '4px',
+                  }}
+                >
+                  <DownOutlined />
+                </span>
+              </div>
+            </Dropdown>
           </Form.Item>
           <Form.Item
             required={professionSelection === otherProfession}
@@ -395,18 +409,15 @@ export function Root() {
             ]}
             name="professionDescr"
           >
-            <div>
-              <SolutionOutlined />
-              <Input
-                name="professionDescr"
-                placeholder="Profession Description"
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setProfessionDescr(e.target.value)
-                }
-                value={professionDescr}
-                maxLength={255}
-              />
-            </div>
+            <Input
+              placeholder="Profession Description"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setProfessionDescr(e.target.value)
+              }
+              value={professionDescr}
+              maxLength={255}
+              prefix={<SolutionOutlined />}
+            />
           </Form.Item>
           <Form.Item
             rules={[
@@ -418,31 +429,19 @@ export function Root() {
             ]}
             name="reasonForInterest"
           >
-            <div>
-              <QuestionOutlined />
-              <Input.TextArea
-                name="reasonForInterest"
-                placeholder="Let us know your thoughts / Questions / Comments / Suggestions"
-                maxLength={8192}
-                rows={5}
-              />
-            </div>
+            <Input.TextArea
+              placeholder="Let us know your thoughts / Questions / Comments / Suggestions"
+              maxLength={8192}
+              rows={5}
+            />
           </Form.Item>
           <div className="form-separator" style={{marginBottom: '0.5em'}} />
           The following fields are optional:
           <Form.Item name="districtName">
-            <Input
-              name="districtName"
-              maxLength={255}
-              placeholder="District Name"
-            />
+            <Input maxLength={255} placeholder="District Name" />
           </Form.Item>
           <Form.Item name="schoolName">
-            <Input
-              name="schoolName"
-              maxLength={255}
-              placeholder="School Name"
-            />
+            <Input maxLength={255} placeholder="School Name" />
           </Form.Item>
           <Form.Item
             name="numTeachers"
@@ -461,7 +460,7 @@ export function Root() {
               },
             ]}
           >
-            <Input name="numTeachers" placeholder="Number of Teachers" />
+            <Input placeholder="Number of Teachers" />
           </Form.Item>
           <Form.Item
             name="numStudents"
@@ -480,30 +479,22 @@ export function Root() {
               },
             ]}
           >
-            <Input name="numStudents" placeholder="Number of Students" />
+            <Input placeholder="Number of Students" />
           </Form.Item>
           <Form.Item name="addressLine_1">
-            <Input
-              name="addressLine_1"
-              maxLength={255}
-              placeholder="Address Line 1"
-            />
+            <Input maxLength={255} placeholder="Address Line 1" />
           </Form.Item>
           <Form.Item name="addressLine_2">
-            <Input
-              name="addressLine_2"
-              maxLength={255}
-              placeholder="Address Line 2"
-            />
+            <Input maxLength={255} placeholder="Address Line 2" />
           </Form.Item>
           <Form.Item name="city">
-            <Input name="city" maxLength={20} placeholder="City" />
+            <Input maxLength={20} placeholder="City" />
           </Form.Item>
           <Form.Item name="state">
-            <Input name="state" maxLength={2} placeholder="State" />
+            <Input maxLength={2} placeholder="State" />
           </Form.Item>
           <Form.Item name="zipCode">
-            <Input name="zipCode" maxLength={10} placeholder="Zip Code" />
+            <Input maxLength={10} placeholder="Zip Code" />
           </Form.Item>
           <div className="form-separator" style={{marginTop: '1em'}} />
           <Form.Item style={{textAlign: 'end'}}>

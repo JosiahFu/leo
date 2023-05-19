@@ -1,14 +1,19 @@
 import './SignupForm.scss';
 
-import {Form, Input} from 'antd';
+import {Button, Form, Input} from 'antd';
 import {LockOutlined, MailOutlined, UserOutlined} from '@ant-design/icons';
 
 export function SignupForm() {
   const [myProfileForm] = Form.useForm();
 
+  function onFinish(values: {}) {
+    myProfileForm.validateFields();
+    console.log(values);
+  }
+
   return (
     <>
-      <Form form={myProfileForm}>
+      <Form form={myProfileForm} onFinish={onFinish}>
         <div>
           <Form.Item
             rules={[
@@ -18,17 +23,14 @@ export function SignupForm() {
                 message: 'Please enter your first name.',
               },
             ]}
-            name="first_name"
+            name="firstName"
           >
-            <div>
-              <UserOutlined />
-              <Input
-                name="first_name"
-                placeholder="First Name"
-                maxLength={255}
-                autoComplete="given-name"
-              />
-            </div>
+            <Input
+              placeholder="First Name"
+              maxLength={255}
+              autoComplete="given-name"
+              prefix={<UserOutlined />}
+            />
           </Form.Item>
           <Form.Item
             rules={[
@@ -38,17 +40,14 @@ export function SignupForm() {
                 message: 'Please enter your last name.',
               },
             ]}
-            name="last_name"
+            name="lastName"
           >
-            <div>
-              <UserOutlined />
-              <Input
-                name="last_name"
-                placeholder="Last Name"
-                maxLength={255}
-                autoComplete="family-name"
-              />
-            </div>
+            <Input
+              placeholder="Last Name"
+              maxLength={255}
+              autoComplete="family-name"
+              prefix={<UserOutlined />}
+            />
           </Form.Item>
         </div>
         <Form.Item
@@ -63,41 +62,37 @@ export function SignupForm() {
               message: 'This e-mail address is not valid',
             },
           ]}
-          name="email_address"
+          name="emailAddress"
         >
-          <div>
-            <MailOutlined />
-            <Input
-              name="email_address"
-              placeholder="Email Address"
-              maxLength={255}
-              autoComplete="email"
-            />
-          </div>
+          <Input
+            placeholder="Email Address"
+            maxLength={255}
+            autoComplete="email"
+            prefix={<MailOutlined />}
+          />
         </Form.Item>
         <Form.Item name="password">
-          <div>
-            <LockOutlined />
-            <Input
-              name="password"
-              placeholder="Password"
-              maxLength={255}
-              type="password"
-              autoComplete="new-password"
-            />
-          </div>
+          <Input
+            placeholder="Password"
+            maxLength={255}
+            type="password"
+            autoComplete="new-password"
+            prefix={<LockOutlined />}
+          />
         </Form.Item>
         <Form.Item name="verify_password">
-          <div>
-            <LockOutlined />
-            <Input
-              name="verify_password"
-              placeholder="Re-enter Password"
-              maxLength={255}
-              type="password"
-              autoComplete="new-password"
-            />
-          </div>
+          <Input
+            placeholder="Re-enter Password"
+            maxLength={255}
+            type="password"
+            autoComplete="new-password"
+            prefix={<LockOutlined />}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Form.Item>
       </Form>
     </>
