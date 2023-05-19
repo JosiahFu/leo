@@ -4,11 +4,11 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router';
 import {user_management} from '../../../generated/protobuf-js';
 import UserManagementService = user_management.UserManagementService;
-import {createService} from '../../../protos';
+import {createService} from '../../../libs/protos';
 import {FieldWithError} from '../../../FieldWithError/FieldWithError';
 import ILoginResponse = user_management.ILoginResponse;
 import ILoginRequest = user_management.ILoginRequest;
-import {login} from '../../../utils/authentication';
+import {login} from '../../../libs/authentication';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 const {Content} = Layout;
 

@@ -1,5 +1,5 @@
 import './PartialTextOpenAiPrompt.scss';
-import {createService, partial_text_openai_prompt} from '../protos';
+import {createService, partial_text_openai_prompt} from '../libs/protos';
 import GetSuggestionsRequest = partial_text_openai_prompt.GetSuggestionsRequest;
 import GetSuggestionsResponse = partial_text_openai_prompt.GetSuggestionsResponse;
 import {useState} from 'react';

@@ -1,7 +1,11 @@
 import './MyProjects.scss';
 import {useEffect, useState} from 'react';
-import {createService, pl_types, project_management} from '../../../protos';
-import {getCurrentUser} from '../../../utils/authentication';
+import {
+  createService,
+  pl_types,
+  project_management,
+} from '../../../libs/protos';
+import {getCurrentUser} from '../../../libs/authentication';
 import IProject = pl_types.IProject;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 import {ProjectCard} from '../../../libs/ProjectCard/ProjectCard';
