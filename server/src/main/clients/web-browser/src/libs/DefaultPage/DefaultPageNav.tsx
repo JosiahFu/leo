@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import {getCurrentUser, Role} from '../authentication';
 import {Link} from 'react-router-dom';
-import {Footer} from 'antd/es/layout/layout';
+const Footer = Layout.Footer;
 import {useState} from 'react';
 
 const {Header, Sider, Content} = Layout;
