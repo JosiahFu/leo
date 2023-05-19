@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -285,7 +286,11 @@ public class ProjectManagementService {
               UserX userX = db.getUserXRepository().findById(request.getUserXId()).orElseThrow();
               var response = GetProjectsResponse.newBuilder();
 
-              response.addAllProjects(DataAccess.getProtoProjectsByUserXId(db, userX));
+              response.addAllProjects(
+                  Streams.stream(
+                          db.getProjectRepository().findAllByStudentId(userX.getStudent().getId()))
+                      .map(DataAccess::convertProjectToProto)
+                      .toList());
 
               return response.build();
             })

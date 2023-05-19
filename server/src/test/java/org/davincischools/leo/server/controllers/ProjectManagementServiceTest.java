@@ -4,6 +4,7 @@ import com.google.common.truth.Truth;
 import com.google.common.truth.extensions.proto.ProtoTruth;
 import org.davincischools.leo.database.daos.ProjectInput;
 import org.davincischools.leo.protos.pl_types.Project;
+import org.davincischools.leo.protos.pl_types.Project.ThumbsState;
 import org.davincischools.leo.protos.project_management.GenerateProjectsResponse;
 import org.davincischools.leo.server.utils.LogUtils.LogOperations;
 import org.junit.Test;
@@ -142,13 +143,25 @@ Full 2
                         .setId(-1)
                         .setName("Title 1")
                         .setShortDescr("Short 1")
-                        .setLongDescr("Full 1"))
+                        .setLongDescr("Full 1")
+                        .setStepsDescr("")
+                        .setFavorite(false)
+                        .setThumbsState(ThumbsState.UNSET)
+                        .setArchived(false)
+                        .setNeedsReview(false)
+                        .setActive(false))
                 .addProjects(
                     Project.newBuilder()
                         .setId(-1)
                         .setName("Title 2")
                         .setShortDescr("Short 2")
-                        .setLongDescr("Full 2"))
+                        .setLongDescr("Full 2")
+                        .setStepsDescr("")
+                        .setFavorite(false)
+                        .setThumbsState(ThumbsState.UNSET)
+                        .setArchived(false)
+                        .setNeedsReview(false)
+                        .setActive(false))
                 .build());
   }
 }

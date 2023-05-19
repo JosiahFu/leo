@@ -14,6 +14,7 @@ import org.davincischools.leo.database.daos.Project;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.Database;
+import org.davincischools.leo.protos.pl_types.Project.ThumbsState;
 
 public class DataAccess {
 
@@ -69,6 +70,17 @@ public class DataAccess {
                     .getClass()
                     .getMethod("getName")
                     .invoke(daoWithNameAndShortDescAndLongDescr));
+  }
+
+  public static String getStepsDescr(Object daoWithNameAndShortDescAndLongDescr) {
+    return firstNonNull(
+        () ->
+            (String)
+                daoWithNameAndShortDescAndLongDescr
+                    .getClass()
+                    .getMethod("getStepsDescr")
+                    .invoke(daoWithNameAndShortDescAndLongDescr),
+        () -> "");
   }
 
   public static org.davincischools.leo.protos.pl_types.User convertFullUserXToProto(UserX user) {
@@ -137,16 +149,14 @@ public class DataAccess {
         .setName(project.getName())
         .setShortDescr(getShortDescr(project))
         .setLongDescr(getLongDescr(project))
+        .setStepsDescr(getStepsDescr(project))
+        .setFavorite(Boolean.TRUE.equals(project.getFavorite()))
+        .setThumbsState(
+            ThumbsState.valueOf(firstNonNull(project::getThumbsState, ThumbsState.UNSET::name)))
+        .setArchived(Boolean.TRUE.equals(project.getArchived()))
+        .setNeedsReview(Boolean.TRUE.equals(project.getNeedsReview()))
+        .setActive(Boolean.TRUE.equals(project.getActive()))
         .build();
-  }
-
-  public static List<org.davincischools.leo.protos.pl_types.Project> getProtoProjectsByUserXId(
-      Database db, UserX userX) {
-    return StreamSupport.stream(
-            db.getProjectRepository().findAllByStudentId(userX.getStudent().getId()).spliterator(),
-            false)
-        .map(DataAccess::convertProjectToProto)
-        .collect(Collectors.toList());
   }
 
   public static org.davincischools.leo.protos.pl_types.Eks getProtoEks(KnowledgeAndSkill kas) {
