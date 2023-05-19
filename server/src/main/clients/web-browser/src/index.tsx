@@ -5,10 +5,6 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import {Root} from './pages/Root';
-import StudentNav from './pages/student/Nav';
-import StudentProjectGen from './pages/student/ProjectGen';
-import StudentProjectImplementation from './pages/student/ProjectImplement';
-import StudentUpload from './pages/student/Upload';
 import {EditUsers} from './pages/profiles/EditUsers/EditUsers';
 import {Login} from './pages/users/Login/Login';
 import {EditDistricts} from './pages/profiles/EditDistricts/EditDistricts';
@@ -82,24 +78,6 @@ const router = createBrowserRouter([
       {
         path: 'my-projects',
         element: <MyProjects />,
-      },
-    ],
-  },
-  {
-    path: '/student',
-    element: <StudentNav />,
-    children: [
-      {
-        path: 'project-gen',
-        element: <StudentProjectGen />,
-      },
-      {
-        path: 'project-implementation',
-        element: <StudentProjectImplementation />,
-      },
-      {
-        path: 'upload',
-        element: <StudentUpload />,
       },
     ],
   },

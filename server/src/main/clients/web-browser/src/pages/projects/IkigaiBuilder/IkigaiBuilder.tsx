@@ -2,8 +2,12 @@ import './IkigaiBuilder.scss';
 import {Input, Layout, Modal} from 'antd';
 import {Ikigai} from '../../../Ikigai/Ikigai';
 import {ChangeEvent, useEffect, useState, useRef, forwardRef} from 'react';
-import {createService, pl_types, project_management} from '../../../protos';
-import {getCurrentUser} from '../../../utils/authentication';
+import {
+  createService,
+  pl_types,
+  project_management,
+} from '../../../libs/protos';
+import {getCurrentUser} from '../../../libs/authentication';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
 import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import IEks = pl_types.IEks;

@@ -1,6 +1,6 @@
 import './DefaultPage.scss';
 
-import {getCurrentUser} from '../../utils/authentication';
+import {getCurrentUser} from '../authentication';
 import {
   BellOutlined,
   QuestionCircleOutlined,

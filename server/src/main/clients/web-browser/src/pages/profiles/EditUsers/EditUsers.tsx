@@ -5,7 +5,7 @@ import {
   school_management,
   pl_types,
   user_management,
-} from '../../../protos';
+} from '../../../libs/protos';
 import {useEffect, useState} from 'react';
 import {FieldWithError} from '../../../FieldWithError/FieldWithError';
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
@@ -20,7 +20,7 @@ import IUserInformationResponse = user_management.IUserInformationResponse;
 import ISchool = pl_types.ISchool;
 import SchoolManagementService = school_management.SchoolManagementService;
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {getCurrentUser} from '../../../utils/authentication';
+import {getCurrentUser} from '../../../libs/authentication';
 
 export function SelectUserFromList(props: {
   id: string;

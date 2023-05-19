@@ -5,7 +5,7 @@ import {
   district_management,
   school_management,
   pl_types,
-} from '../../../protos';
+} from '../../../libs/protos';
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import DistrictManagementService = district_management.DistrictManagementService;
@@ -18,7 +18,7 @@ import {
   SelectMultipleFromList,
 } from '../../../SelectMultipleFromList/SelectMultipleFromList';
 import {DefaultPage} from '../../../libs/DefaultPage/DefaultPage';
-import {getCurrentUser} from '../../../utils/authentication';
+import {getCurrentUser} from '../../../libs/authentication';
 
 export function SelectSchoolFromList(props: {
   id: string;
