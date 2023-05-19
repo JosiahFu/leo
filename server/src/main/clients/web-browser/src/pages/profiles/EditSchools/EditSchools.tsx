@@ -5,7 +5,7 @@ import {
   district_management,
   school_management,
   pl_types,
-} from '../../../protos';
+} from '../../../libs/protos';
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';
 import {SelectDistrictFromList} from '../EditDistricts/EditDistricts';
 import DistrictManagementService = district_management.DistrictManagementService;

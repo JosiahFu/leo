@@ -5,7 +5,7 @@ import {
   school_management,
   pl_types,
   user_management,
-} from '../../../protos';
+} from '../../../libs/protos';
 import {useEffect, useState} from 'react';
 import {FieldWithError} from '../../../FieldWithError/FieldWithError';
 import {Display, SelectFromList} from '../../../SelectFromList/SelectFromList';

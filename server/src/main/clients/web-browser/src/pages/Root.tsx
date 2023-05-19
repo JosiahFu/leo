@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import {interest_service} from '../generated/protobuf-js';
 import InterestService = interest_service.InterestService;
-import {createService} from '../protos';
+import {createService} from '../libs/protos';
 import RegisterInterestRequest = interest_service.RegisterInterestRequest;
 
 export function Root() {
