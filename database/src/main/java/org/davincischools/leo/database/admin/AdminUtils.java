@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
+import org.davincischools.leo.database.daos.Motivation;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.TeacherSchool;
 import org.davincischools.leo.database.daos.UserX;
@@ -48,7 +49,7 @@ public class AdminUtils {
       this.name = name;
     }
 
-    public String getName() {
+    private String getName() {
       return name;
     }
   }
@@ -59,34 +60,34 @@ public class AdminUtils {
 
   private record Error(String value, Exception e) {}
 
-  @Autowired ApplicationContext context;
-  @Autowired Database db;
+  @Autowired private ApplicationContext context;
+  @Autowired private Database db;
 
   @Value("${createDistrict:}")
-  String createDistrict;
+  private String createDistrict;
 
   @Value("${createAdmin:}")
-  List<String> createAdmins;
+  private List<String> createAdmins;
 
   @Value("${importTeachers:}")
-  String importTeachers;
+  private String importTeachers;
 
   @Value("${importStudents:}")
-  String importStudents;
+  private String importStudents;
 
   @Value("${importXqEks:}")
-  String importXqEks;
+  private String importXqEks;
 
-  @Value("${importEks:}")
-  String importEks;
+  @Value("${importMotivations:}")
+  private String importMotivations;
 
   @Value("${delimiter:[\\t]}")
-  String delimiter;
+  private String delimiter;
 
   @Value("${resetPassword:}")
-  List<String> resetPasswords;
+  private List<String> resetPasswords;
 
-  public District createDistrict() {
+  private District createDistrict() {
     checkArgument(createDistrict != null, "--createDistrict required.");
 
     return db.createDistrict(createDistrict);
@@ -99,7 +100,7 @@ public class AdminUtils {
         .generate(20);
   }
 
-  public void createAdmins() {
+  private void createAdmins() {
     checkArgument(!createAdmins.isEmpty(), "--createAdmin required.");
 
     for (String createAdmin : createAdmins) {
@@ -141,7 +142,7 @@ public class AdminUtils {
     }
   }
 
-  public void resetPasswords() throws IOException {
+  private void resetPasswords() throws IOException {
     checkArgument(!resetPasswords.isEmpty(), "--resetPassword required.");
     resetPasswords.stream()
         .parallel()
@@ -162,7 +163,7 @@ public class AdminUtils {
             });
   }
 
-  public void importTeachers() throws IOException {
+  private void importTeachers() throws IOException {
     checkArgument(importTeachers != null, "--importTeachers required.");
 
     District district = createDistrict();
@@ -260,10 +261,10 @@ public class AdminUtils {
                   Lists.transform(errors, e -> e.value + "  --  " + e.e.getMessage())));
     }
 
-    log.atInfo().log("Done.");
+    log.atInfo().log("Done importing teachers.");
   }
 
-  public void importStudents() throws IOException {
+  private void importStudents() throws IOException {
     checkArgument(importStudents != null, "--importStudents required.");
 
     District district = createDistrict();
@@ -345,9 +346,11 @@ public class AdminUtils {
               ERROR_JOINER.join(
                   Iterables.transform(errors, e -> e.value + "  --  " + e.e.getMessage())));
     }
+
+    log.atInfo().log("Done importing students.");
   }
 
-  public void importXqEks() throws IOException {
+  private void importXqEks() throws IOException {
     checkArgument(importXqEks != null, "--importXqEks required.");
 
     District district = createDistrict();
@@ -408,15 +411,55 @@ public class AdminUtils {
     if (!errors.isEmpty()) {
       log.atError()
           .log(
-              "There were errors during the import of the following teachers:\n - {}\n",
+              "There were errors during the import of the following XQ EKS':\n - {}\n",
               ERROR_JOINER.join(
                   Lists.transform(errors, e -> e.value + "  --  " + e.e.getMessage())));
     }
 
-    log.atInfo().log("Done.");
+    log.atInfo().log("Done importing XQ EKS'.");
   }
 
-  public void processCommands() throws IOException {
+  private void importMotivations() throws IOException {
+    checkArgument(importMotivations != null, "--importMotivations required.");
+
+    List<Error> errors = Collections.synchronizedList(new ArrayList<>());
+
+    for (String line : Files.readLines(new File(importMotivations), StandardCharsets.UTF_8)) {
+      try {
+        String[] cells = line.split(delimiter);
+        if (cells.length != 2) {
+          throw new IllegalArgumentException("Unexpected number of columns: " + cells.length + ".");
+        }
+
+        String title = cells[0];
+        String descr = cells[1];
+
+        checkArgument(!title.isEmpty(), "Title required.");
+        checkArgument(!descr.isEmpty(), "Description required.");
+
+        checkArgument(!title.equals("Title"), "Header row.");
+
+        Motivation motivation = db.createMotivation(title, descr);
+
+        log.atInfo().log("Imported: {}", line);
+      } catch (Exception e) {
+        log.atError().withThrowable(e).log("Error: {}", line);
+        errors.add(new Error(line, e));
+      }
+    }
+
+    if (!errors.isEmpty()) {
+      log.atError()
+          .log(
+              "There were errors during the import of the following motivations:\n - {}\n",
+              ERROR_JOINER.join(
+                  Lists.transform(errors, e -> e.value + "  --  " + e.e.getMessage())));
+    }
+
+    log.atInfo().log("Done importing motivations.");
+  }
+
+  private void processCommands() throws IOException {
     if (!createDistrict.isEmpty()) {
       log.atInfo().log("Creating district: {}", createDistrict);
       District district = createDistrict();
@@ -441,6 +484,10 @@ public class AdminUtils {
     if (!importXqEks.isEmpty()) {
       log.atInfo().log("Importing XQ EKS: {}", importXqEks);
       importXqEks();
+    }
+    if (!importMotivations.isEmpty()) {
+      log.atInfo().log("Importing Motivations: {}", importMotivations);
+      importMotivations();
     }
     if (!createAdmins.isEmpty()) {
       log.atInfo().log("Creating admin: {}", createAdmins);

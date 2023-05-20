@@ -13,6 +13,7 @@ import org.davincischools.leo.database.daos.Assignment;
 import org.davincischools.leo.database.daos.ClassX;
 import org.davincischools.leo.database.daos.District;
 import org.davincischools.leo.database.daos.KnowledgeAndSkill;
+import org.davincischools.leo.database.daos.Motivation;
 import org.davincischools.leo.database.daos.School;
 import org.davincischools.leo.database.daos.Student;
 import org.davincischools.leo.database.daos.Teacher;
@@ -408,5 +409,15 @@ public class Database {
                   .saveAssignmentKnowledgeAndSkill(assignment, knowledgeAndSkill);
             });
     return assignment;
+  }
+
+  public Motivation createMotivation(String name, String descr) {
+    return getMotivationRepository()
+        .save(
+            getMotivationRepository()
+                .findByName(name)
+                .orElseGet(() -> new Motivation().setCreationTime(Instant.now()))
+                .setName(name)
+                .setShortDescr(descr));
   }
 }
