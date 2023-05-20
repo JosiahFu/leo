@@ -67,6 +67,8 @@ public class Project {
 
   private Boolean active;
 
+  private Assignment assignment;
+
   private ProjectInput projectInput;
 
   @Id
@@ -235,6 +237,17 @@ public class Project {
 
   public Project setActive(Boolean active) {
     this.active = active;
+    return this;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "assignment_id", nullable = false)
+  public Assignment getAssignment() {
+    return assignment;
+  }
+
+  public Project setAssignment(Assignment assignment) {
+    this.assignment = assignment;
     return this;
   }
 

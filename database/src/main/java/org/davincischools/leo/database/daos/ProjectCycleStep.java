@@ -12,12 +12,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = ProjectCycle.ENTITY_NAME)
-@Table(name = ProjectCycle.TABLE_NAME, schema = "leo_temp")
-public class ProjectCycle {
+@Entity(name = ProjectCycleStep.ENTITY_NAME)
+@Table(name = ProjectCycleStep.TABLE_NAME, schema = "leo_temp")
+public class ProjectCycleStep {
 
-  public static final String ENTITY_NAME = "ProjectCycle";
-  public static final String TABLE_NAME = "project_cycle";
+  public static final String ENTITY_NAME = "ProjectCycleStep";
+  public static final String TABLE_NAME = "project_cycle_step";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
   public static final String COLUMN_POSITION_NAME = "position";
@@ -43,7 +43,7 @@ public class ProjectCycle {
 
   private String longDescrQuill;
 
-  private Project project;
+  private ProjectCycle projectCycle;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +52,7 @@ public class ProjectCycle {
     return id;
   }
 
-  public ProjectCycle setId(Integer id) {
+  public ProjectCycleStep setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -62,7 +62,7 @@ public class ProjectCycle {
     return creationTime;
   }
 
-  public ProjectCycle setCreationTime(Instant creationTime) {
+  public ProjectCycleStep setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
     return this;
   }
@@ -72,7 +72,7 @@ public class ProjectCycle {
     return position;
   }
 
-  public ProjectCycle setPosition(Integer position) {
+  public ProjectCycleStep setPosition(Integer position) {
     this.position = position;
     return this;
   }
@@ -82,7 +82,7 @@ public class ProjectCycle {
     return name;
   }
 
-  public ProjectCycle setName(String name) {
+  public ProjectCycleStep setName(String name) {
     this.name = name;
     return this;
   }
@@ -93,7 +93,7 @@ public class ProjectCycle {
     return shortDescr;
   }
 
-  public ProjectCycle setShortDescr(String shortDescr) {
+  public ProjectCycleStep setShortDescr(String shortDescr) {
     this.shortDescr = shortDescr;
     return this;
   }
@@ -104,7 +104,7 @@ public class ProjectCycle {
     return shortDescrQuill;
   }
 
-  public ProjectCycle setShortDescrQuill(String shortDescrQuill) {
+  public ProjectCycleStep setShortDescrQuill(String shortDescrQuill) {
     this.shortDescrQuill = shortDescrQuill;
     return this;
   }
@@ -115,7 +115,7 @@ public class ProjectCycle {
     return longDescr;
   }
 
-  public ProjectCycle setLongDescr(String longDescr) {
+  public ProjectCycleStep setLongDescr(String longDescr) {
     this.longDescr = longDescr;
     return this;
   }
@@ -126,19 +126,19 @@ public class ProjectCycle {
     return longDescrQuill;
   }
 
-  public ProjectCycle setLongDescrQuill(String longDescrQuill) {
+  public ProjectCycleStep setLongDescrQuill(String longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
     return this;
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "project_id", nullable = false)
-  public Project getProject() {
-    return project;
+  @JoinColumn(name = "project_cycle_id", nullable = false)
+  public ProjectCycle getProjectCycle() {
+    return projectCycle;
   }
 
-  public ProjectCycle setProject(Project project) {
-    this.project = project;
+  public ProjectCycleStep setProjectCycle(ProjectCycle projectCycle) {
+    this.projectCycle = projectCycle;
     return this;
   }
 }

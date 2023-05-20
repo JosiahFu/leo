@@ -2,25 +2,21 @@ package org.davincischools.leo.database.daos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = ProjectCycle.ENTITY_NAME)
-@Table(name = ProjectCycle.TABLE_NAME, schema = "leo_temp")
-public class ProjectCycle {
+@Entity(name = Motivation.ENTITY_NAME)
+@Table(name = Motivation.TABLE_NAME, schema = "leo_temp")
+public class Motivation {
 
-  public static final String ENTITY_NAME = "ProjectCycle";
-  public static final String TABLE_NAME = "project_cycle";
+  public static final String ENTITY_NAME = "Motivation";
+  public static final String TABLE_NAME = "motivation";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
-  public static final String COLUMN_POSITION_NAME = "position";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
@@ -30,8 +26,6 @@ public class ProjectCycle {
   private Integer id;
 
   private Instant creationTime;
-
-  private Integer position;
 
   private String name;
 
@@ -43,8 +37,6 @@ public class ProjectCycle {
 
   private String longDescrQuill;
 
-  private Project project;
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = COLUMN_ID_NAME, nullable = false)
@@ -52,7 +44,7 @@ public class ProjectCycle {
     return id;
   }
 
-  public ProjectCycle setId(Integer id) {
+  public Motivation setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -62,18 +54,8 @@ public class ProjectCycle {
     return creationTime;
   }
 
-  public ProjectCycle setCreationTime(Instant creationTime) {
+  public Motivation setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
-    return this;
-  }
-
-  @Column(name = COLUMN_POSITION_NAME, nullable = false)
-  public Integer getPosition() {
-    return position;
-  }
-
-  public ProjectCycle setPosition(Integer position) {
-    this.position = position;
     return this;
   }
 
@@ -82,7 +64,7 @@ public class ProjectCycle {
     return name;
   }
 
-  public ProjectCycle setName(String name) {
+  public Motivation setName(String name) {
     this.name = name;
     return this;
   }
@@ -93,7 +75,7 @@ public class ProjectCycle {
     return shortDescr;
   }
 
-  public ProjectCycle setShortDescr(String shortDescr) {
+  public Motivation setShortDescr(String shortDescr) {
     this.shortDescr = shortDescr;
     return this;
   }
@@ -104,7 +86,7 @@ public class ProjectCycle {
     return shortDescrQuill;
   }
 
-  public ProjectCycle setShortDescrQuill(String shortDescrQuill) {
+  public Motivation setShortDescrQuill(String shortDescrQuill) {
     this.shortDescrQuill = shortDescrQuill;
     return this;
   }
@@ -115,7 +97,7 @@ public class ProjectCycle {
     return longDescr;
   }
 
-  public ProjectCycle setLongDescr(String longDescr) {
+  public Motivation setLongDescr(String longDescr) {
     this.longDescr = longDescr;
     return this;
   }
@@ -126,19 +108,8 @@ public class ProjectCycle {
     return longDescrQuill;
   }
 
-  public ProjectCycle setLongDescrQuill(String longDescrQuill) {
+  public Motivation setLongDescrQuill(String longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
-    return this;
-  }
-
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "project_id", nullable = false)
-  public Project getProject() {
-    return project;
-  }
-
-  public ProjectCycle setProject(Project project) {
-    this.project = project;
     return this;
   }
 }

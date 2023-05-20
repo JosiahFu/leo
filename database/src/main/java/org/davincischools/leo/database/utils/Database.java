@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Strings;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 import org.davincischools.leo.database.daos.AdminX;
 import org.davincischools.leo.database.daos.Assignment;
@@ -18,16 +19,24 @@ import org.davincischools.leo.database.daos.Teacher;
 import org.davincischools.leo.database.daos.UserX;
 import org.davincischools.leo.database.utils.repos.AdminXRepository;
 import org.davincischools.leo.database.utils.repos.AssignmentKnowledgeAndSkillRepository;
+import org.davincischools.leo.database.utils.repos.AssignmentProjectDefinitionRepository;
 import org.davincischools.leo.database.utils.repos.AssignmentRepository;
 import org.davincischools.leo.database.utils.repos.ClassXRepository;
 import org.davincischools.leo.database.utils.repos.DistrictRepository;
+import org.davincischools.leo.database.utils.repos.ImageRepository;
 import org.davincischools.leo.database.utils.repos.InterestRepository;
 import org.davincischools.leo.database.utils.repos.KnowledgeAndSkillRepository;
 import org.davincischools.leo.database.utils.repos.LogReferenceRepository;
 import org.davincischools.leo.database.utils.repos.LogRepository;
+import org.davincischools.leo.database.utils.repos.MotivationRepository;
 import org.davincischools.leo.database.utils.repos.PortfolioRepository;
 import org.davincischools.leo.database.utils.repos.ProjectCycleRepository;
+import org.davincischools.leo.database.utils.repos.ProjectCycleStepRepository;
+import org.davincischools.leo.database.utils.repos.ProjectDefinitionRepository;
+import org.davincischools.leo.database.utils.repos.ProjectImageRepository;
+import org.davincischools.leo.database.utils.repos.ProjectInputCategoryRepository;
 import org.davincischools.leo.database.utils.repos.ProjectInputRepository;
+import org.davincischools.leo.database.utils.repos.ProjectInputValueRepository;
 import org.davincischools.leo.database.utils.repos.ProjectPostCommentRepository;
 import org.davincischools.leo.database.utils.repos.ProjectPostRepository;
 import org.davincischools.leo.database.utils.repos.ProjectRepository;
@@ -64,16 +73,24 @@ public class Database {
 
   @Autowired private AdminXRepository adminXRepository;
   @Autowired private AssignmentKnowledgeAndSkillRepository assignmentKnowledgeAndSkillRepository;
+  @Autowired private AssignmentProjectDefinitionRepository assignmentProjectDefinitionRepository;
   @Autowired private AssignmentRepository assignmentRepository;
   @Autowired private ClassXRepository classXRepository;
   @Autowired private DistrictRepository districtRepository;
+  @Autowired private ImageRepository imageRepository;
   @Autowired private InterestRepository interestRepository;
   @Autowired private KnowledgeAndSkillRepository knowledgeAndSkillRepository;
   @Autowired private LogReferenceRepository logReferenceRepository;
   @Autowired private LogRepository logRepository;
+  @Autowired private MotivationRepository motivationRepository;
   @Autowired private PortfolioRepository portfolioRepository;
   @Autowired private ProjectCycleRepository projectCycleRepository;
+  @Autowired private ProjectCycleStepRepository projectCycleStepRepository;
+  @Autowired private ProjectDefinitionRepository projectDefinitionRepository;
+  @Autowired private ProjectImageRepository projectImageRepository;
+  @Autowired private ProjectInputCategoryRepository projectInputCategoryRepository;
   @Autowired private ProjectInputRepository projectInputRepository;
+  @Autowired private ProjectInputValueRepository projectInputValueRepository;
   @Autowired private ProjectPostCommentRepository projectPostCommentRepository;
   @Autowired private ProjectPostRepository projectPostRepository;
   @Autowired private ProjectRepository projectRepository;
@@ -94,6 +111,10 @@ public class Database {
     return assignmentKnowledgeAndSkillRepository;
   }
 
+  public AssignmentProjectDefinitionRepository getAssignmentProjectDefinitionRepository() {
+    return assignmentProjectDefinitionRepository;
+  }
+
   public AssignmentRepository getAssignmentRepository() {
     return assignmentRepository;
   }
@@ -104,6 +125,10 @@ public class Database {
 
   public DistrictRepository getDistrictRepository() {
     return districtRepository;
+  }
+
+  public ImageRepository getImageRepository() {
+    return imageRepository;
   }
 
   public InterestRepository getInterestRepository() {
@@ -122,6 +147,10 @@ public class Database {
     return logRepository;
   }
 
+  public MotivationRepository getMotivationRepository() {
+    return motivationRepository;
+  }
+
   public PortfolioRepository getPortfolioRepository() {
     return portfolioRepository;
   }
@@ -130,8 +159,28 @@ public class Database {
     return projectCycleRepository;
   }
 
+  public ProjectCycleStepRepository getProjectCycleStepRepository() {
+    return projectCycleStepRepository;
+  }
+
+  public ProjectDefinitionRepository getProjectDefinitionRepository() {
+    return projectDefinitionRepository;
+  }
+
+  public ProjectImageRepository getProjectImageRepository() {
+    return projectImageRepository;
+  }
+
+  public ProjectInputCategoryRepository getProjectInputCategoryRepository() {
+    return projectInputCategoryRepository;
+  }
+
   public ProjectInputRepository getProjectInputRepository() {
     return projectInputRepository;
+  }
+
+  public ProjectInputValueRepository getProjectInputValueRepository() {
+    return projectInputValueRepository;
   }
 
   public ProjectPostCommentRepository getProjectPostCommentRepository() {
@@ -354,7 +403,7 @@ public class Database {
     Arrays.asList(knowledgeAndSkills)
         .forEach(
             knowledgeAndSkill -> {
-              checkArgument(knowledgeAndSkill.getClassX().getId() == classX.getId());
+              checkArgument(Objects.equals(knowledgeAndSkill.getClassX().getId(), classX.getId()));
               getAssignmentKnowledgeAndSkillRepository()
                   .saveAssignmentKnowledgeAndSkill(assignment, knowledgeAndSkill);
             });
