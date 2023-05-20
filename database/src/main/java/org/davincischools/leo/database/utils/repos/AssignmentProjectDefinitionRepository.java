@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AssignmentProjectDefinitionRepository
-    extends JpaRepository<AssignmentProjectDefinition, AssignmentProjectDefinitionId> {
-}
+    extends JpaRepository<AssignmentProjectDefinition, AssignmentProjectDefinitionId> {}
