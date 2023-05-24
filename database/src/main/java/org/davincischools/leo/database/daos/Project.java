@@ -25,11 +25,15 @@ public class Project {
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
   public static final String COLUMN_LONGDESCR_NAME = "long_descr";
   public static final String COLUMN_LONGDESCRQUILL_NAME = "long_descr_quill";
+  public static final String COLUMN_STEPSDESCR_NAME = "steps_descr";
+  public static final String COLUMN_STEPSDESCRQUILL_NAME = "steps_descr_quill";
+  public static final String COLUMN_GENERATOR_NAME = "generator";
   public static final String COLUMN_FAVORITE_NAME = "favorite";
   public static final String COLUMN_THUMBSSTATE_NAME = "thumbs_state";
   public static final String COLUMN_ARCHIVED_NAME = "archived";
   public static final String COLUMN_DELETED_NAME = "deleted";
   public static final String COLUMN_NEEDSREVIEW_NAME = "needs_review";
+  public static final String COLUMN_ACTIVE_NAME = "active";
 
   private Integer id;
 
@@ -45,6 +49,12 @@ public class Project {
 
   private String longDescrQuill;
 
+  private String stepsDescr;
+
+  private String stepsDescrQuill;
+
+  private String generator;
+
   private Boolean favorite;
 
   private String thumbsState;
@@ -54,6 +64,10 @@ public class Project {
   private Boolean deleted;
 
   private Boolean needsReview;
+
+  private Boolean active;
+
+  private Assignment assignment;
 
   private ProjectInput projectInput;
 
@@ -132,6 +146,39 @@ public class Project {
     return this;
   }
 
+  @Lob
+  @Column(name = COLUMN_STEPSDESCR_NAME)
+  public String getStepsDescr() {
+    return stepsDescr;
+  }
+
+  public Project setStepsDescr(String stepsDescr) {
+    this.stepsDescr = stepsDescr;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_STEPSDESCRQUILL_NAME)
+  public String getStepsDescrQuill() {
+    return stepsDescrQuill;
+  }
+
+  public Project setStepsDescrQuill(String stepsDescrQuill) {
+    this.stepsDescrQuill = stepsDescrQuill;
+    return this;
+  }
+
+  @Lob
+  @Column(name = COLUMN_GENERATOR_NAME)
+  public String getGenerator() {
+    return generator;
+  }
+
+  public Project setGenerator(String generator) {
+    this.generator = generator;
+    return this;
+  }
+
   @Column(name = COLUMN_FAVORITE_NAME)
   public Boolean getFavorite() {
     return favorite;
@@ -142,7 +189,8 @@ public class Project {
     return this;
   }
 
-  @Column(name = COLUMN_THUMBSSTATE_NAME, length = 11)
+  @Lob
+  @Column(name = COLUMN_THUMBSSTATE_NAME)
   public String getThumbsState() {
     return thumbsState;
   }
@@ -179,6 +227,27 @@ public class Project {
 
   public Project setNeedsReview(Boolean needsReview) {
     this.needsReview = needsReview;
+    return this;
+  }
+
+  @Column(name = COLUMN_ACTIVE_NAME)
+  public Boolean getActive() {
+    return active;
+  }
+
+  public Project setActive(Boolean active) {
+    this.active = active;
+    return this;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "assignment_id", nullable = false)
+  public Assignment getAssignment() {
+    return assignment;
+  }
+
+  public Project setAssignment(Assignment assignment) {
+    this.assignment = assignment;
     return this;
   }
 

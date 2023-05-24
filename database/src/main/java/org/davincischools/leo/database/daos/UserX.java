@@ -20,9 +20,10 @@ import java.time.Instant;
     schema = "leo_temp",
     indexes = {
       @Index(name = "email_address", columnList = "email_address", unique = true),
-      @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
       @Index(name = "admin_x_id", columnList = "admin_x_id", unique = true),
-      @Index(name = "student_id", columnList = "student_id", unique = true)
+      @Index(name = "teacher_id", columnList = "teacher_id", unique = true),
+      @Index(name = "student_id", columnList = "student_id", unique = true),
+      @Index(name = "user_x__email_address", columnList = "email_address")
     })
 public class UserX {
 

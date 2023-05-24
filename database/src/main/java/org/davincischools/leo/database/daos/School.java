@@ -19,11 +19,11 @@ import java.time.Instant;
     indexes = {
       @Index(
           name = "school__district__unique_name",
-          columnList = "district_id, name",
+          columnList = "name, district_id",
           unique = true),
       @Index(
           name = "school__district__unique_nickname",
-          columnList = "district_id, nickname",
+          columnList = "nickname, district_id",
           unique = true)
     })
 public class School {

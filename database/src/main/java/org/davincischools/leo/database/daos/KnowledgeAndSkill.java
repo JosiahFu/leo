@@ -77,7 +77,8 @@ public class KnowledgeAndSkill {
     return this;
   }
 
-  @Column(name = COLUMN_TYPE_NAME, nullable = false, length = 13)
+  @Lob
+  @Column(name = COLUMN_TYPE_NAME, nullable = false)
   public String getType() {
     return type;
   }

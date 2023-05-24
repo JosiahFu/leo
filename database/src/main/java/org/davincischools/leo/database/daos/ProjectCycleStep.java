@@ -6,26 +6,21 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
-@Entity(name = ClassX.ENTITY_NAME)
-@Table(
-    name = ClassX.TABLE_NAME,
-    schema = "leo_temp",
-    indexes = {
-      @Index(name = "class_x__school_id__name", columnList = "name, school_id", unique = true)
-    })
-public class ClassX {
+@Entity(name = ProjectCycleStep.ENTITY_NAME)
+@Table(name = ProjectCycleStep.TABLE_NAME, schema = "leo_temp")
+public class ProjectCycleStep {
 
-  public static final String ENTITY_NAME = "ClassX";
-  public static final String TABLE_NAME = "class_x";
+  public static final String ENTITY_NAME = "ProjectCycleStep";
+  public static final String TABLE_NAME = "project_cycle_step";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
+  public static final String COLUMN_POSITION_NAME = "position";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
@@ -35,6 +30,8 @@ public class ClassX {
   private Integer id;
 
   private Instant creationTime;
+
+  private Integer position;
 
   private String name;
 
@@ -46,7 +43,7 @@ public class ClassX {
 
   private String longDescrQuill;
 
-  private School school;
+  private ProjectCycle projectCycle;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +52,7 @@ public class ClassX {
     return id;
   }
 
-  public ClassX setId(Integer id) {
+  public ProjectCycleStep setId(Integer id) {
     this.id = id;
     return this;
   }
@@ -65,8 +62,18 @@ public class ClassX {
     return creationTime;
   }
 
-  public ClassX setCreationTime(Instant creationTime) {
+  public ProjectCycleStep setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
+    return this;
+  }
+
+  @Column(name = COLUMN_POSITION_NAME, nullable = false)
+  public Integer getPosition() {
+    return position;
+  }
+
+  public ProjectCycleStep setPosition(Integer position) {
+    this.position = position;
     return this;
   }
 
@@ -75,7 +82,7 @@ public class ClassX {
     return name;
   }
 
-  public ClassX setName(String name) {
+  public ProjectCycleStep setName(String name) {
     this.name = name;
     return this;
   }
@@ -86,7 +93,7 @@ public class ClassX {
     return shortDescr;
   }
 
-  public ClassX setShortDescr(String shortDescr) {
+  public ProjectCycleStep setShortDescr(String shortDescr) {
     this.shortDescr = shortDescr;
     return this;
   }
@@ -97,7 +104,7 @@ public class ClassX {
     return shortDescrQuill;
   }
 
-  public ClassX setShortDescrQuill(String shortDescrQuill) {
+  public ProjectCycleStep setShortDescrQuill(String shortDescrQuill) {
     this.shortDescrQuill = shortDescrQuill;
     return this;
   }
@@ -108,7 +115,7 @@ public class ClassX {
     return longDescr;
   }
 
-  public ClassX setLongDescr(String longDescr) {
+  public ProjectCycleStep setLongDescr(String longDescr) {
     this.longDescr = longDescr;
     return this;
   }
@@ -119,19 +126,19 @@ public class ClassX {
     return longDescrQuill;
   }
 
-  public ClassX setLongDescrQuill(String longDescrQuill) {
+  public ProjectCycleStep setLongDescrQuill(String longDescrQuill) {
     this.longDescrQuill = longDescrQuill;
     return this;
   }
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "school_id", nullable = false)
-  public School getSchool() {
-    return school;
+  @JoinColumn(name = "project_cycle_id", nullable = false)
+  public ProjectCycle getProjectCycle() {
+    return projectCycle;
   }
 
-  public ClassX setSchool(School school) {
-    this.school = school;
+  public ProjectCycleStep setProjectCycle(ProjectCycle projectCycle) {
+    this.projectCycle = projectCycle;
     return this;
   }
 }

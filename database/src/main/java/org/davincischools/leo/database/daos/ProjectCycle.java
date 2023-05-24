@@ -20,6 +20,7 @@ public class ProjectCycle {
   public static final String TABLE_NAME = "project_cycle";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
+  public static final String COLUMN_POSITION_NAME = "position";
   public static final String COLUMN_NAME_NAME = "name";
   public static final String COLUMN_SHORTDESCR_NAME = "short_descr";
   public static final String COLUMN_SHORTDESCRQUILL_NAME = "short_descr_quill";
@@ -29,6 +30,8 @@ public class ProjectCycle {
   private Integer id;
 
   private Instant creationTime;
+
+  private Integer position;
 
   private String name;
 
@@ -61,6 +64,16 @@ public class ProjectCycle {
 
   public ProjectCycle setCreationTime(Instant creationTime) {
     this.creationTime = creationTime;
+    return this;
+  }
+
+  @Column(name = COLUMN_POSITION_NAME, nullable = false)
+  public Integer getPosition() {
+    return position;
+  }
+
+  public ProjectCycle setPosition(Integer position) {
+    this.position = position;
     return this;
   }
 

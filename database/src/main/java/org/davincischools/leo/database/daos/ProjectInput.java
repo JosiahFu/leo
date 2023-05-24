@@ -20,21 +20,18 @@ public class ProjectInput {
   public static final String TABLE_NAME = "project_input";
   public static final String COLUMN_ID_NAME = "id";
   public static final String COLUMN_CREATIONTIME_NAME = "creation_time";
-  public static final String COLUMN_SOMETHINGYOULOVE_NAME = "something_you_love";
-  public static final String COLUMN_WHATYOUAREGOODAT_NAME = "what_you_are_good_at";
-  public static final String COLUMN_PENDINGCOMPLETION_NAME = "pending_completion";
+  public static final String COLUMN_TIMEOUT_NAME = "timeout";
+  public static final String COLUMN_STATE_NAME = "state";
 
   private Integer id;
 
   private Instant creationTime;
 
-  private String somethingYouLove;
+  private Instant timeout;
 
-  private String whatYouAreGoodAt;
+  private String state;
 
-  private Instant pendingCompletion;
-
-  private Assignment assignment;
+  private ProjectDefinition projectDefinition;
 
   private Student student;
 
@@ -60,46 +57,35 @@ public class ProjectInput {
     return this;
   }
 
-  @Lob
-  @Column(name = COLUMN_SOMETHINGYOULOVE_NAME)
-  public String getSomethingYouLove() {
-    return somethingYouLove;
+  @Column(name = COLUMN_TIMEOUT_NAME)
+  public Instant getTimeout() {
+    return timeout;
   }
 
-  public ProjectInput setSomethingYouLove(String somethingYouLove) {
-    this.somethingYouLove = somethingYouLove;
+  public ProjectInput setTimeout(Instant timeout) {
+    this.timeout = timeout;
     return this;
   }
 
   @Lob
-  @Column(name = COLUMN_WHATYOUAREGOODAT_NAME)
-  public String getWhatYouAreGoodAt() {
-    return whatYouAreGoodAt;
+  @Column(name = COLUMN_STATE_NAME, nullable = false)
+  public String getState() {
+    return state;
   }
 
-  public ProjectInput setWhatYouAreGoodAt(String whatYouAreGoodAt) {
-    this.whatYouAreGoodAt = whatYouAreGoodAt;
-    return this;
-  }
-
-  @Column(name = COLUMN_PENDINGCOMPLETION_NAME)
-  public Instant getPendingCompletion() {
-    return pendingCompletion;
-  }
-
-  public ProjectInput setPendingCompletion(Instant pendingCompletion) {
-    this.pendingCompletion = pendingCompletion;
+  public ProjectInput setState(String state) {
+    this.state = state;
     return this;
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "assignment_id")
-  public Assignment getAssignment() {
-    return assignment;
+  @JoinColumn(name = "project_definition_id")
+  public ProjectDefinition getProjectDefinition() {
+    return projectDefinition;
   }
 
-  public ProjectInput setAssignment(Assignment assignment) {
-    this.assignment = assignment;
+  public ProjectInput setProjectDefinition(ProjectDefinition projectDefinition) {
+    this.projectDefinition = projectDefinition;
     return this;
   }
 

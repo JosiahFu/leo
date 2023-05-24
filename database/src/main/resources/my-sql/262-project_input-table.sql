@@ -1,21 +1,19 @@
 CREATE TABLE project_input
 (
-    id                   INT PRIMARY KEY AUTO_INCREMENT,
-    creation_time        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id                    INT PRIMARY KEY AUTO_INCREMENT,
+    creation_time         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    something_you_love   TEXT,
-    what_you_are_good_at TEXT,
+    timeout               DATETIME,
+    state                 ENUM ('PROCESSING', 'COMPLETED', 'FAILED') NOT NULL,
 
-    pending_completion   DATETIME,
-
-    assignment_id        INT,
-    CONSTRAINT project_input__assignment_id
-        FOREIGN KEY (assignment_id)
-            REFERENCES assignment (id)
+    project_definition_id INT,
+    CONSTRAINT project_input__project_definition_id
+        FOREIGN KEY (project_definition_id)
+            REFERENCES project_definition (id)
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
 
-    student_id           INT      NOT NULL,
+    student_id            INT      NOT NULL,
     CONSTRAINT project_input__student_id
         FOREIGN KEY (student_id)
             REFERENCES student (id)

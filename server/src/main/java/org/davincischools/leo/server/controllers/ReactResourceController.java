@@ -56,14 +56,18 @@ public class ReactResourceController {
     "/favicon.*",
     "/images/**",
     "/index.html",
-    "/installHooks.js", // React developer tools plugin.
-    "/main.*.json",
     "/manifest.json",
     "/profiles/**",
     "/projects/**",
     "/robots.txt",
     "/static/**",
-    "/users/**"
+    "/users/**",
+    // React developer tools plugin.
+    "/installHooks.js",
+    // Due to the https://github.com/webpack/webpack-dev-server.
+    "/main.*.hot-update.js",
+    "/main.*.hot-update.js.map",
+    "/main.*.hot-update.json"
   })
   public void getResource(HttpServletRequest originalRequest, HttpServletResponse response)
       throws IOException {
